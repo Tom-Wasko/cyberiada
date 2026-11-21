@@ -1,0 +1,11 @@
+# Rejestr projektów cyberiady (czyta: archi.py, instalator, dziennik).
+# sciezka: względem katalogu bazowego komputera; gospodarz: komputer, na którym żyje Archi projektu.
+komputery:
+  TOMEK-PC: C:/Users/PC
+
+projekty:
+  cyberiada:
+    opis: System pracy z Claude Code
+    sciezka: cyberiada
+    repo: Tom-Wasko/cyberiada
+    gospodarz: TOMEK-PC

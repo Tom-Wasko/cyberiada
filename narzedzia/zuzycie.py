@@ -1,0 +1,134 @@
+"""Baza zużycia: tokeny z lokalnych dzienników sesji Claude Code (~/.claude/projects), według nazwy sesji.
+
+  python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py                 wszystko, według sesji
+  ... --projekt C:/Users/PC/lukrum   tylko sesje z tego folderu (z worktree)
+  ... --od 2026-11-21 [--do 2026-11-22]   zakres dat (UTC, z dziennika)
+  ... --nazwa wyko-lukrum-03          sesje o nazwie zaczynającej się od tego tekstu
+  ... --json                          wynik maszynowy (dla dziennika)
+
+Liczby: wejście, zapis do cache, odczyt z cache, wyjście; „ważone” = przybliżony koszt w jednostkach
+wejścia Sonneta (cache odczyt 0,1, zapis 1h 2,0, wyjście 5,0; Opus ×2, Haiku ×0,05). Tylko ten komputer.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wspolne import SESJE_DIR, tytul_sesji  # noqa: E402
+
+MNOZNIK_MODELU = {"opus": 2.0, "sonnet": 1.0, "haiku": 0.05, "fable": 2.0}
+POLA = ("wejscie", "cache_zapis", "cache_odczyt", "wyjscie")
+
+
+def mnoznik(model: str) -> float:
+    for klucz, m in MNOZNIK_MODELU.items():
+        if klucz in model:
+            return m
+    return 1.0
+
+
+def czytaj(plik: Path, filtr) -> list[dict]:
+    """Wiersze zużycia z jednego dziennika, bez powtórzeń tego samego komunikatu."""
+    widziane, wynik, cwd = set(), [], None
+    try:
+        f = open(plik, encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    with f:
+        for linia in f:
+            if '"usage"' not in linia:
+                if cwd is None and '"cwd"' in linia:
+                    try:
+                        cwd = json.loads(linia).get("cwd")
+                    except ValueError:
+                        pass
+                continue
+            try:
+                d = json.loads(linia)
+            except ValueError:
+                continue
+            cwd = d.get("cwd") or cwd
+            m = d.get("message") or {}
+            u = m.get("usage")
+            if d.get("type") != "assistant" or not u:
+                continue
+            klucz = (m.get("id"), d.get("requestId"))
+            if klucz in widziane:
+                continue
+            widziane.add(klucz)
+            czas = d.get("timestamp", "")
+            if not filtr(cwd or "", czas):
+                continue
+            wynik.append({"model": m.get("model", "?"), "czas": czas,
+                          "wejscie": u.get("input_tokens", 0),
+                          "cache_zapis": u.get("cache_creation_input_tokens", 0),
+                          "cache_odczyt": u.get("cache_read_input_tokens", 0),
+                          "wyjscie": u.get("output_tokens", 0)})
+    return wynik
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(description="Zużycie tokenów według sesji (ten komputer).")
+    p.add_argument("--projekt", type=Path)
+    p.add_argument("--od")
+    p.add_argument("--do")
+    p.add_argument("--nazwa")
+    p.add_argument("--json", action="store_true")
+    a = p.parse_args()
+    prefiks = str(a.projekt.resolve()).lower() if a.projekt else None
+
+    def filtr(cwd: str, czas: str) -> bool:
+        if prefiks and not cwd.lower().startswith(prefiks):
+            return False
+        if a.od and czas[:10] < a.od:
+            return False
+        return not (a.do and czas[:10] > a.do)
+
+    sumy: dict[str, dict] = defaultdict(lambda: {"modele": defaultdict(int), "od": "", "do": "",
+                                                 **{k: 0 for k in POLA}, "wazone": 0.0})
+    for plik in SESJE_DIR.glob("*/*.jsonl"):
+        nazwa = tytul_sesji(plik) or f"(bez nazwy {plik.stem[:8]})"
+        if a.nazwa and not nazwa.startswith(a.nazwa):
+            continue
+        zrodla = [(plik, nazwa)]
+        zrodla += [(s, nazwa + " · agenci") for s in plik.with_suffix("").glob("subagents/*.jsonl")]
+        for zrodlo, etykieta in zrodla:
+            for w in czytaj(zrodlo, filtr):
+                s = sumy[etykieta]
+                for k in POLA:
+                    s[k] += w[k]
+                s["modele"][w["model"]] += w["wyjscie"]
+                s["wazone"] += mnoznik(w["model"]) * (w["wejscie"] + 0.1 * w["cache_odczyt"]
+                                                      + 2.0 * w["cache_zapis"] + 5.0 * w["wyjscie"])
+                s["od"] = min(s["od"] or w["czas"], w["czas"])
+                s["do"] = max(s["do"], w["czas"])
+
+    wiersze = sorted(sumy.items(), key=lambda kv: kv[1]["wazone"], reverse=True)
+    if a.json:
+        print(json.dumps([{"sesja": n, **{k: v for k, v in s.items() if k != "modele"},
+                           "modele": dict(s["modele"])} for n, s in wiersze],
+                         ensure_ascii=False, indent=1))
+        return 0
+    if not wiersze:
+        print("Brak danych dla tych filtrów.")
+        return 0
+    print(f"{'sesja':<34}{'wejście':>10}{'cache zap.':>12}{'cache odc.':>13}{'wyjście':>10}"
+          f"{'ważone':>12}  model")
+    razem = {k: 0 for k in POLA} | {"wazone": 0.0}
+    for n, s in wiersze:
+        model = max(s["modele"], key=s["modele"].get).replace("claude-", "")
+        print(f"{n[:33]:<34}{s['wejscie']:>10,}{s['cache_zapis']:>12,}{s['cache_odczyt']:>13,}"
+              f"{s['wyjscie']:>10,}{s['wazone']:>12,.0f}  {model}")
+        for k in razem:
+            razem[k] += s[k]
+    print(f"{'RAZEM':<34}{razem['wejscie']:>10,}{razem['cache_zapis']:>12,}"
+          f"{razem['cache_odczyt']:>13,}{razem['wyjscie']:>10,}{razem['wazone']:>12,.0f}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

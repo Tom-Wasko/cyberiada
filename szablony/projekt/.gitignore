@@ -1,0 +1,6 @@
+_robocze/
+_archiwum/
+.claude/worktrees/
+.claude/settings.local.json
+*.log
+.obsidian/workspace*.json
