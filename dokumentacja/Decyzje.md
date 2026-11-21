@@ -9,6 +9,13 @@
 - 2026-11-21 · Polecenia osobne, wszystkie w ściągawce `README.md`; każde działa też zwykłym tekstem.
 - 2026-11-21 · Dokumentacja projektu: README, CLAUDE.md, `Stan.md`, `Zadania.md`, `Decyzje.md`, `podroze/`.
 - 2026-11-21 · Podróż 01 = dziennik. Plan mode przełączany automatycznie (szef obecny), potem auto mode.
+- 2026-11-21 · Dziennik: Czeka na Ciebie, stan podróży i wątków, puls, decyzje Archiego, zadania i historia podróży,
+  koszty; „lubię dużo informacji, danych i wykresów”.
+- 2026-11-21 · Wykresy dziennika: tokeny dzień po dniu (według projektów), kto zużywa (Archi / wyko / agenci /
+  Pomocnik na podróż), postęp podróży (oś czasu wątków + kryteria), commity dzień po dniu, szacunek okna 5 h.
+- 2026-11-21 · Dane dziennika w bazie strony (`db`): strona publikowana raz, każdy Archi zapisuje tylko swój projekt.
+- 2026-11-21 · Układ dziennika: jedna lista kart projektów (rozwijane), na górze „Czeka na Ciebie (N)”;
+  przy pytaniach przycisk „kopiuj odpowiedź” (np. `cyberiada P1: A`).
 
 ## Archiego
 - 2026-11-21 · Baza i preferencje przez dowiązanie `~/.claude/rules` (bez `@import`, bez pytań o zewnętrzne pliki).
@@ -17,3 +24,6 @@
 - 2026-11-21 · `attribution: false` w ustawieniach globalnych (wyko dopisywał Co-Authored-By).
 - 2026-11-21 · Wyko to rola, nie definicja agenta; agenci tylko zwiadowca i recenzent.
 - 2026-11-21 · Instalator: cienki `zainstaluj.ps1` + `narzedzia/instaluj.py`.
+- 2026-11-21 · Dziennik: generator (`narzedzia/dziennik/generuj.py`, wyko) i strona (Archi) wiąże schemat JSON
+  z `podroze/01-dziennik/watek-generator.md`; pytania w „Czeka na szefa” w formacie `P1:` + opcje `A:`.
+- 2026-11-21 · Testy narzędzi na `unittest` z biblioteki standardowej (pytest nie jest zainstalowany).
