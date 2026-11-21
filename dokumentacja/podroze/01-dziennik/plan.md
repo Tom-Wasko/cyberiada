@@ -1,5 +1,5 @@
 # Podróż 01: dziennik
-Start: 2026-11-21 · tryb: hejo · gałąź: `main`
+Start: 2026-11-21 · tryb: nadzorowany · gałąź: `main`
 
 ## Cel
 Jedna strona na claude.ai ze stanem wszystkich projektów i rzeczami, które czekają na szefa, czytelna na telefonie

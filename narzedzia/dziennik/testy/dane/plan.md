@@ -1,5 +1,5 @@
 # Podróż 02: wyglad
-Start: 2026-11-18 · tryb: hejo · gałąź: podroz-02
+Start: 2026-11-18 · tryb: nadzorowany · gałąź: podroz-02
 
 ## Kryteria sukcesu
 - [ ] Strona działa na telefonie

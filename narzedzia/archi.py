@@ -2,8 +2,8 @@
 
   archi                 lista projektów tego komputera
   archi lukrum          czat archi-lukrum w folderze projektu
-  archi lukrum hejo     to samo i od razu /hejo
-  archi lukrum papa 4h  to samo i od razu /papa 4h
+  archi lukrum hejo     to samo i od razu /hejo (tryb nadzorowany)
+  archi lukrum papa 4h  to samo i od razu /papa 4h (tryb autonomiczny)
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def main(argv: list[str]) -> int:
             print(f"Projekty na komputerze {komputer()}:")
             for nazwa, p in znane.items():
                 print(f"  archi {nazwa:<14} {p}")
-            print("Tryb na start: archi <projekt> hejo | papa 4h | wznow")
+            print("Tryb na start: archi <projekt> hejo (nadzorowany) | papa 4h (autonomiczny) | wznow")
             return 0
         argv = [tutaj[0]]
     nazwa, reszta = argv[0], argv[1:]

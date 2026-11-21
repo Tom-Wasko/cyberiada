@@ -21,10 +21,12 @@ Przy aktualizacji Claude Code powtórz testy oznaczone ⟳.
 - Sesja `--bg` (interaktywna), Haiku: 47,6k na pierwszą turę. Różnica to m.in. narzędzia MCP (Chrome, Docs)
   i opisy skilli. Wyko startuje z `--no-chrome`; dalsze cięcie: test T5.
 
-### Do zrobienia przez szefa (wymagają telefonu albo restartu)
-- **T2** Remote Control na Windows + push: `archi cyberiada`, w telefonie aplikacja Claude → sesja `archi-cyberiada`,
-  napisz „test”; w `/config` włącz „Push when Claude decides”, Archi wyśle push.
-- **T3** Okienko pytań przez RC: Archi zada pytanie okienkiem; odpowiedz z telefonu.
+### Sprawdzone przez szefa
+- **T2** ✓ (2026-11-21) Remote Control na Windows + push: sesja `archi-cyberiada` w aplikacji Claude działa
+  (szef: „wszystko na telefonie działa”).
+- **T3** ✓ (2026-11-21) Okienko pytań przez Remote Control: odpowiedź z telefonu działa.
+
+### Do zrobienia przez szefa
 - **T13** Restart w trakcie: uruchom wyko, zrestartuj Windows, potem `archi cyberiada` i `/wznow`.
 - **T4–T6** (po T2): skille z telefonu (`/hejo` napisane w telefonie), narzut startu zwiadowcy (`/context`),
   odczyt % limitu ze statusline.

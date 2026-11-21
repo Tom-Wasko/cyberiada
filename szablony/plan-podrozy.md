@@ -1,5 +1,6 @@
 # Podróż NN: <temat>
-Start: RRRR-MM-DD · tryb: hejo | papa · gałąź: `main` (hejo) albo `podroz-NN` (papa)
+Start: RRRR-MM-DD · tryb: nadzorowany | autonomiczny · gałąź: `main` (nadzorowany) albo `podroz-NN` (autonomiczny)
+Zadania: Z…, Z…
 
 ## Cel
 Jedno-dwa zdania: po co ta podróż.

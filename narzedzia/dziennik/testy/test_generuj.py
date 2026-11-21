@@ -157,7 +157,7 @@ class TestDokumenty(Pomoc):
     def test_podroz(self):
         p = self.dane["podroz"]
         self.assertEqual((p["numer"], p["temat"], p["start"], p["tryb"]),
-                         ("02", "wyglad", "2026-11-18", "hejo"))
+                         ("02", "wyglad", "2026-11-18", "nadzorowany"))
         self.assertEqual(p["kryteria"], [
             {"tekst": "Strona działa na telefonie", "zrobione": False},
             {"tekst": "Kolory z palety w dwóch liniach", "zrobione": True}])

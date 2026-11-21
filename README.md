@@ -12,8 +12,8 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 |---|---|
 | `archi` | lista projektów tego komputera (w folderze projektu: otwiera jego Archiego) |
 | `archi <projekt>` | otwiera czat Archiego projektu, a jeśli już był, wznawia go (Opus, Remote Control) |
-| `archi <projekt> hejo` | to samo i od razu tryb „jestem” |
-| `archi <projekt> papa 4h` | to samo i od razu tryb „wychodzę” z budżetem |
+| `archi <projekt> hejo` | to samo i od razu tryb nadzorowany (`/hejo`) |
+| `archi <projekt> papa 4h` | to samo i od razu tryb autonomiczny (`/papa`) z budżetem |
 | `claude` | zwykły czat: Pomocnik (Sonnet), do drobnych spraw w dowolnym folderze |
 | `claude agents` | lista sesji w tle (wyko); `claude attach <id>` podgląd i rozmowa z wyko |
 | `python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py [--projekt <folder>] [--od RRRR-MM-DD]` | zużycie tokenów według sesji |
@@ -24,11 +24,11 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 
 | Polecenie | Co robi |
 |---|---|
-| `/podroz [temat]` | nowa podróż: cel, kryteria sukcesu, wątki (w trybie hejo przez plan do zatwierdzenia) |
+| `/podroz [temat]` | nowa podróż: cel, kryteria sukcesu, wątki (w trybie nadzorowanym przez plan do zatwierdzenia) |
 | `/podroz koniec` | domknięcie: scalenie, dokumentacja, porządek, gotowe `/compact` dla szefa |
 | `/podroz porzuc` | porzucenie podróży (gałęzie zostają, wątki trafiają do zadań) |
-| `/hejo` | „jestem”: podsumowanie pracy pod nieobecność, czekające pytania okienkiem, scalenie do `main` |
-| `/papa <budżet>` | „wychodzę”: praca bez szefa; budżet `4h`, `do 18:00`, `2M` (tokeny) albo `do skończenia X` |
+| `/hejo` | „jestem”, włącza **tryb nadzorowany**: podsumowanie pracy pod nieobecność, czekające pytania okienkiem, scalenie do `main` |
+| `/papa <budżet>` | „wychodzę”, włącza **tryb autonomiczny**: praca bez szefa; budżet `4h`, `do 18:00`, `2M` (tokeny) albo `do skończenia X` |
 | `/wznow` | po restarcie komputera albo po limicie: odtworzenie stanu z plików, wznowienie wyko |
 
 **W dowolnym czacie:** `/nowy-projekt <nazwa>` zakłada projekt (szablon, git, rejestr, zaufanie, GitHub).
@@ -45,8 +45,10 @@ Zwykłe polecenia Claude Code przydatne codziennie: `/compact <co zachować>`, `
   Brief i raport w jednym pliku wątku. Rola: `role/wyko.md`, uprawnienia: `narzedzia/wyko/ustawienia.json`.
 - **agenci**: tylko `zwiadowca` (Haiku, zwiad) i `recenzent` (Sonnet, świeże oko). Wbudowane Explore, Plan
   i general-purpose są zablokowane (drogie).
-- **Tryby:** `/hejo` (szef odpowiada od razu, okienka, scalanie do `main`) i `/papa` (szef z telefonu przez
+- **Tryby:** nadzorowany (polecenie `/hejo`: szef odpowiada od razu, okienka, scalanie do `main`) i autonomiczny
+  (polecenie `/papa`: szef z telefonu przez
   Remote Control, pytania tekstem + push, scalanie do gałęzi `podroz-NN`, nic nieodwracalnego).
+- **Numery** (te same w każdym projekcie): zadanie `Z7`, podróż `01`, wątek `01/generator`.
 - **Stan** zawsze w plikach projektu: `dokumentacja/Stan.md` (teraz), `Zadania.md`, `Decyzje.md`,
   `podroze/NN-temat/` (plan i wątki).
 
@@ -58,8 +60,8 @@ skille/        podroz, hejo, papa, wznow, nowy-projekt (~/.claude/skills/<nazwa>
 agenci/        zwiadowca, recenzent (~/.claude/agents → tu)
 szablony/      projekt/ (nowy projekt), watek.md, plan-podrozy.md
 narzedzia/     archi.py + bin/archi.cmd, wyko.py, zuzycie.py, instaluj.py, cdp.py i zrzuty.py (zrzuty ekranu), dziennik/ (panel stanu)
-wiedza/        testy.md (co sprawdzono w praktyce) i notatki ze źródłami
-dokumentacja/  stan, zadania i decyzje samej cyberiady (jest też projektem)
+dokumentacja/  stan, zadania, decyzje i podróże samej cyberiady (jest też projektem); wiedza/: testy.md
+               (co sprawdzono w praktyce) i notatki ze źródłami
 projekty.yaml  rejestr projektów i komputerów
 skrzynka.md    spostrzeżenia o szefie do przejrzenia (nie wczytywana na starcie)
 ```

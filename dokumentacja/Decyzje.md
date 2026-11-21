@@ -4,8 +4,11 @@
 - 2026-11-21 · Nazwa cyberiada, prywatne repo `Tom-Wasko/cyberiada` na GitHubie.
 - 2026-11-21 · Role: Pomocnik (domyślny), Archi (jeden na projekt), wyko (sesja w tle na wątek), agenci tylko do
   krótkich zadań.
-- 2026-11-21 · W /papa scalanie do gałęzi `podroz-NN`, do `main` po /hejo; odpowiedzi z telefonu czatem Remote Control;
+- 2026-11-21 · W trybie autonomicznym (/papa) scalanie do gałęzi `podroz-NN`, do `main` po powrocie szefa (/hejo); odpowiedzi z telefonu czatem Remote Control;
   dziennik bez formularza.
+- 2026-11-21 · Nazwy trybów: **tryb nadzorowany** (polecenie `/hejo`) i **tryb autonomiczny** (polecenie `/papa`);
+  „hejo” i „papa” to tylko nazwy poleceń.
+- 2026-11-21 · Jedna numeracja w każdym projekcie: zadanie `Z<n>`, podróż `NN`, wątek `NN/nazwa` (szczegóły: `role/archi.md`).
 - 2026-11-21 · Polecenia osobne, wszystkie w ściągawce `README.md`; każde działa też zwykłym tekstem.
 - 2026-11-21 · Dokumentacja projektu: README, CLAUDE.md, `Stan.md`, `Zadania.md`, `Decyzje.md`, `podroze/`.
 - 2026-11-21 · Podróż 01 = dziennik. Plan mode przełączany automatycznie (szef obecny), potem auto mode.
@@ -18,6 +21,8 @@
   przy pytaniach przycisk „kopiuj odpowiedź” (np. `cyberiada P1: A`).
 
 ## Archiego
+- 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
+  repo bez zmian (każdy folder ma jedno zadanie).
 - 2026-11-21 · Baza i preferencje przez dowiązanie `~/.claude/rules` (bez `@import`, bez pytań o zewnętrzne pliki).
 - 2026-11-21 · Rola przez `--append-system-prompt-file` ze ścieżką bezwzględną, nie `--agent`.
 - 2026-11-21 · Wyko: `--permission-mode auto` + lista dozwolonych/zakazanych, `--no-chrome`, worktree `-w podroz-NN-<wątek>`.

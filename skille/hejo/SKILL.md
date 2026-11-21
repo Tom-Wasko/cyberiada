@@ -5,9 +5,9 @@ disable-model-invocation: true
 ---
 Polecenie: `/hejo`. Tryb nadzorowany: szef jest i odpowiada od razu.
 
-1. Zapisz w `dokumentacja/Stan.md`: „Tryb: hejo od GG:MM”.
-2. Zatrzymaj pętlę kontroli trybu papa, jeśli działa (CronList → CronDelete).
-3. Jeśli przed chwilą był tryb papa: w 5–10 liniach podsumuj, co zrobione (wątki, commity, gałąź `podroz-NN`),
+1. Zapisz w `dokumentacja/Stan.md`: „Tryb: nadzorowany od GG:MM”.
+2. Zatrzymaj pętlę kontroli trybu autonomicznego, jeśli działa (CronList → CronDelete).
+3. Jeśli przed chwilą był tryb autonomiczny: w 5–10 liniach podsumuj, co zrobione (wątki, commity, gałąź `podroz-NN`),
    co zablokowane i ile zużyto (`narzedzia/zuzycie.py`). Pytania z „Czeka na szefa” zadaj okienkiem (po 4,
    rekomendacja pierwsza); odpowiedzi do `Decyzje.md`.
 4. Po przejrzeniu przez szefa zapytaj, czy scalić `podroz-NN` do `main`. Po zgodzie scal, przetestuj, wypchnij.
