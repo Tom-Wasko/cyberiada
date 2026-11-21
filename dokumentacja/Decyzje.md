@@ -27,3 +27,4 @@
 - 2026-11-21 · Dziennik: generator (`narzedzia/dziennik/generuj.py`, wyko) i strona (Archi) wiąże schemat JSON
   z `podroze/01-dziennik/watek-generator.md`; pytania w „Czeka na szefa” w formacie `P1:` + opcje `A:`.
 - 2026-11-21 · Testy narzędzi na `unittest` z biblioteki standardowej (pytest nie jest zainstalowany).
+- 2026-11-21 · Dziennik to zwykła strona z bazą `db` (zamiast typu Dashboard): własny układ kart, pytań i 5 wykresów.

@@ -17,6 +17,7 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 | `claude` | zwykły czat: Pomocnik (Sonnet), do drobnych spraw w dowolnym folderze |
 | `claude agents` | lista sesji w tle (wyko); `claude attach <id>` podgląd i rozmowa z wyko |
 | `python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py [--projekt <folder>] [--od RRRR-MM-DD]` | zużycie tokenów według sesji |
+| `python -X utf8 C:/Users/PC/cyberiada/narzedzia/dziennik/generuj.py --projekt <nazwa>` | dane projektu do dziennika (Archi zapisuje je na stronę: `narzedzia/dziennik/README.md`) |
 | `.\zainstaluj.ps1 [-Sprawdz]` | instalacja albo sprawdzenie cyberiady na tym komputerze |
 
 **W czacie Archiego** (z komputera albo z telefonu; każde działa też zwykłym tekstem, np. „papa 4h”):
@@ -56,7 +57,7 @@ role/          archi.md, wyko.md – dopisywane do promptu systemowego przy star
 skille/        podroz, hejo, papa, wznow, nowy-projekt (~/.claude/skills/<nazwa> → tu)
 agenci/        zwiadowca, recenzent (~/.claude/agents → tu)
 szablony/      projekt/ (nowy projekt), watek.md, plan-podrozy.md
-narzedzia/     archi.py + bin/archi.cmd, wyko.py, zuzycie.py, instaluj.py, cdp.py i zrzuty.py (zrzuty ekranu)
+narzedzia/     archi.py + bin/archi.cmd, wyko.py, zuzycie.py, instaluj.py, cdp.py i zrzuty.py (zrzuty ekranu), dziennik/ (panel stanu)
 wiedza/        testy.md (co sprawdzono w praktyce) i notatki ze źródłami
 dokumentacja/  stan, zadania i decyzje samej cyberiady (jest też projektem)
 projekty.yaml  rejestr projektów i komputerów

@@ -1,5 +1,7 @@
 # Rejestr projektów cyberiady (czyta: archi.py, instalator, dziennik).
 # sciezka: względem katalogu bazowego komputera; gospodarz: komputer, na którym żyje Archi projektu.
+dziennik: https://claude.ai/artifact/5c5LeHX3ohn5qRanw6XyoT
+
 komputery:
   TOMEK-PC: C:/Users/PC
 
