@@ -15,6 +15,7 @@ import argparse
 import json
 import sys
 from collections import defaultdict
+from collections.abc import Iterator
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -71,6 +72,29 @@ def czytaj(plik: Path, filtr) -> list[dict]:
     return wynik
 
 
+def wazone(wpis: dict) -> float:
+    """Przybliżony koszt jednego wpisu w jednostkach wejścia Sonneta."""
+    return mnoznik(wpis["model"]) * (wpis["wejscie"] + 0.1 * wpis["cache_odczyt"]
+                                     + 2.0 * wpis["cache_zapis"] + 5.0 * wpis["wyjscie"])
+
+
+def wpisy(projekt: Path | None = None, katalog: Path | None = None) -> Iterator[dict]:
+    """Wszystkie wpisy zużycia: pola sesja, agent (bool), model, czas (UTC z dziennika), wejscie,
+    cache_zapis, cache_odczyt, wyjscie. `projekt` filtruje po cwd (z worktree), `katalog` zastępuje ~/.claude/projects."""
+    prefiks = str(projekt.resolve()).lower() if projekt else None
+
+    def filtr(cwd: str, czas: str) -> bool:
+        return not prefiks or cwd.lower().startswith(prefiks)
+
+    for plik in (katalog or SESJE_DIR).glob("*/*.jsonl"):
+        nazwa = tytul_sesji(plik) or f"(bez nazwy {plik.stem[:8]})"
+        zrodla = [(plik, False)]
+        zrodla += [(s, True) for s in plik.with_suffix("").glob("subagents/*.jsonl")]
+        for zrodlo, agent in zrodla:
+            for w in czytaj(zrodlo, filtr):
+                yield {"sesja": nazwa, "agent": agent, **w}
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Zużycie tokenów według sesji (ten komputer).")
     p.add_argument("--projekt", type=Path)
@@ -79,33 +103,23 @@ def main() -> int:
     p.add_argument("--nazwa")
     p.add_argument("--json", action="store_true")
     a = p.parse_args()
-    prefiks = str(a.projekt.resolve()).lower() if a.projekt else None
-
-    def filtr(cwd: str, czas: str) -> bool:
-        if prefiks and not cwd.lower().startswith(prefiks):
-            return False
-        if a.od and czas[:10] < a.od:
-            return False
-        return not (a.do and czas[:10] > a.do)
 
     sumy: dict[str, dict] = defaultdict(lambda: {"modele": defaultdict(int), "od": "", "do": "",
                                                  **{k: 0 for k in POLA}, "wazone": 0.0})
-    for plik in SESJE_DIR.glob("*/*.jsonl"):
-        nazwa = tytul_sesji(plik) or f"(bez nazwy {plik.stem[:8]})"
-        if a.nazwa and not nazwa.startswith(a.nazwa):
+    for w in wpisy(a.projekt):
+        if a.nazwa and not w["sesja"].startswith(a.nazwa):
             continue
-        zrodla = [(plik, nazwa)]
-        zrodla += [(s, nazwa + " · agenci") for s in plik.with_suffix("").glob("subagents/*.jsonl")]
-        for zrodlo, etykieta in zrodla:
-            for w in czytaj(zrodlo, filtr):
-                s = sumy[etykieta]
-                for k in POLA:
-                    s[k] += w[k]
-                s["modele"][w["model"]] += w["wyjscie"]
-                s["wazone"] += mnoznik(w["model"]) * (w["wejscie"] + 0.1 * w["cache_odczyt"]
-                                                      + 2.0 * w["cache_zapis"] + 5.0 * w["wyjscie"])
-                s["od"] = min(s["od"] or w["czas"], w["czas"])
-                s["do"] = max(s["do"], w["czas"])
+        if a.od and w["czas"][:10] < a.od:
+            continue
+        if a.do and w["czas"][:10] > a.do:
+            continue
+        s = sumy[w["sesja"] + (" · agenci" if w["agent"] else "")]
+        for k in POLA:
+            s[k] += w[k]
+        s["modele"][w["model"]] += w["wyjscie"]
+        s["wazone"] += wazone(w)
+        s["od"] = min(s["od"] or w["czas"], w["czas"])
+        s["do"] = max(s["do"], w["czas"])
 
     wiersze = sorted(sumy.items(), key=lambda kv: kv[1]["wazone"], reverse=True)
     if a.json:
