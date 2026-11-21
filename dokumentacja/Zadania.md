@@ -2,7 +2,6 @@
 <!-- Zadanie = jedna linia. Zrobione trafiają do podsumowania podróży, nie tutaj. -->
 
 ## W toku
-- Podróż 01-dziennik: plan w `dokumentacja/podroze/01-dziennik/plan.md`.
 
 ## Zaplanowane
 - Testy T4–T6 po T2 (skille z telefonu, narzut startu zwiadowcy, % limitu w statusline).
