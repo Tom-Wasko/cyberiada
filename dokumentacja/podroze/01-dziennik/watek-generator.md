@@ -131,10 +131,35 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
-**Stan:** gotowe | częściowo | zablokowane
-**Zmienione pliki:**
-**Dowód:** `<komenda>` → `<ostatnie linie wyniku>`
+**Stan:** gotowe
+
+**Zmienione pliki** (worktree `.claude/worktrees/podroz-01-generator`, gałąź `worktree-podroz-01-generator`):
+- `narzedzia/dziennik/generuj.py` (nowy, ~374 linie)
+- `narzedzia/dziennik/testy/test_generuj.py` + `testy/dane/{Stan,Decyzje,Zadania,plan}.md` (nowe)
+- `narzedzia/zuzycie.py` (wydzielone `wazone()` i `wpisy()`, wyjście CLI bez zmian)
+
+**Dowód:**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy -v` → `Ran 17 tests in 1.441s` / `OK`
+- `python -X utf8 narzedzia/dziennik/generuj.py --sciezka C:/Users/PC/cyberiada --wyjscie _robocze/generator/cyberiada.json` → `zapisano _robocze\generator\cyberiada.json · czeka 1 · wątki 2 · dni kosztów 30`
+- `podroz.watki` → `[('generator','wyko','w toku','worktree-podroz-01-generator'), ('strona','Archi','w toku','main')]`; `czeka` → jedno pytanie bez numeru
+- `zuzycie.py` po refaktorze: tabela zgodna z wersją sprzed zmiany (porównane na tych samych logach), `RAZEM` liczy się tak samo.
+
 **Decyzje, które podjąłem:**
-**Pytania do szefa:**
+- Okno 5 h: start od pełnej godziny pierwszego wpisu, liczone ze wszystkich projektów; po wygaśnięciu `od/reset = null`, `wazone = 0`.
+- Dzień kosztów liczony w strefie lokalnej (logi mają UTC); zawsze 30 dni, z zerami.
+- Rola z tytułu sesji: `archi-*` → Archi, `wyko-*` → wyko, inne → Pomocnik; podagenci → „agenci”.
+- Domyślny zapis JSON do `_robocze/dziennik/` obok `generuj.py` (UTF-8, LF, `indent=1`).
+- Brak plików lub puste → puste pola, bez wyjątku.
+
+**Uwagi o danych:**
+- `historia` zawiera też bieżącą podróż (`koniec: null`).
+- Wątek „strona” ma gałąź `main` (tak stoi w tabeli Stan.md).
+- Plik wątku leżał w głównym checkoucie (niescommitowany); edycja tam była zablokowana, więc raport jest w kopii w worktree: `dokumentacja/podroze/01-dziennik/watek-generator.md`.
+
+**Pytania do szefa:** brak.
+
 **Propozycje (poza zakresem):**
-**Commity:**
+- Strona mogłaby ukrywać wpis z `historia` z `koniec: null`, bo to bieżąca podróż.
+- Gałąź wątku „strona” w Stan.md warto poprawić na faktyczną.
+
+**Commity:** e59ca04 (zuzycie: wpisy/wazone), eea3e75 (generuj.py), e26fd41 (testy + fixture).
