@@ -196,6 +196,16 @@ def sciezka_path(sprawdz: bool) -> None:
         else:
             winreg.SetValueEx(k, "Path", 0, typ, ";".join([*czesci, str(BIN)]))
             ok(f"{BIN} dodane – działa w NOWYM terminalu")
+    if not sprawdz:
+        ogloszenie_zmiany_srodowiska()
+
+
+def ogloszenie_zmiany_srodowiska() -> None:
+    """Powiadamia Windows (Eksplorator) o nowym PATH; bez tego nowe okna dostają stary PATH."""
+    import ctypes
+    wynik = ctypes.c_ulong()
+    ctypes.windll.user32.SendMessageTimeoutW(0xFFFF, 0x001A, 0, "Environment", 0x0002, 5000,
+                                             ctypes.byref(wynik))
 
 
 def main() -> int:
