@@ -16,6 +16,7 @@ Przy aktualizacji Claude Code powtórz testy oznaczone ⟳.
 | T16 `--bg` + `-w <nazwa>` | ✓ | Worktree `.claude/worktrees/<nazwa>`, gałąź `worktree-<nazwa>`, zablokowany. `claude stop <id>` + `claude rm <id>` usuwa sesję, worktree i gałąź (najpierw scalić!). Status po skończonej turze: `idle`. |
 | T17 `~/.claude/rules` jako junction do `cyberiada/zasady` | ✓ | Nowa sesja w każdym folderze wczytuje `baza.md` i `preferencje.md` bez `@import` (bez pytania o zewnętrzne pliki). |
 | T18 Hook PostToolUse przez `--settings` w sesji `--bg` (22.11) | ✓ | Sesja próbna (Haiku, `-w`, `narzedzia/wyko/ustawienia.json`): po `git commit` hook `dziennik/hook_commit.py` dał instrukcję, ArtifactData dostępne po ToolSearch, auto mode go nie zablokował, zapis `postep/<sesja>` wersja 1. |
+| T4 Skille z telefonu (22.11) | ✓ | Szef napisał `/hejo` w czacie Remote Control na telefonie; skill uruchomił się w sesji archi-cyberiada jak z klawiatury. |
 | T5 Narzut startu zwiadowcy (22.11) | ✓ | Pierwsza tura agenta `zwiadowca` (Haiku): 6,3 tys. tokenów kontekstu, całe zadanie 7,6 tys. (log `subagents/*.jsonl`). Dla porównania sesja wyko `--bg`: 47,6 tys. Zwiadowca jest tani; drogi jest start sesji, nie agenta. |
 | T6 % limitu w statusline (22.11) | ✓ (źródło) | Skrypt statusline dostaje `rate_limits.five_hour.used_percentage` i `.resets_at`, też `seven_day.*` (plany Pro/Max, po pierwszej odpowiedzi API) oraz `context_window.used_percentage`. Źródło: https://code.claude.com/docs/en/statusline. Statusline na tym komputerze jeszcze nie ustawiony. |
 
@@ -31,4 +32,3 @@ Przy aktualizacji Claude Code powtórz testy oznaczone ⟳.
 
 ### Do zrobienia przez szefa
 - **T13** Restart w trakcie: uruchom wyko, zrestartuj Windows, potem `archi cyberiada` i `/wznow`.
-- **T4** (po T2): skille z telefonu (`/hejo` napisane w telefonie).
