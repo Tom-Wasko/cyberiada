@@ -341,7 +341,8 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
                 granica(h.get("do"), h["koniec"], True) or teraz)
                for h in historia if h.get("od") or h["start"]]
     role: dict[tuple[str, str], float] = defaultdict(float)
-    pierwszy = min((od for _, od, _ in zakresy), default=None)  # przed nim: praca sprzed cyberiady
+    # przed pierwszą podróżą: praca sprzed cyberiady (sama cyberiada nie ma „przed”)
+    pierwszy = None if nazwa == "cyberiada" else min((od for _, od, _ in zakresy), default=None)
     for w in wpisy(projekt, katalog):
         chwila = lokalny(w["czas"])
         dzien = chwila.date().isoformat()
