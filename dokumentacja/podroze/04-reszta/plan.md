@@ -53,4 +53,4 @@ to jako uwagę, nie rozstrzyga.
 - Dziennik pokazuje podróż 04, wątki i pracowników.
 
 ## Podsumowanie
-Stan 22.11 (podróż dalej otwarta, kończy szef): Zrobione: Z1 (T4 ✓ z telefonu, T5 ✓ zwiadowca 6,3 tys. na start, T6 ✓ statusline ma % limitu 5 h i tygodnia), Z3 (`wiedza/tokeny.md`, `telefon.md`, `claude-code.md`, po 11–12 odnośników). Po drodze: wyko mają internet (decyzja szefa). Nowe: Z5 (wznawianie wyko), Z6 (wagi zużycia). Koszt: wyko ≈ 0,7 mln ważonych tokenów.
+Zakończona 2026-11-22 (polecenie szefa). Zrobione: Z1 (T4 ✓ z telefonu, T5 ✓ zwiadowca 6,3 tys. na start, T6 ✓ statusline ma % limitu 5 h i tygodnia), Z3 (`wiedza/tokeny.md`, `telefon.md`, `claude-code.md`, po 11–12 odnośników). Po drodze: wyko mają internet (decyzja szefa). Dołączone i zrobione: Z5 (`wyko.py --wznow` wznawia tę samą sesję, T19), Z6 (wagi `zuzycie.py` według cennika). Koszt: wyko ≈ 0,7 mln ważonych tokenów.
