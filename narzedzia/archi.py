@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wspolne import CYBERIADA, claude_exe, komputer, projekt_dla, projekty, sesja_o_nazwie  # noqa: E402
 
 ROLA = CYBERIADA / "role" / "archi.md"
+USTAWIENIA = CYBERIADA / "narzedzia" / "archi" / "ustawienia.json"  # hook dziennika po commicie
 TRYBY = {"hejo", "papa", "wznow", "podroz"}
 
 
@@ -41,7 +42,7 @@ def main(argv: list[str]) -> int:
     istnieje = sesja_o_nazwie(katalog, sesja)
     polecenie = [claude_exe()]
     polecenie += ["--resume", istnieje] if istnieje else ["--name", sesja]
-    polecenie += ["--model", "opus", "--effort", "medium", "--rc", "--autocompact", "250k",
+    polecenie += ["--model", "opus", "--effort", "medium", "--rc", "--autocompact", "250k", "--settings", str(USTAWIENIA),
                   "--append-system-prompt-file", str(ROLA)]
     if reszta:
         tryb = reszta[0].lstrip("/")

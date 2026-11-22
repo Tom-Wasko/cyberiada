@@ -15,5 +15,6 @@
       "WebFetch", "WebSearch",
       "Agent(Explore)", "Agent(Plan)", "Agent(general-purpose)"
     ]
-  }
+  },
+  "hooks": {"PostToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "python -X utf8 C:/Users/PC/cyberiada/narzedzia/dziennik/hook_commit.py", "timeout": 20}]}]}
 }

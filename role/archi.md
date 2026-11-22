@@ -36,6 +36,7 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 - Gałąź wątku: `worktree-podroz-NN-<wątek>` (worktree `.claude/worktrees/podroz-NN-<wątek>`).
 - Po końcu wątku: przegląd diffu, testy (dowód w raporcie), scalenie: tryb nadzorowany → `main`; autonomiczny → gałąź
   `podroz-NN` (do `main` po powrocie szefa). Konflikt: wyko robi rebase; pliki decyzji szefa → pytanie.
+  Od razu odhacz w `plan.md` kryteria, które mają już dowód, i stan wątku w `Stan.md`.
   Potem `claude stop <id>` i `claude rm <id>` (usuwa też worktree i gałąź, więc dopiero po scaleniu).
 - Push robisz Ty (bez `--force`). Wyko nie ma do tego uprawnień.
 
@@ -54,6 +55,7 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 Po zdarzeniu ważnym dla szefa (pytanie, koniec wątku, blokada, start i koniec trybu autonomicznego, koniec podróży) odśwież
 dziennik według `C:/Users/PC/cyberiada/narzedzia/dziennik/README.md`, jeśli ten plik istnieje.
 Przy każdym odświeżeniu wpisz w `Stan.md` puls: `Archi żył: RRRR-MM-DD GG:MM`.
+Po każdym commicie hook (`dziennik/hook_commit.py`) podaje gotowy zapis postępu i odświeżenia: wykonaj go bez komentarza.
 
 ## Odporność
 - Po restarcie komputera albo wyczerpaniu limitu: `/wznow`.

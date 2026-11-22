@@ -59,6 +59,10 @@ def nowy(plik: Path, model: str, pokaz: bool) -> int:
     wzgl = plik.relative_to(korzen).as_posix()
     if git("status", "--porcelain", "--", wzgl, cwd=korzen) or not git("ls-files", wzgl, cwd=korzen):
         raise SystemExit(f"Najpierw zatwierdź plik wątku commitem: {wzgl}")
+    # Worktree powstaje z gałęzi zdalnej: niewypchnięty commit z plikiem wątku byłby niewidoczny dla wyko.
+    if not pokaz and git("rev-parse", "--abbrev-ref", "@{u}", cwd=korzen) and \
+            git("rev-list", "--count", "@{u}..HEAD", cwd=korzen) not in ("", "0"):
+        print("Wypycham commity, żeby worktree miał plik wątku:", git("push", "-q", cwd=korzen) or "ok")
     nazwa = f"wyko-{projekt}-{nn}-{watek}"
     if any(a.get("name") == nazwa and a.get("status") not in ("stopped", "done")
            for a in agenci_w_tle()):
