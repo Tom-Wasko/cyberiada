@@ -182,7 +182,7 @@ class TestDokumenty(Pomoc):
 
     def test_historia(self):
         self.assertEqual(self.dane["historia"], [{"numer": "02", "temat": "wyglad", "start": "2026-11-18",
-                                                  "koniec": None,
+                                                  "koniec": None, "od": None, "do": None,
                                                   "podsumowanie": "Krótko o tym, co wyszło."}])
 
 

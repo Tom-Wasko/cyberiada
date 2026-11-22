@@ -331,12 +331,20 @@ def ostatnie_dni(teraz: datetime) -> list[str]:
 def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, katalog: Path | None) -> dict:
     dni = ostatnie_dni(teraz)
     po_dniach = {d: {"dzien": d, "wazone": 0.0, **{k: 0 for k in POLA}} for d in dni}
-    zakresy = [(h["numer"], h["start"], h["koniec"] or teraz.date().isoformat())
-               for h in historia if h["start"]]
+    def granica(czas: str | None, dzien: str | None, koniec: bool) -> datetime | None:
+        if czas:
+            return lokalny(czas)
+        if dzien:
+            return datetime.fromisoformat(dzien + ("T23:59:59" if koniec else "T00:00:00")).astimezone()
+        return None
+    zakresy = [(h["numer"], granica(h.get("od"), h["start"], False),
+                granica(h.get("do"), h["koniec"], True) or teraz)
+               for h in historia if h.get("od") or h["start"]]
     role: dict[tuple[str, str], float] = defaultdict(float)
     pierwszy = min((od for _, od, _ in zakresy), default=None)  # przed nim: praca sprzed cyberiady
     for w in wpisy(projekt, katalog):
-        dzien = lokalny(w["czas"]).date().isoformat()
+        chwila = lokalny(w["czas"])
+        dzien = chwila.date().isoformat()
         v = wazone(w)
         if dzien in po_dniach:
             d = po_dniach[dzien]
@@ -344,8 +352,8 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
             for k in POLA:
                 d[k] += w[k]
         m = re.match(rf"wyko-{re.escape(nazwa)}-(\d+)-", w["sesja"])
-        podroz = m.group(1) if m else next((n for n, od, do in reversed(zakresy) if od <= dzien <= do),
-                                                "przed" if pierwszy and dzien < pierwszy else "poza")
+        podroz = m.group(1) if m else next((n for n, od, do in reversed(zakresy) if od <= chwila <= do),
+                                                "przed" if pierwszy and chwila < pierwszy else "poza")
         role[(podroz, rola(w["sesja"], w["agent"], w.get("model") or ""))] += v
     for d in po_dniach.values():
         d["wazone"] = round(d["wazone"])
@@ -397,8 +405,14 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
     historia = []
     for numer, temat, d in katalogi_podrozy(projekt):
         p = czytaj_plan(d)
-        historia.append({"numer": numer, "temat": temat, "start": p["start"], "koniec": p["koniec"],
-                         "podsumowanie": p["podsumowanie"]})
+        od = data_dodania(projekt, d / "plan.md")
+        do = None
+        if p["podsumowanie"]:  # podróż zamknięta: koniec = ostatnia zmiana planu
+            w = git(projekt, "log", "-1", "--format=%cI", "--", (d / "plan.md").relative_to(projekt).as_posix())
+            do = w[0] if w else None
+        koniec = p["koniec"] or (lokalny(do).date().isoformat() if do else None)
+        historia.append({"numer": numer, "temat": temat, "start": p["start"], "koniec": koniec,
+                         "od": od, "do": do, "podsumowanie": p["podsumowanie"]})
     return {"nazwa": nazwa, "opis": opis, "repo": repo,
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
             "podroz": zbuduj_podroz(stan, projekt, plan_biezacy), "czeka": stan["czeka"],
