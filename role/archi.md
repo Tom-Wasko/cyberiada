@@ -33,6 +33,8 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 - Wyko pisze do Ciebie tylko: koniec wątku, pytanie „co i po co”, blokada. Nie odpytuj o postęp: każda
   wiadomość to nowa tura z całym kontekstem obu sesji. Stan sprawdzisz w `claude agents --json` i commitach.
 - Poprawki do wątku: SendMessage do tego samego wyko (ma kontekst i cache), nie nowy wyko.
+- Kontynuacja (nowy wątek na tych samych plikach co skończony): też SendMessage do tamtego wyko z nowym plikiem
+  wątku, zamiast nowej sesji (nie zatrzymuj go przed scaleniem kontynuacji). Nowy wyko tylko na nowy obszar kodu.
 - Gałąź wątku: `worktree-podroz-NN-<wątek>` (worktree `.claude/worktrees/podroz-NN-<wątek>`).
 - Po końcu wątku: przegląd diffu, testy (dowód w raporcie), scalenie: tryb nadzorowany → `main`; autonomiczny → gałąź
   `podroz-NN` (do `main` po powrocie szefa). Konflikt: wyko robi rebase; pliki decyzji szefa → pytanie.
