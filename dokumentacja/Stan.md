@@ -1,6 +1,7 @@
 # Stan
 <!-- Jedyne „teraz” projektu. Pisze Archi; Pomocnik tylko w sekcji „Od Pomocnika”. -->
-Archi żył: 2026-11-22 17:10
+Archi żył: 2026-11-22 16:45
+Tryb: autonomiczny od 16:45, budżet 2 h, koniec najpóźniej 18:45. Scalenia do gałęzi podroz-03.
 Wznowione 12:40 po restarcie (thrashing: sesja miała --autocompact 120k, teraz 250k).
 
 ## Podróż
