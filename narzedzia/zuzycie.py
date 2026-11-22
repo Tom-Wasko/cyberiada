@@ -7,7 +7,8 @@
   ... --json                          wynik maszynowy (dla dziennika)
 
 Liczby: wejście, zapis do cache, odczyt z cache, wyjście; „ważone” = przybliżony koszt w jednostkach
-wejścia Sonneta (cache odczyt 0,1, zapis 1h 2,0, wyjście 5,0; Opus ×2, Haiku ×0,05). Tylko ten komputer.
+wejścia Sonneta według cennika (dokumentacja/wiedza/tokeny.md): cache odczyt 0,1 (Opus/Sonnet 5.5: 0,05,
+Fable: 0,025), zapis 1 h 2,0, zapis 5 min 1,25, wyjście 5,0; Opus ×2, Fable ×4, Haiku ×0,05. Tylko ten komputer.
 """
 from __future__ import annotations
 
@@ -21,7 +22,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wspolne import SESJE_DIR, tytul_sesji  # noqa: E402
 
-MNOZNIK_MODELU = {"opus": 2.0, "sonnet": 1.0, "haiku": 0.05, "fable": 2.0}
+MNOZNIK_MODELU = {"opus": 2.0, "sonnet": 1.0, "haiku": 0.05, "fable": 4.0}
+# odczyt z cache względem ceny wejścia danego modelu (domyślnie 0,1)
+ODCZYT_CACHE = (("fable", 0.025), ("opus-5-5", 0.05), ("sonnet-5-5", 0.05))
 POLA = ("wejscie", "cache_zapis", "cache_odczyt", "wyjscie")
 
 
@@ -30,6 +33,10 @@ def mnoznik(model: str) -> float:
         if klucz in model:
             return m
     return 1.0
+
+
+def odczyt_cache(model: str) -> float:
+    return next((w for klucz, w in ODCZYT_CACHE if klucz in model), 0.1)
 
 
 def czytaj(plik: Path, filtr) -> list[dict]:
@@ -67,6 +74,7 @@ def czytaj(plik: Path, filtr) -> list[dict]:
             wynik.append({"model": m.get("model", "?"), "czas": czas,
                           "wejscie": u.get("input_tokens", 0),
                           "cache_zapis": u.get("cache_creation_input_tokens", 0),
+                          "cache_zapis_5m": (u.get("cache_creation") or {}).get("ephemeral_5m_input_tokens", 0),
                           "cache_odczyt": u.get("cache_read_input_tokens", 0),
                           "wyjscie": u.get("output_tokens", 0)})
     return wynik
@@ -74,8 +82,9 @@ def czytaj(plik: Path, filtr) -> list[dict]:
 
 def wazone(wpis: dict) -> float:
     """Przybliżony koszt jednego wpisu w jednostkach wejścia Sonneta."""
-    return mnoznik(wpis["model"]) * (wpis["wejscie"] + 0.1 * wpis["cache_odczyt"]
-                                     + 2.0 * wpis["cache_zapis"] + 5.0 * wpis["wyjscie"])
+    z5m = min(wpis.get("cache_zapis_5m", 0), wpis["cache_zapis"])
+    return mnoznik(wpis["model"]) * (wpis["wejscie"] + odczyt_cache(wpis["model"]) * wpis["cache_odczyt"]
+                                     + 2.0 * (wpis["cache_zapis"] - z5m) + 1.25 * z5m + 5.0 * wpis["wyjscie"])
 
 
 def wpisy(projekt: Path | None = None, katalog: Path | None = None) -> Iterator[dict]:

@@ -23,6 +23,7 @@ Polecenie: `/podroz $ARGUMENTS`. Wykonuje Archi w folderze projektu. Szablony: `
 6. Odśwież dziennik.
 
 ## Koniec (`/podroz koniec`)
+Tylko na polecenie szefa. Gdy kryteria są spełnione, Archi proponuje zamknięcie i czeka.
 1. Każdy wątek scalony albo odłożony (→ `Zadania.md` „Zaplanowane”, z powodem). Każde kryterium z dowodem.
 2. Podsumowanie w `plan.md`: co zrobione (numery `Z<n>`; zrobione usuń z `Zadania.md`), co odłożone, koszt
    (`python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py --projekt . --od <data startu>`).

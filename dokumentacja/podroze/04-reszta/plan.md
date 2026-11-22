@@ -1,6 +1,6 @@
 # Podróż 04: reszta
 Start: 2026-11-22 · tryb: nadzorowany · gałąź: `main`
-Zadania: Z1, Z3
+Zadania: Z1, Z3, Z5, Z6
 
 ## Kontekst
 Po podróży 03 w cyberiadzie zostały: Z1 (testy T4–T6, czekają od T2) i Z3 (notatki ze źródłami w
@@ -34,6 +34,8 @@ Wyko tylko czyta i pisze te 3 pliki; nic nie zmienia w kodzie. Gdy źródło spr
 to jako uwagę, nie rozstrzyga.
 
 ## Kryteria sukcesu
+- [ ] Z6: wagi w `zuzycie.py` według cennika, testy OK.
+- [ ] Z5: `wyko.py --wznow` wznawia tę samą sesję (sprawdzone próbą).
 - [x] T4, T5, T6 w `testy.md` z wynikiem i dowodem (liczba tokenów / źródło / odpowiedź z telefonu).
 - [x] 3 notatki w `dokumentacja/wiedza/`, każde twierdzenie z odnośnikiem, data sprawdzenia; przegląd Archiego.
 - [x] README (mapa repo) wymienia nowe notatki.
@@ -51,4 +53,4 @@ to jako uwagę, nie rozstrzyga.
 - Dziennik pokazuje podróż 04, wątki i pracowników.
 
 ## Podsumowanie
-Zakończona 2026-11-22. Zrobione: Z1 (T4 ✓ z telefonu, T5 ✓ zwiadowca 6,3 tys. na start, T6 ✓ statusline ma % limitu 5 h i tygodnia), Z3 (`wiedza/tokeny.md`, `telefon.md`, `claude-code.md`, po 11–12 odnośników). Po drodze: wyko mają internet (decyzja szefa). Nowe: Z5 (wznawianie wyko), Z6 (wagi zużycia). Koszt: wyko ≈ 0,7 mln ważonych tokenów.
+Stan 22.11 (podróż dalej otwarta, kończy szef): Zrobione: Z1 (T4 ✓ z telefonu, T5 ✓ zwiadowca 6,3 tys. na start, T6 ✓ statusline ma % limitu 5 h i tygodnia), Z3 (`wiedza/tokeny.md`, `telefon.md`, `claude-code.md`, po 11–12 odnośników). Po drodze: wyko mają internet (decyzja szefa). Nowe: Z5 (wznawianie wyko), Z6 (wagi zużycia). Koszt: wyko ≈ 0,7 mln ważonych tokenów.

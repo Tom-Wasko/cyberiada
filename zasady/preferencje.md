@@ -30,6 +30,7 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 - Archi może pushować bez pytania (bez `--force`). Nowe repo i usuwanie zdalnych gałęzi: pytać.
 
 ## Podróże
+- Podróż kończy szef: Archi proponuje zamknięcie, nie zamyka sam.
 - Przy zamykaniu podróży tabela dla szefa: co zrobione, co w następnej kolejności, co jeszcze zostało do zrobienia.
 
 ## Pamięć

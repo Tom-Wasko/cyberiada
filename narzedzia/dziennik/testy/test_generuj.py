@@ -201,7 +201,7 @@ class TestKoszty(Pomoc):
         self.assertEqual(dni[0]["dzien"], "2026-10-23")
         po = {d["dzien"]: d for d in dni}
         # dziś: Archi opus 2*(50+5*5)=150, agent haiku 0.05*1000=50, wyko opus 2*(100+100+100+100)=800
-        self.assertEqual(po["2026-11-21"]["wazone"], 1000)
+        self.assertEqual(po["2026-11-21"]["wazone"], 900)
         self.assertEqual(po["2026-11-21"]["wejscie"], 1150)
         self.assertEqual(po["2026-11-21"]["cache_zapis"], 50)
         self.assertEqual(po["2026-11-21"]["cache_odczyt"], 1000)
@@ -213,7 +213,7 @@ class TestKoszty(Pomoc):
 
     def test_role_i_podroze(self):
         role = {(r["podroz"], r["rola"]): r["wazone"] for r in self.koszty["role"]}
-        self.assertEqual(role, {("02", "Archi"): 150, ("02", "agenci"): 50, ("02", "wyko"): 800,
+        self.assertEqual(role, {("02", "Archi"): 150, ("02", "agenci"): 50, ("02", "wyko"): 700,
                                 ("02", "pomo"): 340, ("przed", "pomo"): 75})
         self.assertEqual(self.koszty["role"][-1]["podroz"], "przed")  # „przed” i „poza” zawsze na końcu
 
@@ -222,7 +222,7 @@ class TestKoszty(Pomoc):
         # okno od pełnej godziny pierwszego wpisu (10:15 → 10:00); wpis z wczoraj to osobne, wygasłe okno
         self.assertEqual(o["od"], czas(0, 10).isoformat(timespec="seconds"))
         self.assertEqual(o["reset"], czas(0, 15).isoformat(timespec="seconds"))
-        self.assertEqual(o["wazone"], 1000 + 200)  # razem z innym projektem
+        self.assertEqual(o["wazone"], 900 + 200)  # razem z innym projektem
 
     def test_okno_po_wygasnieciu(self):
         pozniej = czas(0, 20)
@@ -233,7 +233,7 @@ class TestKoszty(Pomoc):
         # o 12:00 trwa okno 10:00–15:00 z wpisem z 10:15, a wpis z wczoraj nie wlicza się
         o = generuj.okno5h(czas(0, 12), self.sesje)
         self.assertEqual(o["od"], czas(0, 10).isoformat(timespec="seconds"))
-        self.assertEqual(o["wazone"], 800)
+        self.assertEqual(o["wazone"], 700)
 
 
 class TestBrakDanych(Pomoc):
