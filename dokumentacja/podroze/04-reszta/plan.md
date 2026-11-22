@@ -10,8 +10,8 @@ prowadzi szefa przez T4, Z3 pisze jeden wyko w tle ze źródłami z sieci (ok. 1
 ## Wątki
 | Wątek | Kto | Pliki | Stan |
 |---|---|---|---|
-| 04/testy | Archi | `dokumentacja/wiedza/testy.md` | w toku |
-| 04/wiedza | wyko | `dokumentacja/wiedza/{tokeny,telefon,claude-code}.md` | w toku |
+| 04/testy | Archi | `dokumentacja/wiedza/testy.md` | scalone |
+| 04/wiedza | wyko | `dokumentacja/wiedza/{tokeny,telefon,claude-code}.md` | scalone |
 
 ### 04/testy (Archi, Z1)
 - **T4 skille z telefonu:** szef w czacie Remote Control na telefonie pisze `/hejo` (albo `hejo`) do
@@ -34,10 +34,10 @@ Wyko tylko czyta i pisze te 3 pliki; nic nie zmienia w kodzie. Gdy źródło spr
 to jako uwagę, nie rozstrzyga.
 
 ## Kryteria sukcesu
-- [ ] T4, T5, T6 w `testy.md` z wynikiem i dowodem (liczba tokenów / źródło / odpowiedź z telefonu).
-- [ ] 3 notatki w `dokumentacja/wiedza/`, każde twierdzenie z odnośnikiem, data sprawdzenia; przegląd Archiego.
-- [ ] README (mapa repo) wymienia nowe notatki.
-- [ ] Z1 i Z3 skreślone; podsumowanie z tabelą zrobione / następnie / reszta.
+- [x] T4, T5, T6 w `testy.md` z wynikiem i dowodem (liczba tokenów / źródło / odpowiedź z telefonu).
+- [x] 3 notatki w `dokumentacja/wiedza/`, każde twierdzenie z odnośnikiem, data sprawdzenia; przegląd Archiego.
+- [x] README (mapa repo) wymienia nowe notatki.
+- [x] Z1 i Z3 skreślone; podsumowanie z tabelą zrobione / następnie / reszta.
 
 ## Kroki
 1. `podroze/04-reszta/plan.md`, Z1+Z3 do „W toku”, Stan, commit, push.
@@ -51,3 +51,4 @@ to jako uwagę, nie rozstrzyga.
 - Dziennik pokazuje podróż 04, wątki i pracowników.
 
 ## Podsumowanie
+Zakończona 2026-11-22. Zrobione: Z1 (T4 ✓ z telefonu, T5 ✓ zwiadowca 6,3 tys. na start, T6 ✓ statusline ma % limitu 5 h i tygodnia), Z3 (`wiedza/tokeny.md`, `telefon.md`, `claude-code.md`, po 11–12 odnośników). Po drodze: wyko mają internet (decyzja szefa). Nowe: Z5 (wznawianie wyko), Z6 (wagi zużycia). Koszt: wyko ≈ 0,7 mln ważonych tokenów.

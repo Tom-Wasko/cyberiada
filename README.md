@@ -60,7 +60,7 @@ skille/        podroz, hejo, papa, wznow, nowy-projekt (~/.claude/skills/<nazwa>
 agenci/        zwiadowca, recenzent (~/.claude/agents → tu)
 szablony/      projekt/ (nowy projekt), watek.md, plan-podrozy.md
 narzedzia/     archi.py + bin/archi.cmd, wyko.py, zuzycie.py, instaluj.py, cdp.py i zrzuty.py (zrzuty ekranu), dziennik/ (panel stanu)
-dokumentacja/  stan, zadania, decyzje i podróże samej cyberiady (jest też projektem); wiedza/: testy.md
+dokumentacja/  stan, zadania, decyzje i podróże samej cyberiady (jest też projektem); wiedza/: testy.md, tokeny.md, telefon.md, claude-code.md
                (co sprawdzono w praktyce) i notatki ze źródłami
 projekty.yaml  rejestr projektów i komputerów
 skrzynka.md    spostrzeżenia o szefie do przejrzenia (nie wczytywana na starcie)
