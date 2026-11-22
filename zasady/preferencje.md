@@ -12,6 +12,8 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 - Nie powtarzać pytań już rozstrzygniętych („przecież to jest już zrobione”).
 - Nie zadawać pytań sprawdzających, czy rozumie projekt.
 - Odpowiedzi czytać dokładnie: „1 oraz 3” to połączenie opcji, a dopiski często zmieniają zakres.
+- Lista poprawek od szefa to jedno zadanie Z<n>, nie numer na każdą poprawkę.
+- O każdym problemie (wyko się nie uruchamia, wisi na pytaniu, błąd narzędzia) informować od razu.
 
 ## Koszty
 - Oszczędność tokenów jest ważna. Nie lubi agentów, które „wsysają kupę tokenów na start”.

@@ -4,7 +4,6 @@ i odłożeniu). Zrobione trafiają do podsumowania podróży, nie tutaj. -->
 Następny numer: Z4
 
 ## W toku
-- Z2 · Migracja lukrum/ (podróż 02-migracja-lukrum).
 
 ## Zaplanowane
 - Z1 · Testy T4–T6 po T2 (skille z telefonu, narzut startu zwiadowcy, % limitu w statusline).
