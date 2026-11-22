@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Read", "Edit", "Write", "Glob", "Grep",
+      "Read", "Edit", "Write", "Glob", "Grep", "WebFetch", "WebSearch",
       "Bash(git status*)", "Bash(git diff*)", "Bash(git log*)", "Bash(git show*)",
       "Bash(git add*)", "Bash(git commit*)", "Bash(git rebase*)", "Bash(git switch*)",
       "Bash(git branch*)", "Bash(git stash*)", "Bash(git restore*)", "Bash(git mv*)", "Bash(git rm*)",
@@ -12,7 +12,6 @@
     "deny": [
       "Bash(git push*)", "Bash(git remote*)", "Bash(git reset --hard*)", "Bash(git clean*)",
       "Bash(gh *)", "Bash(curl *)", "Bash(wget *)", "Bash(rm -rf*)",
-      "WebFetch", "WebSearch",
       "Agent(Explore)", "Agent(Plan)", "Agent(general-purpose)"
     ]
   },

@@ -40,6 +40,8 @@
 
 - 2026-11-22 · Dziennik: sekcja „Pracownicy” (kto i gdzie, stan i ostatni krok, tokeny i model, zakończeni dziś zwinięci), odświeżana po każdym commicie; w kolumnach zadań widać 6 pierwszych, reszta po „Pokaż jeszcze”; pasek szybkiego przejścia na górze.
 - 2026-11-22 · Wyko: wątek będący kontynuacją (te same pliki) idzie do istniejącego wyko wiadomością; nowy wyko tylko na nowy obszar kodu.
+- 2026-11-22 · Wyko ma internet (WebFetch, WebSearch dozwolone w `narzedzia/wyko/ustawienia.json`); powód: notatki Z3 ze źródłami.
+
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
   repo bez zmian (każdy folder ma jedno zadanie).
