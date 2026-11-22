@@ -331,6 +331,7 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
     zakresy = [(h["numer"], h["start"], h["koniec"] or teraz.date().isoformat())
                for h in historia if h["start"]]
     role: dict[tuple[str, str], float] = defaultdict(float)
+    pierwszy = min((od for _, od, _ in zakresy), default=None)  # przed nim: praca sprzed cyberiady
     for w in wpisy(projekt, katalog):
         dzien = lokalny(w["czas"]).date().isoformat()
         v = wazone(w)
@@ -340,13 +341,14 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
             for k in POLA:
                 d[k] += w[k]
         m = re.match(rf"wyko-{re.escape(nazwa)}-(\d+)-", w["sesja"])
-        podroz = m.group(1) if m else next((n for n, od, do in zakresy if od <= dzien <= do), "poza")
+        podroz = m.group(1) if m else next((n for n, od, do in zakresy if od <= dzien <= do),
+                                                "przed" if pierwszy and dzien < pierwszy else "poza")
         role[(podroz, rola(w["sesja"], w["agent"], w.get("model") or ""))] += v
     for d in po_dniach.values():
         d["wazone"] = round(d["wazone"])
     return {"dni": [po_dniach[d] for d in dni],
             "role": [{"podroz": p, "rola": r, "wazone": round(v)}
-                     for (p, r), v in sorted(role.items(), key=lambda kv: (kv[0][0] == "poza", kv[0]))],
+                     for (p, r), v in sorted(role.items(), key=lambda kv: (kv[0][0] in ("poza", "przed"), kv[0]))],
             "okno5h": okno5h(teraz, katalog)}
 
 

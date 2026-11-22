@@ -143,6 +143,14 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .kolumny{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .punkty{margin:0;padding-left:18px;font-size:14px}
 .punkty li{padding:3px 0}
+.zadania{display:grid;gap:8px}
+.zadanie{background:var(--page);border:1px solid var(--border);border-radius:10px;padding:0 12px}
+.zadanie>summary{display:flex;gap:8px;align-items:baseline;min-height:40px;padding:9px 0;cursor:pointer;list-style:none;font-size:14px}
+.zadanie>summary::-webkit-details-marker{display:none}
+.zadanie .nr{font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.zadanie .tyt{min-width:0}
+.zadanie[open]>summary{border-bottom:1px solid var(--grid)}
+.zadanie .opis{font-size:14px;color:var(--ink2);padding:8px 0 12px;line-height:1.45}
 .decyzja{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
 .decyzja:first-of-type{border-top:0}
 .decyzja .kiedy{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
@@ -610,19 +618,25 @@ function renderPrzeglad(P){
   wyk.append(
     wykresDni("Tokeny dzień po dniu","Ostatnie 14 dni, tokeny ważone (odczyt z pamięci podręcznej liczy się taniej)",dni14,serieProjektow(P,p=>mapaDni(p.koszty.dni,"wazone")),fTok,false,"caly"),
     wykresDni("Commity dzień po dniu","Ostatnie 14 dni",dni14,serieProjektow(P,p=>mapaDni(p.commity,"liczba")),fCom,true),
-    wykresRole("Kto zużywa","Tokeny ważone według roli, cały okres",Object.assign(P.map(p=>{const v={};for(const r of p.koszty.role)v[r.rola||"?"]=(v[r.rola||"?"]||0)+r.wazone;return{etykieta:p.nazwa,wartosci:v};}),{etykietaKolumny:"Projekt"})));
+    wykresRole("Kto zużywa","Tokeny ważone według roli, cały okres",Object.assign(P.flatMap(p=>{const v={},przed={};for(const r of p.koszty.role){const c=r.podroz==="przed"?przed:v;c[r.rola||"?"]=(c[r.rola||"?"]||0)+r.wazone;}const w=[{etykieta:p.nazwa,wartosci:v}];if(Object.keys(przed).length)w.push({etykieta:p.nazwa+" przed cyberiadą",wartosci:przed});return w;}),{etykietaKolumny:"Projekt"})));
   sek.append(wyk);
 }
 let otwarte=null;
 function wczytajOtwarte(){try{const t=localStorage.getItem("dziennik.otwarte");if(t){const a=JSON.parse(t);if(Array.isArray(a))return new Set(a.map(String));}}catch(e){}return null;}
 function zapiszOtwarte(){try{localStorage.setItem("dziennik.otwarte",JSON.stringify([...otwarte]));}catch(e){}}
+function tytulZadania(opis){
+  let t=opis.replace(/`/g,"").split(/[:;(—]|\. /)[0].trim();
+  if(t.length>48){t=t.slice(0,48);const s=t.lastIndexOf(" ");t=(s>20?t.slice(0,s):t)+"…";}
+  return t||opis.slice(0,48);
+}
 function zadanie(t){
   const m=t.match(/^(Z\d+)\s*·\s*(.*)$/s);
-  const li=el("li",{class:"zadanie",title:"Kliknij, żeby rozwinąć"},el("div",{class:"tekst"},m?el("strong",{},m[1]+" "):null,m?m[2]:t));
-  li.addEventListener("click",()=>li.classList.toggle("otwarte"));
-  return li;
+  const nr=m?m[1]:"",opis=m?m[2]:t;
+  return el("details",{class:"zadanie"},
+    el("summary",{},nr?el("span",{class:"nr"},nr):null,el("span",{class:"tyt"},tytulZadania(opis))),
+    el("div",{class:"opis"},opis));
 }
-function listaZadan(tytul,lista){return el("div",{},el("h5",{},tytul+" ("+lista.length+")"),lista.length?el("ul",{class:"punkty"},lista.map(zadanie)):el("p",{class:"pusto"},"—"));}
+function listaZadan(tytul,lista){return el("div",{},el("h5",{},tytul+" ("+lista.length+")"),lista.length?el("div",{class:"zadania"},lista.map(zadanie)):el("p",{class:"pusto"},"—"));}
 function decyzje(tytul,lista){
   const pos=lista.slice().sort((a,b)=>b.data.localeCompare(a.data));
   const wiersz=d=>el("div",{class:"decyzja"},el("span",{class:"kiedy"},data(d.data)?fDzien.format(data(d.data)):(d.data||"—")),el("span",{},d.tresc));
@@ -660,7 +674,7 @@ function renderProjekty(P){
     }else cialo.append(el("div",{class:"blok"},el("p",{class:"pusto"},"Brak podróży w toku.")));
     const jedna=[{nazwa:p.nazwa,kolor:p.kolor}];
     const tokTab=tabelka(["Dzień","Ważone","Wejście","Wyjście","Cache odczyt","Cache zapis"],p.koszty.dni.slice().sort((a,b)=>b.dzien.localeCompare(a.dzien)).map(d=>[fDzien.format(data(d.dzien)),fTok(d.wazone),fTok(d.wejscie),fTok(d.wyjscie),fTok(d.cache_odczyt),fTok(d.cache_zapis)]));
-    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"?"]=(rolePodroz[k][r.rola||"?"]||0)+r.wazone;}
+    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz==="przed"?"Przed cyberiadą":(r.podroz&&r.podroz!=="poza")?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"?"]=(rolePodroz[k][r.rola||"?"]||0)+r.wazone;}
     const wieRole=Object.keys(rolePodroz).sort((a,b)=>b.localeCompare(a,"pl")).map(k=>({etykieta:k,wartosci:rolePodroz[k]}));
     wieRole.etykietaKolumny="Podróż";
     cialo.append(el("div",{class:"wykresy dwa"},

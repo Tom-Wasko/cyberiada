@@ -34,6 +34,7 @@
 - 2026-11-22 · Dziennik (Z4): kolor projektu (pasek i nagłówek karty, kafle, etykiety stanów), tło jasne; postęp na żywo
   po każdym commicie każdego wyko i Archiego (pilnuje hook); „Czeka na Ciebie” zwinięta, rozwija się sama tylko przy
   nowej sprawie; bez przycisków odpowiedzi, sama lista pytań; „Pomocnik” na stronie jako „pomo”; Fable osobno w zużyciu.
+- 2026-11-22 · Dziennik: stare pytania lukrum (P1–P24 z dawnego „Do decyzji”) usunięte; zużycie lukrum osobno przed i po cyberiadzie; zadania jako „Z<n> · krótki tytuł”, opis po kliknięciu, każde w osobnej karcie.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury

@@ -214,8 +214,8 @@ class TestKoszty(Pomoc):
     def test_role_i_podroze(self):
         role = {(r["podroz"], r["rola"]): r["wazone"] for r in self.koszty["role"]}
         self.assertEqual(role, {("02", "Archi"): 150, ("02", "agenci"): 50, ("02", "wyko"): 800,
-                                ("02", "pomo"): 340, ("poza", "pomo"): 75})
-        self.assertEqual(self.koszty["role"][-1]["podroz"], "poza")  # „poza” zawsze na końcu
+                                ("02", "pomo"): 340, ("przed", "pomo"): 75})
+        self.assertEqual(self.koszty["role"][-1]["podroz"], "przed")  # „przed” i „poza” zawsze na końcu
 
     def test_okno_5h(self):
         o = self.koszty["okno5h"]
