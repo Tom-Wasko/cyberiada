@@ -78,12 +78,15 @@ def nowy(plik: Path, model: str, pokaz: bool) -> int:
 
 
 def wznow(cel: str, model: str, pokaz: bool) -> int:
-    sesje = [a for a in agenci_w_tle() if cel in (a.get("name"), a.get("sessionId"), a.get("id"))]
+    sesje = [a for a in agenci_w_tle() if cel in (a.get("name"), a.get("sessionId"), a.get("id"))
+             or (len(cel) >= 8 and (a.get("sessionId") or "").startswith(cel))]
     if not sesje:
         raise SystemExit(f"Nie znaleziono sesji {cel} w `claude agents --json --all`.")
     s = sesje[0]
     sid = s.get("sessionId") or s.get("id")
-    polecenie = [claude_exe(), "--bg", "--resume", sid, *wspolne_flagi(model),
+    # Bez flag: sesja w tle ma zapisane własne opcje (model, uprawnienia, --settings). Z flagami albo skróconym
+    # id Claude Code startuje kopię pod nowym id (próba 22.11, Z5). Ustawienia z pliku czyta od nowa.
+    polecenie = [claude_exe(), "--bg", "--resume", sid,
                  "Wznowienie po przerwie. Sprawdź `git log` i raport w pliku wątku, dokończ brief."]
     return uruchom(polecenie, Path(s.get("cwd") or "."), pokaz)
 

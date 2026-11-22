@@ -34,8 +34,8 @@ Wyko tylko czyta i pisze te 3 pliki; nic nie zmienia w kodzie. Gdy źródło spr
 to jako uwagę, nie rozstrzyga.
 
 ## Kryteria sukcesu
-- [ ] Z6: wagi w `zuzycie.py` według cennika, testy OK.
-- [ ] Z5: `wyko.py --wznow` wznawia tę samą sesję (sprawdzone próbą).
+- [x] Z6: wagi w `zuzycie.py` według cennika, testy OK.
+- [x] Z5: `wyko.py --wznow` wznawia tę samą sesję (sprawdzone próbą).
 - [x] T4, T5, T6 w `testy.md` z wynikiem i dowodem (liczba tokenów / źródło / odpowiedź z telefonu).
 - [x] 3 notatki w `dokumentacja/wiedza/`, każde twierdzenie z odnośnikiem, data sprawdzenia; przegląd Archiego.
 - [x] README (mapa repo) wymienia nowe notatki.
