@@ -123,7 +123,7 @@ class TestParsery(unittest.TestCase):
     def test_rola(self):
         self.assertEqual(generuj.rola("archi-x", False), "Archi")
         self.assertEqual(generuj.rola("wyko-x-01-a", False), "wyko")
-        self.assertEqual(generuj.rola("rozmowa", False), "Pomocnik")
+        self.assertEqual(generuj.rola("rozmowa", False), "pomo")
         self.assertEqual(generuj.rola("archi-x", True), "agenci")
 
 
@@ -214,7 +214,7 @@ class TestKoszty(Pomoc):
     def test_role_i_podroze(self):
         role = {(r["podroz"], r["rola"]): r["wazone"] for r in self.koszty["role"]}
         self.assertEqual(role, {("02", "Archi"): 150, ("02", "agenci"): 50, ("02", "wyko"): 800,
-                                ("02", "Pomocnik"): 340, ("poza", "Pomocnik"): 75})
+                                ("02", "pomo"): 340, ("poza", "pomo"): 75})
         self.assertEqual(self.koszty["role"][-1]["podroz"], "poza")  # „poza” zawsze na końcu
 
     def test_okno_5h(self):
@@ -261,6 +261,142 @@ class TestBrakDanych(Pomoc):
         self.assertIsNone(d["podroz"])
         self.assertEqual(d["czeka"], [])
         self.assertEqual(d["zadania"]["w_toku"], [])
+
+
+PLAN_DODATKOWE = """# Podróż 03: wiecej
+Start: 2026-11-22 · tryb nadzorowany · scalanie do `main` · Zadania: Z2, Z10, Z1
+
+## Wątki
+| Wątek | Kto | Zakres | Pliki | Stan |
+|---|---|---|---|---|
+| `03/a` | wyko | Z2 | `x.js`, `y.js` | w toku |
+| `03/b` | wyko | Z1 | `z.js` | scalone 22.11 |
+| `03/c` | Archi | Z10 | link | gotowe |
+"""
+
+ZADANIA_PODPUNKTY = """# Zadania
+
+## W toku
+
+## Zaplanowane
+
+### Lekkie
+- Z1 · pierwsze
+  ciąg dalszy
+- Z10 · dziesiąte
+
+### Ważne
+- Z2 · drugie
+- Z3 · trzecie
+"""
+
+STAN_BEZ_GALEZI = """# Stan
+Archi żył: 2026-11-22 16:05
+
+## Podróż
+03-wiecej (start 2026-11-22)
+
+## Wątki
+| Wątek | Kto | Stan |
+|---|---|---|
+| 03/a | wyko-p-03-a | w toku |
+| 03/b | – | scalone 22.11 (testy) |
+| 03/c | Archi | gotowe |
+"""
+
+
+class TestTabeleIZadania(Pomoc):
+    def setUp(self) -> None:
+        super().setUp()
+        dok = self.projekt / "dokumentacja"
+        (dok / "podroze" / "03-wiecej").mkdir(parents=True)
+        (dok / "podroze" / "03-wiecej" / "plan.md").write_text(PLAN_DODATKOWE, encoding="utf-8")
+        (dok / "Stan.md").write_text(STAN_BEZ_GALEZI, encoding="utf-8")
+        (dok / "Zadania.md").write_text(ZADANIA_PODPUNKTY, encoding="utf-8")
+        self.dane = generuj.zbuduj(self.projekt, "p", teraz=TERAZ, katalog_sesji=self.sesje)
+
+    def test_dodatkowa_kolumna_tabeli(self):
+        a, b, c = self.dane["podroz"]["watki"]
+        self.assertEqual((a["nazwa"], a["kto"], a["stan"]), ("03/a", "wyko", "w toku"))
+        self.assertEqual(b["stan"], "scalone 22.11 (testy)")
+        self.assertEqual((c["kto"], c["stan"]), ("Archi", "gotowe"))
+
+    def test_galaz_domyslna(self):
+        self.assertEqual([w["galaz"] for w in self.dane["podroz"]["watki"]],
+                         ["worktree-podroz-03-a", "worktree-podroz-03-b", "worktree-podroz-03-c"])
+
+    def test_start_bez_gita_to_start_podrozy(self):
+        self.assertEqual(self.dane["podroz"]["watki"][0]["start"], "2026-11-22")
+        self.assertIsNone(self.dane["podroz"]["watki"][1]["scalono"])
+
+    def test_tryb_bez_dwukropka(self):
+        self.assertEqual(self.dane["podroz"]["tryb"], "nadzorowany")
+        self.assertEqual(generuj.czytaj_plan(self.projekt / "dokumentacja" / "podroze" / "03-wiecej")["zadania"],
+                         ["Z2", "Z10", "Z1"])
+
+    def test_podpunkty_nie_skleja_zadan(self):
+        z = self.dane["zadania"]
+        self.assertFalse(any("###" in t for t in z["w_toku"] + z["zaplanowane"] + z["odlozone"]))
+        self.assertIn("Z1 · pierwsze ciąg dalszy", z["w_toku"])
+
+    def test_zadania_podrozy_przechodza_do_w_toku(self):
+        z = self.dane["zadania"]
+        self.assertEqual(z["w_toku"], ["Z2 · drugie", "Z10 · dziesiąte", "Z1 · pierwsze ciąg dalszy"])
+        self.assertEqual(z["zaplanowane"], ["Z3 · trzecie"])  # Z10 nie bierze Z1 ani odwrotnie
+
+
+class TestGit(Pomoc):
+    def g(self, *a: str) -> None:
+        import subprocess
+        subprocess.run(["git", "-c", "user.name=T", "-c", "user.email=t@t", *a], cwd=self.projekt,
+                       check=True, capture_output=True)
+
+    def commit(self, plik: str, data: str) -> None:
+        import os
+        import subprocess
+        (self.projekt / plik).write_text(plik, encoding="utf-8")
+        self.g("add", plik)
+        env = {**os.environ, "GIT_COMMITTER_DATE": data, "GIT_AUTHOR_DATE": data}
+        subprocess.run(["git", "-c", "user.name=T", "-c", "user.email=t@t", "commit", "-m", plik],
+                       cwd=self.projekt, check=True, capture_output=True, env=env)
+
+    def test_start_i_scalenie_z_gita(self):
+        dok = self.projekt / "dokumentacja"
+        (dok / "podroze" / "03-wiecej").mkdir(parents=True)
+        (dok / "podroze" / "03-wiecej" / "plan.md").write_text(PLAN_DODATKOWE, encoding="utf-8")
+        (dok / "Stan.md").write_text(STAN_BEZ_GALEZI, encoding="utf-8")
+        self.g("init", "-b", "main")
+        self.commit("start.txt", "2026-11-22T08:00:00+00:00")
+        self.g("checkout", "-b", "worktree-podroz-03-a")
+        self.commit("a.txt", "2026-11-22T09:15:00+00:00")
+        self.g("checkout", "main")
+        self.g("checkout", "-b", "worktree-podroz-03-b")
+        self.commit("b.txt", "2026-11-22T10:00:00+00:00")
+        self.g("checkout", "main")
+        self.g("merge", "--ff-only", "worktree-podroz-03-b")
+        a, b, _ = generuj.zbuduj(self.projekt, "p", teraz=TERAZ, katalog_sesji=self.sesje)["podroz"]["watki"]
+        self.assertEqual(generuj.lokalny(a["start"]), generuj.lokalny("2026-11-22T09:15:00+00:00"))
+        self.assertIsNone(a["scalono"])
+        # b po ff nie ma commitów poza main i commita scalenia: start z podróży, scalono z ostatniego commita
+        self.assertEqual(b["start"], "2026-11-22")
+        self.assertEqual(generuj.lokalny(b["scalono"]), generuj.lokalny("2026-11-22T10:00:00+00:00"))
+
+
+class TestFable(Pomoc):
+    def test_rola_fable(self):
+        self.assertEqual(generuj.rola("archi-x", False, "claude-fable-5-2"), "Fable")
+        self.assertEqual(generuj.rola("archi-x", True, "claude-fable-5-2"), "Fable")
+        self.assertEqual(generuj.rola("rozmowa", False, "claude-sonnet-5-5"), "pomo")
+
+    def test_fable_w_kosztach(self):
+        self.dokumentacja()
+        cwd = str(self.projekt.resolve())
+        self.sesja("archi-probny", [linia("f1", "claude-fable-5-2", czas(0, 11), cwd, input_tokens=10),
+                                    linia("f2", "claude-opus-5-5", czas(0, 11, 5), cwd, input_tokens=10)],
+                   "u-f")
+        role = {r["rola"] for r in generuj.zbuduj(self.projekt, "probny", teraz=TERAZ,
+                                                  katalog_sesji=self.sesje)["koszty"]["role"]}
+        self.assertEqual(role, {"Fable", "Archi"})
 
 
 if __name__ == "__main__":
