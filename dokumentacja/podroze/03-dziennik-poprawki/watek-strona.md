@@ -64,3 +64,21 @@
 - **Zrzuty ekranu:** tak, 2–4 (komputer i telefon, sekcja zwinięta i rozwinięta) do `_robocze/03-strona/`, poza gitem.
 - **Dokumenty do poprawienia:** `watek-generator.md` (schemat: `postep`, rola Fable/pomo).
 - **Archi:** archi-cyberiada
+
+## Raport (wyko, 22.11)
+**Zrobione** (commity na `worktree-podroz-03-strona`): generator (tabele po nazwach kolumn, gałąź domyślna, start/scalenie z gita,
+`tryb` bez dwukropka, `Zadania:` → „W toku”, `###` kończy punkt, rola Fable i „pomo”), strona (kolor projektu, „Czeka na Ciebie”
+zwinięta + „nowe” z localStorage, bez formularza, Fable, postęp z kolekcji `postep`, „cisza” po 1 h, postęp Archiego przy projekcie),
+schemat w `watek-generator.md` (tabele, `zadania`, Fable/pomo, `postep`).
+
+**Dowody**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 26 tests in 5.255s` / `OK`
+- `grep -c Pomocnik narzedzia/dziennik/strona.html _robocze/03-strona/lukrum.json` → `0` i `0`
+  (w `cyberiada.json` jest 5 trafień, ale to treść Decyzje/Zadań, nie rola)
+- JSON lukrum: 4 wątki (02/sklepy w toku, 02/mapa i 02/drobne scalone z datą start/scalono, 02/makiety), `w_toku` = Z29, Z30, Z1, Z31, Z34, bez `###`, w `koszty.role` jest `Fable`.
+- Walidator palety (s1–s8): jasny `ALL CHECKS PASS` (WARN kontrastu s3/s4/s5 <3:1 — wymaga etykiet/tabeli, są), ciemny `ALL CHECKS PASS`, `all 8 >= 3:1`.
+- Podgląd `_robocze/03-strona/podglad.html` (fałszywe `window.claude.use("db")`); zrzuty tamże: `komputer-rozwiniete.png`,
+  `komputer-zwiniete.png`, `telefon-rozwiniete.png`, `telefon-zwiniete.png` (390 px przez iframe). Zrzut tylko w jasnym trybie; ciemny nie oglądany.
+
+**Propozycje:** hook `postep` (zapis po commicie) jeszcze nie istnieje — strona bez niego pokazuje tylko „cisza” dla wątków w toku;
+zrzut w ciemnym trybie do obejrzenia przez Archiego w przeglądarce.

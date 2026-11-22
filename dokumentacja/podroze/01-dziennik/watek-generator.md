@@ -42,10 +42,14 @@
     `tryb` = słowo po `tryb:`. Kryteria → `[{tekst, zrobione}]` (wiersze sklejone spacją; poza znacznikiem
     `- [ ]` nic nie usuwaj, także backticków).
   - **Wątki** `[{nazwa, kto, stan, galaz, start, scalono}]`: nazwa/kto/stan z `plan.md`, stan i gałąź nadpisane
-    z tabeli w `Stan.md` (dopasowanie po nazwie). `start` = data commitu, który dodał plik wątku
-    (`git log --diff-filter=A --format=%cI -- <plik>`, najstarszy), a gdy pliku nie ma → `Start` podróży.
-    `scalono` = data commitu scalającego, którego opis zawiera nazwę gałęzi
-    (`git log --merges --format=%cI --grep=<galaz>` na bieżącej gałęzi, najnowszy), inaczej `null`.
+    z tabeli w `Stan.md` (dopasowanie po nazwie). Tabele czytane po **nazwach kolumn** z nagłówka (Wątek, Kto,
+    Plik, Gałąź, Stan; brak kolumny → null). Gałąź domyślna `worktree-podroz-NN-<nazwa po ukośniku>`.
+    `start` (z godziną) = pierwszy commit gałęzi (`git log main..<gałąź> --reverse`), inaczej data dodania pliku
+    wątku (`--diff-filter=A`), inaczej `Start` podróży. `scalono` = commit scalenia (merge z nazwą gałęzi albo
+    commit „Scalenie <nazwa>”), a gdy go brak i stan zaczyna się od „scalone” → ostatni commit gałęzi, inaczej `null`.
+  - **Plan podróży:** `tryb` z `tryb:` albo `tryb ` (bez dwukropka); `zadania` = numery `Zn` z linii `Zadania:`
+    nagłówka. Takie zadania trafiają w `zadania.w_toku` i znikają z `zaplanowane`. Punkty listy w `Zadania.md`
+    kończą się na nagłówku `#` (np. `### Ważne` nie dokleja się do poprzedniego zadania).
     Daty jako `RRRR-MM-DD` albo pełne ISO, ale jednolicie w całym pliku: używaj ISO z gita bez zmian,
     a dat z dokumentów (`RRRR-MM-DD`) też bez zmian. Strona rozumie oba.
   - **Decyzje.md:** sekcje `## Szefa` i `## Archiego`, wpisy `- RRRR-MM-DD · treść` (z wierszami kontynuacji)
@@ -61,7 +65,8 @@
     zaokrąglone do całości).
   - **koszty.role:** `[{podroz, rola, wazone}]` dla całej historii projektu. Rola z nazwy sesji:
     `archi-*` → `Archi`, `wyko-*` → `wyko`, pliki `subagents/*.jsonl` → `agenci` (niezależnie od nazwy
-    sesji-rodzica), reszta (też bez nazwy) → `Pomocnik`. Podróż: z nazwy wyko `wyko-<projekt>-NN-...` → `"NN"`;
+    sesji-rodzica), reszta (też bez nazwy) → `pomo`. Wpisy z modelem zawierającym `fable` (też agenci)
+    mają osobną rolę `Fable`, sprawdzaną przed pozostałymi. Podróż: z nazwy wyko `wyko-<projekt>-NN-...` → `"NN"`;
     w pozostałych przypadkach według czasu wpisu: podróż, w której zakresie `Start`..`Koniec` (lub do dziś,
     gdy brak końca) leży data; poza wszystkimi → `"poza"`.
   - **koszty.okno5h** (szacunek limitu, liczony ze **wszystkich** projektów na tym komputerze, bo limit jest
@@ -116,7 +121,7 @@
 - **Gotowe, gdy:**
   - Testy na danych sztucznych (folder tymczasowy z `Stan.md`, `plan.md`, `Decyzje.md`, `Zadania.md`,
     sztuczne `.jsonl` z wpisami `assistant`+`usage`, w tym `subagents/`): parsowanie pytań z opcjami
-    i bez, rekomendacja, kontynuacje, kryteria, decyzje, zadania, role (Archi/wyko/agenci/Pomocnik
+    i bez, rekomendacja, kontynuacje, kryteria, decyzje, zadania, role (Archi/wyko/agenci/pomo/Fable
     i przypisanie podróży), okno 5 h (nowe okno po przerwie, zaokrąglenie do godziny), dni z zerami,
     brak plików → puste pola. Logi w testach podawaj przez parametr (np. katalog sesji), nie z prawdziwego
     `~/.claude`.
@@ -147,7 +152,7 @@
 **Decyzje, które podjąłem:**
 - Okno 5 h: start od pełnej godziny pierwszego wpisu, liczone ze wszystkich projektów; po wygaśnięciu `od/reset = null`, `wazone = 0`.
 - Dzień kosztów liczony w strefie lokalnej (logi mają UTC); zawsze 30 dni, z zerami.
-- Rola z tytułu sesji: `archi-*` → Archi, `wyko-*` → wyko, inne → Pomocnik; podagenci → „agenci”.
+- Rola z tytułu sesji: `archi-*` → Archi, `wyko-*` → wyko, inne → pomo; model Fable → Fable; podagenci → „agenci”.
 - Domyślny zapis JSON do `_robocze/dziennik/` obok `generuj.py` (UTF-8, LF, `indent=1`).
 - Brak plików lub puste → puste pola, bez wyjątku.
 
@@ -163,3 +168,10 @@
 - Gałąź wątku „strona” w Stan.md warto poprawić na faktyczną.
 
 **Commity:** e59ca04 (zuzycie: wpisy/wazone), eea3e75 (generuj.py), e26fd41 (testy + fixture).
+
+## Uzupełnienie schematu (podróż 03): postęp na żywo
+Poza JSON-em projektu strona czyta osobną kolekcję bazy `postep` (osobny `onSnapshot`; brak kolekcji = brak postępu).
+Dokument: `doc_id` = nazwa sesji (np. `wyko-lukrum-02-sklepy`), pola
+`{projekt, watek ("02/sklepy" albo null dla Archiego), rola ("wyko"|"Archi"), krok (temat ostatniego commita),
+commity (liczba commitów gałęzi od startu), galaz, czas (ISO)}`. Zapisuje go hook po commicie (robi Archi),
+nie generator. Wątek w toku bez postępu dłużej niż 1 h jest oznaczany „cisza”.
