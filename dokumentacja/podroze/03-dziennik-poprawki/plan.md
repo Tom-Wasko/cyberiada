@@ -25,8 +25,8 @@ Odpowiedzi szefa (do `Decyzje.md`, sekcja szefa):
 ## Wątki
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
-| 03/strona | wyko | watek-strona.md | w toku |
-| 03/zywo | Archi | (bez pliku) | w toku |
+| 03/strona | wyko | watek-strona.md | scalone 22.11 |
+| 03/zywo | Archi | (bez pliku) | gotowe; czeka próba w nowej sesji wyko |
 
 Pliki: 03/strona: `narzedzia/dziennik/generuj.py`, `strona.html`, `testy/`; 03/zywo: `narzedzia/dziennik/hook_commit.py` (nowy), `narzedzia/wyko.py`, `narzedzia/archi.py`, `role/`, `skille/podroz`, README dziennika.
 
@@ -57,13 +57,13 @@ Pliki: 03/strona: `narzedzia/dziennik/generuj.py`, `strona.html`, `testy/`; 03/z
    zapisuje, postęp wyko z jego commitów zapisuje Archi przy swoim odświeżeniu; mówię szefowi od razu.
 
 ## Kryteria sukcesu
-- [ ] Wykres „Wątki” lukrum pokazuje 4 wątki ze stanem, gałęzią i słupkami (zrzut lub odczyt strony).
-- [ ] Z29, Z30, Z1, Z31, Z34 lukrum w „W toku”; brak `###` w treści zadań (JSON).
-- [ ] W „Kto zużywa” osobna rola Fable; brak „Pomocnik” na stronie (grep).
-- [ ] „Czeka na Ciebie” zwinięta, bez przycisków; nowa sprawa ją rozwija (próba na kopii danych).
-- [ ] Kolory projektu; walidator palety PASS (jasny i ciemny).
+- [x] Wykres „Wątki” lukrum pokazuje 4 wątki ze stanem, gałęzią i słupkami (zrzut lub odczyt strony).
+- [x] Z29, Z30, Z1, Z31, Z34 lukrum w „W toku”; brak `###` w treści zadań (JSON).
+- [x] W „Kto zużywa” osobna rola Fable; brak „Pomocnik” na stronie (grep).
+- [x] „Czeka na Ciebie” zwinięta, bez przycisków; nowa sprawa ją rozwija (próba na kopii danych).
+- [x] Kolory projektu; walidator palety PASS (jasny i ciemny).
 - [ ] Commit w sesji wyko/Archi daje wpis w `postep` widoczny na stronie bez ręcznego odświeżania.
-- [ ] Testy: `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` — ostatnie linie.
+- [x] Testy: `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` — ostatnie linie.
 
 ## Kroki
 1. Plan podróży 03 w `dokumentacja/podroze/03-dziennik-poprawki/`, Z4 w Zadaniach (W toku), Decyzje, Stan, commit.
