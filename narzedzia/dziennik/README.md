@@ -20,8 +20,8 @@ kolekcja `postep`, doc_id = nazwa sesji, pola `projekt, watek, rola, krok, commi
 generuje i zapisuje dokument projektu. Strona słucha obu kolekcji, więc zmiany widać bez odświeżania.
 
 ## Pytania do szefa
-Sekcja „Czeka na szefa” w `Stan.md`; strona pokazuje je w „Czeka na Ciebie” z przyciskiem Kopiuj
-(kopiuje np. `cyberiada P1: A`, szef wkleja to w czat Archiego):
+Sekcja „Czeka na szefa” w `Stan.md`; strona pokazuje je w „Czeka na Ciebie” jako listę (zwiniętą; rozwija się sama przy nowych sprawach).
+Szef odpowiada w czacie Archiego, np. `cyberiada P1: A`. Format:
 ```
 - P1: Treść pytania?
   - A: opcja (rekomendowane)

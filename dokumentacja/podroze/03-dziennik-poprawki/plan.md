@@ -75,3 +75,4 @@ Pliki: 03/strona: `narzedzia/dziennik/generuj.py`, `strona.html`, `testy/`; 03/z
    przy nowej logice nie będą się rozwijać same.
 
 ## Podsumowanie
+Zakończona 2026-11-22. Zrobione: Z4 (cała lista szefa: dane na żywo przez hook po commicie, zwijana „Czeka na Ciebie”, „pomo”, Fable osobno, zadania podróży w „W toku” i odhaczanie kryteriów, wykres „Wątki”, bez formularza, kolory projektów; potem: stare pytania lukrum usunięte, zużycie lukrum przed i po cyberiadzie, zadania jako karty z tytułem). Odłożone: nic. Koszt (22.11, cyberiada): ok. 15 mln tokenów ważonych (Archi 13,7 mln, wyko 1,3 mln, próba 3 tys.).
