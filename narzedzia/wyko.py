@@ -67,7 +67,7 @@ def nowy(plik: Path, model: str, pokaz: bool) -> int:
     archi = m_archi.group(1) if m_archi else f"archi-{projekt}"
     prompt = (f"Jesteś wyko. Twój plik wątku: {wzgl} (w Twoim worktree, ścieżka względna). "
               f"Przeczytaj brief na górze pliku i wykonaj go według swojej roli. "
-              f"Archi to sesja {archi}.")
+              f"Archi to sesja {archi}. Już jesteś w swoim worktree: nie wołaj EnterWorktree i nie rób cd poza niego.")
     polecenie = [claude_exe(), "--bg", "--name", nazwa, *wspolne_flagi(model),
                  "-w", f"podroz-{nn}-{watek}", prompt]
     return uruchom(polecenie, korzen, pokaz)
