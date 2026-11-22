@@ -341,7 +341,7 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
             for k in POLA:
                 d[k] += w[k]
         m = re.match(rf"wyko-{re.escape(nazwa)}-(\d+)-", w["sesja"])
-        podroz = m.group(1) if m else next((n for n, od, do in zakresy if od <= dzien <= do),
+        podroz = m.group(1) if m else next((n for n, od, do in reversed(zakresy) if od <= dzien <= do),
                                                 "przed" if pierwszy and dzien < pierwszy else "poza")
         role[(podroz, rola(w["sesja"], w["agent"], w.get("model") or ""))] += v
     for d in po_dniach.values():
