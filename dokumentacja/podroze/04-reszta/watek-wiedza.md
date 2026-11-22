@@ -27,3 +27,9 @@
 - **Archi:** archi-cyberiada
 
 ## Raport
+**Zrobione:** `dokumentacja/wiedza/tokeny.md`, `telefon.md`, `claude-code.md` (źródła: code.claude.com/docs, platform.claude.com, support.claude.com; czytane przez podagenta web-fetch).
+**Dowód:** `grep -c "https://" dokumentacja/wiedza/*.md` → claude-code.md:12, telefon.md:11, tokeny.md:11 (testy.md:1, nie moje).
+**Sprzeczności z testy.md (T1–T18):** brak.
+**Wagi w `zuzycie.py` (do poprawy, nie ruszałem kodu):** Fable 2,0 → 4,0 (8 vs 2 za wejście); zapis cache 2,0 to cena 1 h, domyślne 5 min = 1,25; odczyt 0,1 → 0,05 dla Opus/Sonnet 5.5 i 0,025 dla Fable; Haiku 5.5 powyżej 100 tys. promptu 5× drożej. Wyjście 5×, Opus 2,0, Haiku 0,05: zgodne.
+**Niepewne / nie znaleziono:** liczby limitów planu (brak na stronach); push: osobnej strony brak (404), opis w remote-control; `--bg` z telefonu: brak potwierdzenia; `db`/ArtifactData: brak w publicznej dokumentacji (jest tylko „Store data in an artifact”); `attribution` w settings nieprzeczytane (strona 460 tys. znaków); część stron (hooks, skills, permission-modes, model-config, remote-control) przeczytana fragmentami.
+**Propozycja:** sprawdzić w logach, czy Claude Code zapisuje cache na 5 min czy 1 h, zanim poprawisz wagę zapisu.
