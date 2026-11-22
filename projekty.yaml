@@ -11,3 +11,8 @@ projekty:
     sciezka: cyberiada
     repo: Tom-Wasko/cyberiada
     gospodarz: TOMEK-PC
+  lukrum:
+    opis: Gra edukacyjna na lekcje WOS
+    sciezka: Pulpit/lukrum
+    repo: Tom-Wasko/Lukrum
+    gospodarz: TOMEK-PC

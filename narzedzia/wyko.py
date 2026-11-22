@@ -63,9 +63,11 @@ def nowy(plik: Path, model: str, pokaz: bool) -> int:
     if any(a.get("name") == nazwa and a.get("status") not in ("stopped", "done")
            for a in agenci_w_tle()):
         raise SystemExit(f"Sesja {nazwa} już działa (claude agents).")
+    m_archi = re.search(r"\*\*Archi:\*\*\s*`?(archi-[a-z0-9-]+)", plik.read_text(encoding="utf-8"))
+    archi = m_archi.group(1) if m_archi else f"archi-{projekt}"
     prompt = (f"Jesteś wyko. Twój plik wątku: {wzgl} (w Twoim worktree, ścieżka względna). "
               f"Przeczytaj brief na górze pliku i wykonaj go według swojej roli. "
-              f"Archi to sesja archi-{projekt}.")
+              f"Archi to sesja {archi}.")
     polecenie = [claude_exe(), "--bg", "--name", nazwa, *wspolne_flagi(model),
                  "-w", f"podroz-{nn}-{watek}", prompt]
     return uruchom(polecenie, korzen, pokaz)
