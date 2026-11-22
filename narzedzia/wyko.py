@@ -24,7 +24,7 @@ USTAWIENIA = CYBERIADA / "narzedzia" / "wyko" / "ustawienia.json"
 
 
 def wspolne_flagi(model: str) -> list[str]:
-    return ["--model", model, "--effort", "medium", "--autocompact", "100k", "--no-chrome",
+    return ["--model", model, "--effort", "medium", "--autocompact", "200k", "--no-chrome",
             "--permission-mode", "auto", "--settings", str(USTAWIENIA),
             "--append-system-prompt-file", str(ROLA)]
 

@@ -30,6 +30,7 @@
   foldery pamięci do archiwum.
 - 2026-11-22 · Wiadomość dla majstra o nowym układzie pisze Archi (w dokumentacji), wysyła szef.
 - 2026-11-22 · Lista poprawek od szefa: jedno zadanie Z<n> może obejmować wiele poprawek.
+- 2026-11-22 · Próg kompaktowania: Archi 250k, wyko 200k (było 120k/100k; za częste i długie kompaktowanie).
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury

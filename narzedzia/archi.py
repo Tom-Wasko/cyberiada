@@ -41,7 +41,7 @@ def main(argv: list[str]) -> int:
     istnieje = sesja_o_nazwie(katalog, sesja)
     polecenie = [claude_exe()]
     polecenie += ["--resume", istnieje] if istnieje else ["--name", sesja]
-    polecenie += ["--model", "opus", "--effort", "medium", "--rc", "--autocompact", "120k",
+    polecenie += ["--model", "opus", "--effort", "medium", "--rc", "--autocompact", "250k",
                   "--append-system-prompt-file", str(ROLA)]
     if reszta:
         tryb = reszta[0].lstrip("/")
