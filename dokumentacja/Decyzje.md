@@ -31,6 +31,9 @@
 - 2026-11-22 · Wiadomość dla majstra o nowym układzie pisze Archi (w dokumentacji), wysyła szef.
 - 2026-11-22 · Lista poprawek od szefa: jedno zadanie Z<n> może obejmować wiele poprawek.
 - 2026-11-22 · Próg kompaktowania: Archi 250k, wyko 200k (było 120k/100k; za częste i długie kompaktowanie).
+- 2026-11-22 · Dziennik (Z4): kolor projektu (pasek i nagłówek karty, kafle, etykiety stanów), tło jasne; postęp na żywo
+  po każdym commicie każdego wyko i Archiego (pilnuje hook); „Czeka na Ciebie” zwinięta, rozwija się sama tylko przy
+  nowej sprawie; bez przycisków odpowiedzi, sama lista pytań; „Pomocnik” na stronie jako „pomo”; Fable osobno w zużyciu.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
@@ -45,3 +48,4 @@
   z `podroze/01-dziennik/watek-generator.md`; pytania w „Czeka na szefa” w formacie `P1:` + opcje `A:`.
 - 2026-11-21 · Testy narzędzi na `unittest` z biblioteki standardowej (pytest nie jest zainstalowany).
 - 2026-11-21 · Dziennik to zwykła strona z bazą `db` (zamiast typu Dashboard): własny układ kart, pytań i 5 wykresów.
+- 2026-11-22 · Hook zapisu postępu tylko w sesjach wyko i Archi (`--settings` w `wyko.py`/`archi.py`), bez zmian w globalnym `settings.json`.

@@ -4,7 +4,13 @@ Archi żył: 2026-11-22 13:10
 Wznowione 12:40 po restarcie (thrashing: sesja miała --autocompact 120k, teraz 250k).
 
 ## Podróż
-Brak podróży w toku. Ostatnia: 02-migracja-lukrum (zakończona 2026-11-22).
+03-dziennik-poprawki (Z4), tryb nadzorowany, start 2026-11-22. Plan: `dokumentacja/podroze/03-dziennik-poprawki/plan.md`.
+
+## Wątki
+| Wątek | Kto | Gałąź | Stan |
+|---|---|---|---|
+| 03/strona | wyko | worktree-podroz-03-strona | w toku |
+| 03/zywo | Archi | main | w toku |
 
 ## Czeka na szefa
 - Wiadomość dla majstra do wysłania: wpis 22.11 w `lukrum/dokumentacja/wiedza/wspolpraca.md`. `archi lukrum` gotowy do startu.
