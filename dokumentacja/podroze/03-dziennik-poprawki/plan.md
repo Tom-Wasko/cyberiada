@@ -26,7 +26,7 @@ Odpowiedzi szefa (do `Decyzje.md`, sekcja szefa):
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
 | 03/strona | wyko | watek-strona.md | scalone 22.11 |
-| 03/zywo | Archi | (bez pliku) | gotowe; czeka próba w nowej sesji wyko |
+| 03/zywo | Archi | (bez pliku) | gotowe; próba T18 ✓ |
 
 Pliki: 03/strona: `narzedzia/dziennik/generuj.py`, `strona.html`, `testy/`; 03/zywo: `narzedzia/dziennik/hook_commit.py` (nowy), `narzedzia/wyko.py`, `narzedzia/archi.py`, `role/`, `skille/podroz`, README dziennika.
 
@@ -62,7 +62,7 @@ Pliki: 03/strona: `narzedzia/dziennik/generuj.py`, `strona.html`, `testy/`; 03/z
 - [x] W „Kto zużywa” osobna rola Fable; brak „Pomocnik” na stronie (grep).
 - [x] „Czeka na Ciebie” zwinięta, bez przycisków; nowa sprawa ją rozwija (próba na kopii danych).
 - [x] Kolory projektu; walidator palety PASS (jasny i ciemny).
-- [ ] Commit w sesji wyko/Archi daje wpis w `postep` widoczny na stronie bez ręcznego odświeżania.
+- [x] Commit w sesji wyko/Archi daje wpis w `postep` widoczny na stronie bez ręcznego odświeżania.
 - [x] Testy: `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` — ostatnie linie.
 
 ## Kroki

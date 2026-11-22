@@ -11,7 +11,7 @@ Wznowione 12:40 po restarcie (thrashing: sesja miała --autocompact 120k, teraz 
 | Wątek | Kto | Gałąź | Stan |
 |---|---|---|---|
 | 03/strona | wyko | worktree-podroz-03-strona | scalone 22.11 |
-| 03/zywo | Archi | main | gotowe; próba hooka w nowej sesji |
+| 03/zywo | Archi | main | gotowe; próba T18 ✓ |
 
 ## Czeka na szefa
 - Wiadomość dla majstra do wysłania: wpis 22.11 w `lukrum/dokumentacja/wiedza/wspolpraca.md`. `archi lukrum` gotowy do startu.

@@ -15,6 +15,7 @@ Przy aktualizacji Claude Code powtórz testy oznaczone ⟳.
 | T14 ⟳ Wyko bez próśb o zgodę (`--permission-mode auto` + `narzedzia/wyko/ustawienia.json`) | ✓ (próba krótka, nie 1 h) | 2 commity bez pytań; `git push` odrzucony (polecenie złożone odrzucane w całości). Bez ustawienia `attribution` wyko dopisał `Co-Authored-By: Claude`: instalator ustawia `"attribution": false`. |
 | T16 `--bg` + `-w <nazwa>` | ✓ | Worktree `.claude/worktrees/<nazwa>`, gałąź `worktree-<nazwa>`, zablokowany. `claude stop <id>` + `claude rm <id>` usuwa sesję, worktree i gałąź (najpierw scalić!). Status po skończonej turze: `idle`. |
 | T17 `~/.claude/rules` jako junction do `cyberiada/zasady` | ✓ | Nowa sesja w każdym folderze wczytuje `baza.md` i `preferencje.md` bez `@import` (bez pytania o zewnętrzne pliki). |
+| T18 Hook PostToolUse przez `--settings` w sesji `--bg` (22.11) | ✓ | Sesja próbna (Haiku, `-w`, `narzedzia/wyko/ustawienia.json`): po `git commit` hook `dziennik/hook_commit.py` dał instrukcję, ArtifactData dostępne po ToolSearch, auto mode go nie zablokował, zapis `postep/<sesja>` wersja 1. |
 
 ### Narzut startu (pomiar z logów)
 - Sesja `-p`, Haiku, folder bez CLAUDE.md: 27,5k tokenów kontekstu na start.
