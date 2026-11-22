@@ -20,6 +20,16 @@
 - 2026-11-21 · Układ dziennika: jedna lista kart projektów (rozwijane), na górze „Czeka na Ciebie (N)”;
   przy pytaniach przycisk „kopiuj odpowiedź” (np. `cyberiada P1: A`).
 
+- 2026-11-22 · Podróż 02 = migracja lukrum. `Pulpit/lukrum` to repo Tom-Wasko/Lukrum: w korzeniu README, CLAUDE.md,
+  `dokumentacja/`, cały kod gry w `gra/` (jak w cyberiadzie).
+- 2026-11-22 · Notatki lukrum w całości do `dokumentacja/` (Postęp → Zadania, Do decyzji → pytania w Stan, Funkcje →
+  `funkcje/`, dziennik lidera, serie i rejestr → historia); repo Lukrum-notatki: ostatni commit z odnośnikiem i archiwizacja.
+- 2026-11-22 · Warsztat lukrum do `archiwum/warsztat` (lokalnie), `.claude/agents` i import `@warsztat/ZESPOL.md` usunięte;
+  stary panel zespołu zostaje, nieodświeżany.
+- 2026-11-22 · Auto-pamięć lukrum: zasady codzienne do CLAUDE.md projektu, reszta do Decyzji; potem `--bez-pamieci`,
+  foldery pamięci do archiwum.
+- 2026-11-22 · Wiadomość dla majstra o nowym układzie pisze Archi (w dokumentacji), wysyła szef.
+
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
   repo bez zmian (każdy folder ma jedno zadanie).
