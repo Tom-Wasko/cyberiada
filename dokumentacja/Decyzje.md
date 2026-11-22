@@ -38,6 +38,7 @@
 - 2026-11-22 · Przy zamykaniu podróży tabela: zrobione / następnie / reszta do zrobienia (też w preferencjach).
 - 2026-11-22 · Dziennik, Zadania: kolumny „W toku”, „Następnie”, „Zaplanowane”; karty przeciągane myszką między kolumnami.
 
+- 2026-11-22 · Dziennik: sekcja „Pracownicy” (kto i gdzie, stan i ostatni krok, tokeny i model, zakończeni dziś zwinięci), odświeżana po każdym commicie; w kolumnach zadań widać 6 pierwszych, reszta po „Pokaż jeszcze”; pasek szybkiego przejścia na górze.
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
   repo bez zmian (każdy folder ma jedno zadanie).
@@ -53,3 +54,4 @@
 - 2026-11-21 · Dziennik to zwykła strona z bazą `db` (zamiast typu Dashboard): własny układ kart, pytań i 5 wykresów.
 - 2026-11-22 · Hook zapisu postępu tylko w sesjach wyko i Archi (`--settings` w `wyko.py`/`archi.py`), bez zmian w globalnym `settings.json`.
 - 2026-11-22 · Przesunięcia zadań w dzienniku idą do bazy (`uklad/<projekt>`, zapis tylko właściciel); strona pokazuje je od razu, Archi przenosi je do `Zadania.md` (`przenies.py`, wskazówka z hooka) i kasuje dokument.
+- 2026-11-22 · Lista pracowników: `dziennik/pracownicy.py` (claude agents + logi + git) liczy ją hook po commicie, sesja tylko wysyła plik do `pracownicy/lista`.

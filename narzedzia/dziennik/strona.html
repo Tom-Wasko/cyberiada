@@ -188,6 +188,23 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 #dymek .dw .n{color:var(--ink2);flex:1}
 #dymek .dw .v{margin-left:12px}
 #dymek .dr{color:var(--ink2)}
+#skok{position:sticky;top:0;z-index:20;max-width:1080px;margin:8px auto 0;padding:8px 0;display:flex;gap:6px;overflow-x:auto;
+  background:var(--page);border-bottom:1px solid var(--border);scrollbar-width:none}
+#skok::-webkit-scrollbar{display:none}
+#skok a{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--hover);
+  color:var(--ink);text-decoration:none;font-size:14px;min-height:32px;box-sizing:border-box}
+#skok a:hover{background:var(--border)}
+section,.karta{scroll-margin-top:64px}
+.prac{display:grid;gap:8px}
+.pr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--pk,var(--border))}
+.pr .kto{font-weight:600;overflow-wrap:anywhere}
+.pr .gdzie,.pr .ost{color:var(--ink2);font-size:13px;overflow-wrap:anywhere}
+.pr .ost{grid-column:1/-1}
+.pr .tok{text-align:right;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.pr.koniec{opacity:.6}
+.stan-pr{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--hover);margin-left:6px}
+.stan-pr.pracuje{color:var(--ok-text)}
+.wiecej{margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;min-height:32px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
@@ -195,9 +212,11 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
   <h1>Dziennik</h1>
   <p id="odswiezono">Stan wszystkich projektów</p>
 </header>
+<nav id="skok" aria-label="Przejdź do" hidden></nav>
 <main>
   <div id="stan-komunikat" class="komunikat">Ładuję dane…</div>
   <section id="czeka" hidden></section>
+  <section id="pracownicy" hidden></section>
   <section id="przeglad" hidden></section>
   <section id="projekty" hidden></section>
 </main>
@@ -650,9 +669,14 @@ function ukladZadan(p){
   KOLUMNY.forEach(([x])=>(p.zadania[x]||[]).forEach(t=>{const m=t.match(/^(Z\d+)(?!\d)/),c=m&&ruchy[m[1]];k[c&&k[c]?c:x].push(t);}));
   return k;
 }
+const ROZWINIETE=new Set(),NA_START=6;
 function kolumnaZadan(p,klucz,tytul,lista){
+  const id=p.klucz+"/"+klucz,caly=ROZWINIETE.has(id)||lista.length<=NA_START+1;
+  const widoczne=caly?lista:lista.slice(0,NA_START);
+  const przycisk=lista.length>NA_START+1?el("button",{class:"wiecej",type:"button",onclick:()=>{ROZWINIETE.has(id)?ROZWINIETE.delete(id):ROZWINIETE.add(id);render(ostatnieP);}},
+    caly?"Zwiń":"Pokaż jeszcze "+(lista.length-NA_START)):null;
   return el("div",{class:"kol-zad","data-kol":klucz,"data-proj":p.klucz},tytul?el("h5",{},tytul+" ("+lista.length+")"):null,
-    lista.length?el("div",{class:"zadania"},lista.map(zadanie)):el("p",{class:"pusto"},"Upuść tu zadanie"));
+    lista.length?el("div",{class:"zadania"},widoczne.map(zadanie)):el("p",{class:"pusto"},"Upuść tu zadanie"),przycisk);
 }
 function tablicaZadan(p){
   const k=ukladZadan(p);
@@ -744,7 +768,7 @@ function renderProjekty(P){
       el("div",{},el("strong",{},h.numer+" "+h.temat)," ",el("span",{class:"kiedy"},(h.start?fDzien.format(h.start):"?")+" – "+(h.koniec?fDzien.format(h.koniec):"w toku"))),
       h.podsumowanie?el("div",{class:"meta",style:"margin:2px 0 0"},h.podsumowanie):null))):el("p",{class:"pusto"},"Brak podróży.")));
     if(/^[\w.-]+\/[\w.-]+$/.test(p.repo))cialo.append(el("p",{class:"meta"},"Repozytorium: ",el("a",{href:"https://github.com/"+p.repo,target:"_blank",rel:"noopener noreferrer"},p.repo)));
-    const karta=el("details",{class:"karta",open:otwarte.has(p.nazwa)},summary,cialo);karta.style.setProperty("--pk",p.kolor);
+    const karta=el("details",{class:"karta",id:"p-"+p.klucz,open:otwarte.has(p.nazwa)},summary,cialo);karta.style.setProperty("--pk",p.kolor);
     karta.addEventListener("toggle",()=>{if(karta.open)otwarte.add(p.nazwa);else otwarte.delete(p.nazwa);zapiszOtwarte();if(karta.open)poRenderze();});
     sek.append(karta);
   }
@@ -757,16 +781,51 @@ function naglowek(P){
   const z=ostatnieDoc(P);
   $("odswiezono").textContent=z?"Ostatnie dane: "+fPelna.format(z.wygenerowano)+" ("+temu(z.wygenerowano)+") · "+P.length+" "+odm(P.length,"projekt","projekty","projektów"):"Stan wszystkich projektów";
 }
+let PRACOWNICY=null;
+const ROLA_PR={Archi:"Archi",wyko:"wyko",pomo:"pomo"};
+function normPrac(d){d=obj(d);return{wygenerowano:data(d.wygenerowano),lista:tab(d.lista).map(x=>{x=obj(x);return{
+  nazwa:tekst(x.nazwa),rola:tekst(x.rola),projekt:tekst(x.projekt),watek:tekst(x.watek),stan:tekst(x.stan),w_tle:!!x.w_tle,
+  ostatnio:data(x.ostatnio),krok:tekst(x.krok),krok_czas:data(x.krok_czas),tokeny:Number(x.tokeny)||0,model:tekst(x.model)};}).filter(x=>x.nazwa)};}
+function wierszPrac(x,P){
+  const pr=P.find(p=>p.klucz===x.projekt);
+  const w=el("div",{class:"pr"+(x.stan==="zakończony"?" koniec":"")},
+    el("div",{},el("span",{class:"kto"},x.nazwa),el("span",{class:"stan-pr "+(x.stan==="pracuje"?"pracuje":"")},x.stan)),
+    el("div",{class:"tok"},fKompakt.format(x.tokeny)+" tok."+(x.model?" · "+x.model:"")),
+    el("div",{class:"gdzie"},[ROLA_PR[x.rola]||x.rola,x.projekt,x.watek?"wątek "+x.watek:null,x.w_tle?"w tle":"czat"].filter(Boolean).join(" · ")),
+    el("div",{class:"tok"},x.ostatnio?el("span",{class:"temu","data-czas":x.ostatnio.toISOString()},temu(x.ostatnio)):null),
+    x.krok?el("div",{class:"ost"},"ostatnio: "+x.krok):null);
+  if(pr)w.style.setProperty("--pk",pr.kolor);
+  return w;
+}
+function renderPracownicy(P){
+  const sek=$("pracownicy");
+  if(!PRACOWNICY){sek.hidden=true;return;}
+  const akt=PRACOWNICY.lista.filter(x=>x.stan!=="zakończony"),kon=PRACOWNICY.lista.filter(x=>x.stan==="zakończony");
+  sek.replaceChildren(el("h2",{},"Pracownicy ",el("span",{class:"chip"},String(akt.length))),
+    akt.length?el("div",{class:"prac"},akt.map(x=>wierszPrac(x,P))):el("p",{class:"pusto"},"Nikt teraz nie pracuje."),
+    kon.length?el("details",{class:"odlozone"},el("summary",{},"Zakończeni dziś ("+kon.length+")"),el("div",{class:"prac"},kon.map(x=>wierszPrac(x,P)))):null,
+    PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):null);
+  sek.hidden=false;
+}
+function renderSkok(P){
+  const link=(cel,tekst,przed)=>el("a",{href:"#"+cel,onclick:e=>{e.preventDefault();const c=$(cel);if(!c)return;if(c.tagName==="DETAILS")c.open=true;c.scrollIntoView({behavior:"smooth",block:"start"});}},przed||null,tekst);
+  const czeka=P.reduce((a,p)=>a+p.czeka.length,0);
+  $("skok").replaceChildren(...[
+    czeka?link("czeka","Czeka ("+czeka+")"):null,
+    PRACOWNICY?link("pracownicy","Pracownicy"):null,
+    link("przeglad","Przegląd"),
+    ...P.map(p=>link("p-"+p.klucz,p.nazwa,kropka(p.kolor)))].filter(Boolean));
+}
 function render(P){
   if(ciagnie){ostatnieP=P;return;}
   ukryjDymek();rysunki.clear();
   P.sort((a,b)=>a.nazwa.localeCompare(b.nazwa,"pl"));
   P.forEach((p,i)=>{p.kolor=kolorProjektu(i,P.length);});
   ostatnieP=P;
-  const sekcje=["czeka","przeglad","projekty"].map($);
+  const sekcje=["czeka","pracownicy","przeglad","projekty"].map($);$("skok").hidden=!P.length;
   if(!P.length){sekcje.forEach(x=>{x.hidden=true;x.replaceChildren();});naglowek(P);komunikat("Na razie brak danych. Archi zapisze tu swój projekt przy następnym odświeżeniu dziennika.");return;}
   komunikat("");naglowek(P);
-  renderCzeka(P);renderPrzeglad(P);renderProjekty(P);
+  renderCzeka(P);renderPracownicy(P);renderPrzeglad(P);renderProjekty(P);renderSkok(P);
   sekcje.forEach(x=>{x.hidden=false;});
   poRenderze();
 }
@@ -784,6 +843,13 @@ async function start(){
   let db=null;try{db=await window.claude.use("db");}catch(e){db=null;}
   if(!db){komunikat(BRAK);return;}
   DB=db;
+  try{
+    db.collection("pracownicy").onSnapshot(snap=>{
+      const d=tab(snap&&snap.docs).find(x=>x.id==="lista");
+      try{PRACOWNICY=d?normPrac(d.data()):null;}catch(e){PRACOWNICY=null;}
+      if(ostatnieP.length)render(ostatnieP);
+    },()=>{});
+  }catch(e){}
   try{
     db.collection("uklad").onSnapshot(snap=>{
       const u={};

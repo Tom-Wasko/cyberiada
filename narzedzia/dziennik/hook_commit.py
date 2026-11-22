@@ -15,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wspolne import CYBERIADA, projekt_dla, rejestr, tytul_sesji  # noqa: E402
 
 DOMYSLNY_URL = "https://claude.ai/artifact/5c5LeHX3ohn5qRanw6XyoT"
@@ -62,6 +63,15 @@ def instrukcja(wejscie: dict) -> str | None:
         tekst += (f" Potem odśwież dokument projektu: `python -X utf8 {CYBERIADA.as_posix()}/narzedzia/dziennik/"
                   f"generuj.py --projekt {projekt}` i ArtifactData set, collection projekty, doc_id {projekt}, "
                   f"file_path {CYBERIADA.as_posix()}/_robocze/dziennik/{projekt}.json, z if_version jak wyżej.")
+    try:  # lista pracowników do dziennika (plik gotowy, sesja tylko go wysyła)
+        from pracownicy import zbuduj as pracownicy
+        plik = CYBERIADA / "_robocze" / "dziennik" / "pracownicy.json"
+        plik.parent.mkdir(parents=True, exist_ok=True)
+        plik.write_text(json.dumps(pracownicy(), ensure_ascii=False), encoding="utf-8")
+        tekst += (f" Na koniec lista pracowników: ArtifactData set, collection pracownicy, doc_id lista, "
+                  f"file_path {plik.as_posix()}, if_version jak wyżej (osobno dla tego dokumentu).")
+    except Exception:  # noqa: BLE001
+        pass
     return tekst + " Nie komentuj tego w odpowiedzi."
 
 
