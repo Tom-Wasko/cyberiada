@@ -35,6 +35,8 @@
   po każdym commicie każdego wyko i Archiego (pilnuje hook); „Czeka na Ciebie” zwinięta, rozwija się sama tylko przy
   nowej sprawie; bez przycisków odpowiedzi, sama lista pytań; „Pomocnik” na stronie jako „pomo”; Fable osobno w zużyciu.
 - 2026-11-22 · Dziennik: stare pytania lukrum (P1–P24 z dawnego „Do decyzji”) usunięte; zużycie lukrum osobno przed i po cyberiadzie; zadania jako „Z<n> · krótki tytuł”, opis po kliknięciu, każde w osobnej karcie.
+- 2026-11-22 · Przy zamykaniu podróży tabela: zrobione / następnie / reszta do zrobienia (też w preferencjach).
+- 2026-11-22 · Dziennik, Zadania: kolumny „W toku”, „Następnie”, „Zaplanowane”; karty przeciągane myszką między kolumnami.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
@@ -50,3 +52,4 @@
 - 2026-11-21 · Testy narzędzi na `unittest` z biblioteki standardowej (pytest nie jest zainstalowany).
 - 2026-11-21 · Dziennik to zwykła strona z bazą `db` (zamiast typu Dashboard): własny układ kart, pytań i 5 wykresów.
 - 2026-11-22 · Hook zapisu postępu tylko w sesjach wyko i Archi (`--settings` w `wyko.py`/`archi.py`), bez zmian w globalnym `settings.json`.
+- 2026-11-22 · Przesunięcia zadań w dzienniku idą do bazy (`uklad/<projekt>`, zapis tylko właściciel); strona pokazuje je od razu, Archi przenosi je do `Zadania.md` (`przenies.py`, wskazówka z hooka) i kasuje dokument.

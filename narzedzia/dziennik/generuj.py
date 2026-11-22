@@ -6,7 +6,7 @@
 
 Skąd dane (każdy plik może nie istnieć: wtedy puste pola):
   dokumentacja/Stan.md       puls, bieżąca podróż, tabela wątków, „Czeka na szefa”
-  dokumentacja/Zadania.md    zadania (w toku, zaplanowane, odłożone)
+  dokumentacja/Zadania.md    zadania (w toku, następnie, zaplanowane, odłożone)
   dokumentacja/Decyzje.md    decyzje szefa i Archiego
   dokumentacja/podroze/NN-temat/plan.md   podróże: kryteria, wątki, historia
   ~/.claude/projects         zużycie tokenów (przez zuzycie.py): dni, role, okno 5 h
@@ -192,11 +192,14 @@ def czytaj_zadania(projekt: Path, w_podrozy: list[str] | None = None) -> dict:
     """Zadania z Zadania.md; te z `w_podrozy` (numery z linii `Zadania:` planu) przechodzą do „w toku”."""
     _, sek = sekcje(czytaj(projekt / "dokumentacja" / "Zadania.md"))
     wynik = {k: [sklej(p) for p in punkty(sekcja(sek, n))]
-             for k, n in (("w_toku", "W toku"), ("zaplanowane", "Zaplanowane"), ("odlozone", "Odłożone"))}
+             for k, n in (("w_toku", "W toku"), ("nastepnie", "Następnie"), ("zaplanowane", "Zaplanowane"),
+                         ("odlozone", "Odłożone"))}
     for numer in w_podrozy or []:
         wzor = re.compile(rf"{re.escape(numer)}\b")
-        for z in [z for z in wynik["zaplanowane"] if wzor.match(z)]:
-            wynik["zaplanowane"].remove(z)
+        for z in [z for k in ("nastepnie", "zaplanowane") for z in wynik[k] if wzor.match(z)]:
+            for k in ("nastepnie", "zaplanowane"):
+                if z in wynik[k]:
+                    wynik[k].remove(z)
             if z not in wynik["w_toku"]:
                 wynik["w_toku"].append(z)
     return wynik

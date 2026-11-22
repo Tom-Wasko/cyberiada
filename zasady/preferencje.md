@@ -29,6 +29,9 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 - Commity tylko z autorem Tom-Wasko, bez dopisków o AI (projekty idą do szkoły i kuratorium).
 - Archi może pushować bez pytania (bez `--force`). Nowe repo i usuwanie zdalnych gałęzi: pytać.
 
+## Podróże
+- Przy zamykaniu podróży tabela dla szefa: co zrobione, co w następnej kolejności, co jeszcze zostało do zrobienia.
+
 ## Pamięć
 - To, co szef każe zapamiętać, trafia do plików cyberiady (preferencje, skrzynka, dokumentacja projektu),
   nie do auto-pamięci.

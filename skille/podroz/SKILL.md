@@ -32,7 +32,8 @@ Polecenie: `/podroz $ARGUMENTS`. Wykonuje Archi w folderze projektu. Szablony: `
 5. Sprzątanie: sesje wyko (`claude agents --json`, `claude stop`, `claude rm`), `git worktree list` i scalone
    gałęzie, `_robocze/`.
 6. `Stan.md`: „Brak podróży w toku”. Commit, push, dziennik.
-7. Daj szefowi gotowe polecenie: `/compact Zakończona podróż NN-temat. Zachowaj: …` (stan, otwarte pytania).
+7. Szefowi w czacie tabela: zrobione (`Z<n>`) · następnie · reszta do zrobienia (z `Zadania.md`).
+8. Daj szefowi gotowe polecenie: `/compact Zakończona podróż NN-temat. Zachowaj: …` (stan, otwarte pytania).
 
 ## Porzucenie (`/podroz porzuc`)
 1. W trybie nadzorowanym potwierdź okienkiem (z powodem). Zatrzymaj sesje wyko; gałęzie zostają.

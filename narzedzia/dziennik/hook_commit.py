@@ -55,6 +55,10 @@ def instrukcja(wejscie: dict) -> str | None:
              f"if_version: wersja z Twojego poprzedniego zapisu tego dokumentu (pierwszy raz bez; gdy zapis "
              f"odmówi z powodu wersji, ponów z wersją podaną w odmowie). Nie czytaj dokumentu.")
     if rola == "Archi":
+        tekst += (f" Potem ruchy zadań z dziennika: ArtifactData get, collection uklad, doc_id {projekt}; jeśli jest i ma "
+                  f"`ruchy` ({{\"Z9\": \"nastepnie\", ...}}), uruchom `python -X utf8 {CYBERIADA.as_posix()}/narzedzia/dziennik/"
+                  f"przenies.py --projekt {projekt} Z9=nastepnie ...`, zacommituj `Zadania.md` i po zapisie projektu "
+                  f"usuń dokument (ArtifactData delete, collection uklad, doc_id {projekt}).")
         tekst += (f" Potem odśwież dokument projektu: `python -X utf8 {CYBERIADA.as_posix()}/narzedzia/dziennik/"
                   f"generuj.py --projekt {projekt}` i ArtifactData set, collection projekty, doc_id {projekt}, "
                   f"file_path {CYBERIADA.as_posix()}/_robocze/dziennik/{projekt}.json, z if_version jak wyżej.")

@@ -150,6 +150,16 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .zadanie .nr{font-weight:700;font-variant-numeric:tabular-nums;flex:none}
 .zadanie .tyt{min-width:0}
 .zadanie[open]>summary{border-bottom:1px solid var(--grid)}
+.tablica{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.kol-zad{border-radius:12px;padding:8px;background:var(--surface);border:1px dashed transparent;transition:background .15s,border-color .15s}
+.kol-zad.nad{border-color:var(--ink2);background:var(--hover)}
+.kol-zad h5{margin:2px 4px 8px}
+.odlozone{margin-top:12px}
+.odlozone>summary{cursor:pointer;font-weight:600;font-size:14px;padding:6px 0}
+.zadanie>summary{cursor:grab;user-select:none;-webkit-user-select:none}
+.zadanie .uchwyt{flex:none;color:var(--muted);touch-action:none;padding:0 2px;cursor:grab}
+.zadanie.ciagniety{opacity:.35}
+.zadanie.duch{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:rotate(1.5deg)}
 .zadanie .opis{font-size:14px;color:var(--ink2);padding:8px 0 12px;line-height:1.45}
 .decyzja{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
 .decyzja:first-of-type{border-top:0}
@@ -168,9 +178,6 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .wl .ost{grid-column:1/-1;color:var(--ink2);font-size:13px;overflow-wrap:anywhere}
 .stany{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .chip.postep-archi{display:block;white-space:normal;overflow-wrap:anywhere;border-radius:12px}
-.zadanie{list-style:none;margin-left:-18px}
-.zadanie .tekst{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
-.zadanie.otwarte .tekst{display:block}
 .historia{margin:0;padding:0}
 .historia .kiedy{color:var(--muted);font-size:13px}
 /* dymek */
@@ -269,7 +276,7 @@ function norm(id,d){
   const dl=x=>tab(x).map(z=>{z=obj(z);return{data:tekst(z.data),tresc:tekst(z.tresc)};}).filter(z=>z.tresc);
   const ls=x=>tab(x).map(tekst).filter(Boolean);
   return{
-    nazwa:tekst(d.nazwa)||id,opis:tekst(d.opis),repo:tekst(d.repo),
+    klucz:id,nazwa:tekst(d.nazwa)||id,opis:tekst(d.opis),repo:tekst(d.repo),
     wygenerowano:data(d.wygenerowano),puls:data(d.puls),
     podroz:p?{numer:tekst(p.numer),temat:tekst(p.temat),start:data(p.start),tryb:tekst(p.tryb),
       kryteria:tab(p.kryteria).map(z=>{z=obj(z);return{tekst:tekst(z.tekst),zrobione:z.zrobione===true};}).filter(z=>z.tekst),
@@ -277,7 +284,7 @@ function norm(id,d){
     czeka:tab(d.czeka).map(c=>{c=obj(c);return{id:tekst(c.id),tresc:tekst(c.tresc),
       opcje:tab(c.opcje).map(z=>{z=obj(z);return{litera:tekst(z.litera),tekst:tekst(z.tekst),rekomendowana:z.rekomendowana===true};}).filter(z=>z.litera||z.tekst)};}).filter(c=>c.tresc),
     decyzje:{szefa:dl(dec.szefa),archiego:dl(dec.archiego)},
-    zadania:{w_toku:ls(zad.w_toku),zaplanowane:ls(zad.zaplanowane),odlozone:ls(zad.odlozone)},
+    zadania:{w_toku:ls(zad.w_toku),nastepnie:ls(zad.nastepnie),zaplanowane:ls(zad.zaplanowane),odlozone:ls(zad.odlozone)},
     historia:tab(d.historia).map(h=>{h=obj(h);return{numer:tekst(h.numer),temat:tekst(h.temat),start:data(h.start),koniec:data(h.koniec),podsumowanie:tekst(h.podsumowanie)};}),
     koszty:{
       dni:tab(k.dni).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),wazone:liczba(z.wazone),wejscie:liczba(z.wejscie),wyjscie:liczba(z.wyjscie),cache_odczyt:liczba(z.cache_odczyt),cache_zapis:liczba(z.cache_zapis)};}).filter(z=>DZIEN_RE.test(z.dzien)),
@@ -632,11 +639,60 @@ function tytulZadania(opis){
 function zadanie(t){
   const m=t.match(/^(Z\d+)\s*·\s*(.*)$/s);
   const nr=m?m[1]:"",opis=m?m[2]:t;
-  return el("details",{class:"zadanie"},
-    el("summary",{},nr?el("span",{class:"nr"},nr):null,el("span",{class:"tyt"},tytulZadania(opis))),
+  return el("details",nr?{class:"zadanie","data-nr":nr}:{class:"zadanie"},
+    el("summary",{},nr?el("span",{class:"uchwyt","aria-hidden":"true"},"⠿"):null,nr?el("span",{class:"nr"},nr):null,el("span",{class:"tyt"},tytulZadania(opis))),
     el("div",{class:"opis"},opis));
 }
-function listaZadan(tytul,lista){return el("div",{},el("h5",{},tytul+" ("+lista.length+")"),lista.length?el("div",{class:"zadania"},lista.map(zadanie)):el("p",{class:"pusto"},"—"));}
+const KOLUMNY=[["w_toku","W toku"],["nastepnie","Następnie"],["zaplanowane","Zaplanowane"],["odlozone","Odłożone"]];
+let UKLAD={},DB=null,ciagnie=false;
+function ukladZadan(p){
+  const ruchy=UKLAD[p.klucz]||{},k={};KOLUMNY.forEach(([x])=>k[x]=[]);
+  KOLUMNY.forEach(([x])=>(p.zadania[x]||[]).forEach(t=>{const m=t.match(/^(Z\d+)(?!\d)/),c=m&&ruchy[m[1]];k[c&&k[c]?c:x].push(t);}));
+  return k;
+}
+function kolumnaZadan(p,klucz,tytul,lista){
+  return el("div",{class:"kol-zad","data-kol":klucz,"data-proj":p.klucz},tytul?el("h5",{},tytul+" ("+lista.length+")"):null,
+    lista.length?el("div",{class:"zadania"},lista.map(zadanie)):el("p",{class:"pusto"},"Upuść tu zadanie"));
+}
+function tablicaZadan(p){
+  const k=ukladZadan(p);
+  return el("div",{},el("div",{class:"tablica"},KOLUMNY.slice(0,3).map(([x,n])=>kolumnaZadan(p,x,n,k[x]))),
+    el("details",{class:"odlozone"},el("summary",{},"Odłożone ("+k.odlozone.length+")"),kolumnaZadan(p,"odlozone","",k.odlozone)));
+}
+async function przesunZadanie(proj,nr,kol){
+  const r=Object.assign({},UKLAD[proj]||{});r[nr]=kol;UKLAD[proj]=r;render(ostatnieP);
+  if(!DB)return;
+  try{await DB.doc("uklad/"+proj).set({ruchy:r,czas:new Date().toISOString()});}
+  catch(e){komunikat("Nie zapisano przesunięcia "+nr+" ("+tekst((e&&e.code)||"błąd")+"). Odśwież stronę.");}
+}
+document.addEventListener("pointerdown",e=>{
+  if(e.button!==0)return;
+  const karta=e.target.closest(".zadanie[data-nr]"),zrodlo=karta&&karta.closest("[data-kol]");
+  if(!zrodlo||(e.pointerType!=="mouse"&&!e.target.closest(".uchwyt")))return;
+  const x0=e.clientX,y0=e.clientY;let duch=null,cel=null;
+  const ruch=ev=>{
+    if(!duch){
+      if(Math.hypot(ev.clientX-x0,ev.clientY-y0)<6)return;
+      ciagnie=true;duch=karta.cloneNode(true);duch.open=false;duch.classList.add("duch");duch.style.width=karta.offsetWidth+"px";
+      document.body.append(duch);karta.classList.add("ciagniety");
+    }
+    ev.preventDefault();
+    duch.style.left=(ev.clientX+10)+"px";duch.style.top=(ev.clientY+10)+"px";
+    const pod=document.elementFromPoint(ev.clientX,ev.clientY),k=pod&&pod.closest("[data-kol]");
+    const ok=k&&k.dataset.proj===zrodlo.dataset.proj?k:null;
+    if(cel!==ok){if(cel)cel.classList.remove("nad");cel=ok;if(cel)cel.classList.add("nad");}
+  };
+  const koniec=ev=>{
+    document.removeEventListener("pointermove",ruch);document.removeEventListener("pointerup",koniec);document.removeEventListener("pointercancel",koniec);
+    if(!duch)return;
+    duch.remove();karta.classList.remove("ciagniety");if(cel)cel.classList.remove("nad");ciagnie=false;
+    const stop=c=>{c.preventDefault();c.stopPropagation();};
+    document.addEventListener("click",stop,true);setTimeout(()=>document.removeEventListener("click",stop,true),0);
+    if(ev.type==="pointerup"&&cel&&cel!==zrodlo)przesunZadanie(cel.dataset.proj,karta.dataset.nr,cel.dataset.kol);
+    else render(ostatnieP);
+  };
+  document.addEventListener("pointermove",ruch,{passive:false});document.addEventListener("pointerup",koniec);document.addEventListener("pointercancel",koniec);
+});
 function decyzje(tytul,lista){
   const pos=lista.slice().sort((a,b)=>b.data.localeCompare(a.data));
   const wiersz=d=>el("div",{class:"decyzja"},el("span",{class:"kiedy"},data(d.data)?fDzien.format(data(d.data)):(d.data||"—")),el("span",{},d.tresc));
@@ -682,7 +738,7 @@ function renderProjekty(P){
       wykresDni("Commity dzień po dniu","Ostatnie 14 dni",dni14,[{nazwa:p.nazwa,kolor:p.kolor,wartosci:mapaDni(p.commity,"liczba")}],fCom,true),
       wykresRole("Kto zużywa","Tokeny ważone według roli, na podróż",wieRole)));
     cialo.append(el("div",{class:"blok"},el("h4",{},"Decyzje"),el("div",{class:"kolumny"},decyzje("Szefa",p.decyzje.szefa),decyzje("Archiego",p.decyzje.archiego))));
-    cialo.append(el("div",{class:"blok"},el("h4",{},"Zadania"),el("div",{class:"kolumny"},listaZadan("W toku",p.zadania.w_toku),listaZadan("Zaplanowane",p.zadania.zaplanowane),listaZadan("Odłożone",p.zadania.odlozone))));
+    cialo.append(el("div",{class:"blok"},el("h4",{},"Zadania"),tablicaZadan(p)));
     const hist=p.historia.slice().sort((a,b)=>b.numer.localeCompare(a.numer));
     cialo.append(el("div",{class:"blok"},el("h4",{},"Historia podróży"),hist.length?el("ul",{class:"historia"},hist.map(h=>el("li",{},
       el("div",{},el("strong",{},h.numer+" "+h.temat)," ",el("span",{class:"kiedy"},(h.start?fDzien.format(h.start):"?")+" – "+(h.koniec?fDzien.format(h.koniec):"w toku"))),
@@ -702,6 +758,7 @@ function naglowek(P){
   $("odswiezono").textContent=z?"Ostatnie dane: "+fPelna.format(z.wygenerowano)+" ("+temu(z.wygenerowano)+") · "+P.length+" "+odm(P.length,"projekt","projekty","projektów"):"Stan wszystkich projektów";
 }
 function render(P){
+  if(ciagnie){ostatnieP=P;return;}
   ukryjDymek();rysunki.clear();
   P.sort((a,b)=>a.nazwa.localeCompare(b.nazwa,"pl"));
   P.forEach((p,i)=>{p.kolor=kolorProjektu(i,P.length);});
@@ -726,6 +783,14 @@ async function start(){
   if(typeof window.claude==="undefined"||!window.claude||typeof window.claude.use!=="function"){komunikat(BRAK);return;}
   let db=null;try{db=await window.claude.use("db");}catch(e){db=null;}
   if(!db){komunikat(BRAK);return;}
+  DB=db;
+  try{
+    db.collection("uklad").onSnapshot(snap=>{
+      const u={};
+      tab(snap&&snap.docs).forEach(d=>{try{const r=obj(obj(d.data()).ruchy),c={};for(const[n,k]of Object.entries(r))if(/^Z\d+$/.test(n)&&KOLUMNY.some(([y])=>y===k))c[n]=k;u[tekst(d.id)]=c;}catch(e){}});
+      UKLAD=u;if(ostatnieP.length)render(ostatnieP);
+    },()=>{});
+  }catch(e){}
   let dostal=false;
   const zegar=setTimeout(()=>{if(!dostal)komunikat("Dane nie przyszły w 10 sekund. Sprawdź połączenie i otwórz stronę jeszcze raz.");},10000);
   try{

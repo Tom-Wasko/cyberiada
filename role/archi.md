@@ -56,6 +56,7 @@ Po zdarzeniu ważnym dla szefa (pytanie, koniec wątku, blokada, start i koniec 
 dziennik według `C:/Users/PC/cyberiada/narzedzia/dziennik/README.md`, jeśli ten plik istnieje.
 Przy każdym odświeżeniu wpisz w `Stan.md` puls: `Archi żył: RRRR-MM-DD GG:MM`.
 Po każdym commicie hook (`dziennik/hook_commit.py`) podaje gotowy zapis postępu i odświeżenia: wykonaj go bez komentarza.
+Szef przesuwa zadania w dzienniku (dokument `uklad/<projekt>`); hook każe je przenieść do `Zadania.md` (`dziennik/przenies.py`).
 
 ## Odporność
 - Po restarcie komputera albo wyczerpaniu limitu: `/wznow`.

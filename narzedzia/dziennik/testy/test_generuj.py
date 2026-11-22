@@ -176,7 +176,7 @@ class TestDokumenty(Pomoc):
             {"data": "2026-11-19", "tresc": "Bez animacji, nawet małych."}])
         self.assertEqual(self.dane["decyzje"]["archiego"],
                          [{"data": "2026-11-18", "tresc": "Dane w JSON."}])
-        self.assertEqual(self.dane["zadania"], {"w_toku": ["Podróż 02-wyglad."],
+        self.assertEqual(self.dane["zadania"], {"w_toku": ["Podróż 02-wyglad."], "nastepnie": [],
                                                 "zaplanowane": ["Testy na telefonie.", "Druga rzecz."],
                                                 "odlozone": []})
 
@@ -244,7 +244,7 @@ class TestBrakDanych(Pomoc):
         self.assertIsNone(d["podroz"])
         self.assertEqual(d["czeka"], [])
         self.assertEqual(d["decyzje"], {"szefa": [], "archiego": []})
-        self.assertEqual(d["zadania"], {"w_toku": [], "zaplanowane": [], "odlozone": []})
+        self.assertEqual(d["zadania"], {"w_toku": [], "nastepnie": [], "zaplanowane": [], "odlozone": []})
         self.assertEqual(d["historia"], [])
         self.assertEqual(len(d["koszty"]["dni"]), 30)
         self.assertTrue(all(x["wazone"] == 0 for x in d["koszty"]["dni"]))
