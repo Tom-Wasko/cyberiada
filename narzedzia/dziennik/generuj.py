@@ -74,7 +74,8 @@ def punkty(wiersze: list[str]) -> list[list[str]]:
     wynik: list[list[str]] = []
     otwarty = False
     for w in wiersze:
-        if w.startswith("#"):  # nagłówek (np. `### Ważne`) kończy punkt
+        if w.startswith("#") or (w.strip() and not w[0].isspace() and not w.startswith("- ")):
+            # nagłówek (np. `### Ważne`) albo zwykły wiersz bez wcięcia (np. „Gra:”) kończy punkt
             otwarty = False
         elif w.startswith("- "):
             wynik.append([w[2:].strip()])
@@ -280,7 +281,8 @@ def zbuduj_watek(projekt: Path, katalog: Path, numer: str, nazwa: str, kto: str 
     sc = scalenie(projekt, galaz, nazwa)
     scalono = sc[0] if sc else None
     start = (start_galezi(projekt, galaz) or (sc[1] if sc else None)
-             or (data_dodania(projekt, plik_wateku) if plik_wateku.exists() else None))
+             or (data_dodania(projekt, plik_wateku) if plik_wateku.exists() else None)
+             or data_dodania(projekt, katalog / "plan.md"))
     if not scalono and (stan or "").lower().startswith("scalone"):
         scalono = koniec_galezi(projekt, galaz)
     return {"nazwa": nazwa, "kto": kto, "stan": stan, "galaz": galaz,
