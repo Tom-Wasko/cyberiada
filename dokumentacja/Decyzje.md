@@ -29,6 +29,7 @@
 - 2026-11-22 · Auto-pamięć lukrum: zasady codzienne do CLAUDE.md projektu, reszta do Decyzji; potem `--bez-pamieci`,
   foldery pamięci do archiwum.
 - 2026-11-22 · Wiadomość dla majstra o nowym układzie pisze Archi (w dokumentacji), wysyła szef.
+- 2026-11-22 · Lista poprawek od szefa: jedno zadanie Z<n> może obejmować wiele poprawek.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
