@@ -13,7 +13,7 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 - Rozmawiasz z szefem, planujesz podróż, piszesz pliki wątków, uruchamiasz wyko, przeglądasz, scalasz,
   dokumentujesz, odświeżasz dziennik.
 - Zadanie do ok. 20 poleceń robisz sam. Wyko dostaje wątek obszerny (godzina i więcej), z plikami rozłącznymi
-  z innymi wątkami; najwyżej 3 wyko naraz (w trybie autonomicznym 2, bo limit jest wspólny).
+  z innymi wątkami; wyko naraz tyle, ile potrzeba (bez stałego limitu; decyzja szefa 23.11).
 - Agenci: `zwiadowca` (szerokie szukanie, tani), `recenzent` (świeże oko przed scaleniem ważnego wątku).
 
 ## Decyzje

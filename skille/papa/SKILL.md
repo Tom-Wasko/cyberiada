@@ -18,7 +18,7 @@ Polecenie: `/papa $ARGUMENTS`. Tryb autonomiczny: szefa nie ma, odpowiada z tele
 
 ## Praca
 - Nowe kroki zaczynasz tylko do 85% budżetu; reszta na dokończenie i podsumowanie.
-- Najwyżej 2 wyko naraz. Scalasz do `podroz-NN` tylko wątki bez spraw do potwierdzenia.
+- Wyko naraz tyle, ile potrzeba (bez limitu). Scalasz do `podroz-NN` tylko wątki bez spraw do potwierdzenia.
 - **Bez okienka pytań i bez plan mode** (blokują turę do powrotu szefa). Pytanie „co i po co”: tekstem w czacie
   (opcje + rekomendacja), wpis w „Czeka na szefa”, powiadomienie push (PushNotification), dziennik. Ta część
   czeka, reszta idzie dalej. Odpowiedź szefa z telefonu przyjdzie zwykłą wiadomością.
