@@ -456,6 +456,20 @@ def commity(projekt: Path, teraz: datetime) -> list[dict]:
     return [{"dzien": d, "liczba": licznik.get(d, 0)} for d in ostatnie_dni(teraz)]
 
 
+def ostatnia_podroz(historia: list[dict], biezaca: str | None) -> dict | None:
+    """Ostatnia zakończona podróż (nie bieżąca): {nazwa, od, do} albo None."""
+    for h in reversed(historia):
+        if h["numer"] == biezaca or not h["koniec"]:
+            continue
+        od = h.get("od") or h["start"]
+        do = h.get("do") or h["koniec"]
+        # data końca z planu bywa późniejsza niż ostatni commit: wtedy liczy się data z planu
+        if od and do and do[:10] < h["koniec"]:
+            do = h["koniec"]
+        return {"nazwa": f"Podróż {h['numer']}", "od": od, "do": do}
+    return None
+
+
 def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None = None,
            teraz: datetime | None = None, katalog_sesji: Path | None = None) -> dict:
     teraz = (teraz or datetime.now()).astimezone()
@@ -479,7 +493,8 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
             "podroz": zbuduj_podroz(stan, projekt, plan_biezacy, {x["nazwa"] for x in logi}, nazwa), "czeka": stan["czeka"],
             "decyzje": czytaj_decyzje(projekt), "zadania": czytaj_zadania(projekt),
-            "historia": historia, "koszty": koszty(projekt, nazwa, historia, teraz, katalog_sesji),
+            "historia": historia, "ostatnia_podroz": ostatnia_podroz(historia, (stan["podroz"] or (None,))[0]),
+            "koszty": koszty(projekt, nazwa, historia, teraz, katalog_sesji),
             "commity": commity(projekt, teraz), "aktywnosc": logi}
 
 
