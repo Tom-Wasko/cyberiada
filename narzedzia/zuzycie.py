@@ -1,7 +1,7 @@
 """Baza zużycia: tokeny z lokalnych dzienników sesji Claude Code (~/.claude/projects), według nazwy sesji.
 
   python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py                 wszystko, według sesji
-  ... --projekt C:/Users/PC/lukrum   tylko sesje z tego folderu (z worktree)
+  ... --projekt lukrum               tylko sesje projektu: nazwa z projekty.yaml albo folder (z worktree)
   ... --od 2026-11-21 [--do 2026-11-22]   zakres dat (UTC, z dziennika)
   ... --nazwa wyko-lukrum-03          sesje o nazwie zaczynającej się od tego tekstu
   ... --json                          wynik maszynowy (dla dziennika)
@@ -20,7 +20,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from wspolne import SESJE_DIR, tytul_sesji  # noqa: E402
+from wspolne import SESJE_DIR, projekty, tytul_sesji  # noqa: E402
 
 MNOZNIK_MODELU = {"opus": 2.0, "sonnet": 1.0, "haiku": 0.05, "fable": 4.0}
 # odczyt z cache względem ceny wejścia danego modelu (domyślnie 0,1)
@@ -87,13 +87,26 @@ def wazone(wpis: dict) -> float:
                                      + 2.0 * (wpis["cache_zapis"] - z5m) + 1.25 * z5m + 5.0 * wpis["wyjscie"])
 
 
+def folder_projektu(tekst: str) -> Path:
+    """Nazwa projektu z projekty.yaml albo ścieżka folderu."""
+    if not Path(tekst).is_dir():
+        try:
+            znany = projekty().get(tekst.lower())
+        except Exception:  # noqa: BLE001 - brak rejestru: zostaje ścieżka
+            znany = None
+        if znany:
+            return znany
+    return Path(tekst)
+
+
 def wpisy(projekt: Path | None = None, katalog: Path | None = None) -> Iterator[dict]:
     """Wszystkie wpisy zużycia: pola sesja, agent (bool), model, czas (UTC z dziennika), wejscie,
     cache_zapis, cache_odczyt, wyjscie. `projekt` filtruje po cwd (z worktree), `katalog` zastępuje ~/.claude/projects."""
-    prefiks = str(projekt.resolve()).lower() if projekt else None
+    prefiks = str(projekt.resolve()).lower().replace("/", "\\").rstrip("\\") if projekt else None
 
     def filtr(cwd: str, czas: str) -> bool:
-        return not prefiks or cwd.lower().startswith(prefiks)
+        c = cwd.lower().replace("/", "\\").rstrip("\\")
+        return not prefiks or c == prefiks or c.startswith(prefiks + "\\")
 
     for plik in (katalog or SESJE_DIR).glob("*/*.jsonl"):
         nazwa = tytul_sesji(plik) or f"(bez nazwy {plik.stem[:8]})"
@@ -106,7 +119,7 @@ def wpisy(projekt: Path | None = None, katalog: Path | None = None) -> Iterator[
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Zużycie tokenów według sesji (ten komputer).")
-    p.add_argument("--projekt", type=Path)
+    p.add_argument("--projekt", type=folder_projektu, help="nazwa projektu (projekty.yaml) albo folder")
     p.add_argument("--od")
     p.add_argument("--do")
     p.add_argument("--nazwa")

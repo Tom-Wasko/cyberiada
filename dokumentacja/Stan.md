@@ -4,7 +4,12 @@ Archi żył: 2026-11-22 21:40
 Tryb: nadzorowany od 21:26. (Autonomiczny 16:45–16:55: próba hooka T18 udana.)
 
 ## Podróż
-Brak podróży w toku (04-reszta zakończona 2026-11-22).
+05-lista-szefa od 2026-11-23 (`podroze/05-lista-szefa/plan.md`), tryb nadzorowany, scalanie do `main`.
+
+| Wątek | Kto | Stan |
+|---|---|---|
+| 05/dziennik | wyko | w toku |
+| 05/zasady | Archi | w toku |
 
 ## Czeka na szefa
 

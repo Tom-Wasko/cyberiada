@@ -43,6 +43,10 @@
 - 2026-11-22 · Wyko ma internet (WebFetch, WebSearch dozwolone w `narzedzia/wyko/ustawienia.json`); powód: notatki Z3 ze źródłami.
 - 2026-11-22 · Podróż kończy szef: Archi nie zamyka podróży sam, tylko proponuje zamknięcie i czeka na polecenie.
 - 2026-11-22 · Z5 i Z6 dołączone do podróży 04.
+- 2026-11-23 · Wyko naraz: w trybie nadzorowanym bez limitu, w autonomicznym najwyżej 3.
+- 2026-11-23 · Zadania: „W toku” = nad nimi teraz ktoś pracuje, „Następnie” = rozplanowane, nowa sekcja „Zrobione w tej podróży”; przesuwa Archi w `Zadania.md`, hook po scaleniu przypomina (o kryteriach też).
+- 2026-11-23 · Kryteria podróży: Archi pisze na starcie, dopisuje przy rozszerzeniu, odhacza przy scaleniu. Kryteria lukrum 03 odhacza Archi cyberiady (szef zaczyna nową podróż lukrum).
+- 2026-11-23 · Dziennik: zamiast wykresu „Wątki” oś czasu pracowników (domyślnie ostatnie 24 h, przesuwanie w lewo, podpisy wg widocznego okresu, Archi zawsze na górze, przerwy w linii, gdy nie pracował); szybki pasek po lewej; projekty jako panele przełączane przyciskami zamiast rozwijanych kart.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
