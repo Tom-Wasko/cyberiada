@@ -175,3 +175,16 @@ Dokument: `doc_id` = nazwa sesji (np. `wyko-lukrum-02-sklepy`), pola
 `{projekt, watek ("02/sklepy" albo null dla Archiego), rola ("wyko"|"Archi"), krok (temat ostatniego commita),
 commity (liczba commitów gałęzi od startu), galaz, czas (ISO)}`. Zapisuje go hook po commicie (robi Archi),
 nie generator. Wątek w toku bez postępu dłużej niż 1 h jest oznaczany „cisza”.
+
+## Uzupełnienie schematu (podróż 05)
+- **`zadania`** ma klucze `w_toku`, `nastepnie`, `zaplanowane`, `zrobione`, `odlozone`. `zrobione` = sekcja
+  `## Zrobione w tej podróży` w `Zadania.md`. Generator niczego nie przenosi (linia `Zadania:` planu jest ignorowana);
+  zadania między sekcjami przesuwa Archi (`przenies.py`, cel `zrobione` tworzy brakującą sekcję po „Zaplanowane”,
+  przed „Odłożone”).
+- **Wątki ze `Stan.md`:** tabela z kolumną „Wątek” jest czytana z każdej sekcji (np. `## Podróż`), nie tylko `## Wątki`.
+  `podroz.watki` zawiera wszystkie wątki ze `Stan.md` (także spoza planu). `kto`: kolumna „Kto” → `Archi` dla wiersza
+  „Archi” → `wyko`, gdy w logach jest sesja `wyko-<projekt>-NN-<nazwa>` → `nie wiadomo`. Pusty `stan` albo sama kreska
+  = `nie wiadomo` (nigdy „?”).
+- **`aktywnosc`:** `[{nazwa, rola (Archi|wyko|pomo), watek ("NN/nazwa" albo null), odcinki: [[start, koniec], …]}]`
+  (ISO, ostatnie 7 dni). Nowy odcinek po przerwie > 30 min; wpisy agentów liczą się do sesji, która ich wywołała.
+  Archi pierwszy, reszta wg pierwszego startu.
