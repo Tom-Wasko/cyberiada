@@ -135,7 +135,7 @@ class TestDokumenty(Pomoc):
 
     def test_schemat_i_json(self):
         self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "wygenerowano", "puls", "podroz", "czeka",
-                                          "decyzje", "zadania", "historia", "koszty", "commity"})
+                                          "decyzje", "zadania", "historia", "koszty", "commity", "aktywnosc"})
         self.assertEqual(set(self.dane["koszty"]), {"dni", "role", "okno5h"})
         json.dumps(self.dane, ensure_ascii=False)  # serializuje się bez błędu
         self.assertEqual((self.dane["nazwa"], self.dane["opis"], self.dane["repo"]),
@@ -178,6 +178,7 @@ class TestDokumenty(Pomoc):
                          [{"data": "2026-11-18", "tresc": "Dane w JSON."}])
         self.assertEqual(self.dane["zadania"], {"w_toku": ["Podróż 02-wyglad."], "nastepnie": [],
                                                 "zaplanowane": ["Testy na telefonie.", "Druga rzecz."],
+                                                "zrobione": ["Z0 · zrobione w tej podróży ze szczegółem."],
                                                 "odlozone": []})
 
     def test_historia(self):
@@ -244,7 +245,9 @@ class TestBrakDanych(Pomoc):
         self.assertIsNone(d["podroz"])
         self.assertEqual(d["czeka"], [])
         self.assertEqual(d["decyzje"], {"szefa": [], "archiego": []})
-        self.assertEqual(d["zadania"], {"w_toku": [], "nastepnie": [], "zaplanowane": [], "odlozone": []})
+        self.assertEqual(d["zadania"], {"w_toku": [], "nastepnie": [], "zaplanowane": [], "zrobione": [],
+                                        "odlozone": []})
+        self.assertEqual(d["aktywnosc"], [])
         self.assertEqual(d["historia"], [])
         self.assertEqual(len(d["koszty"]["dni"]), 30)
         self.assertTrue(all(x["wazone"] == 0 for x in d["koszty"]["dni"]))
@@ -288,6 +291,13 @@ ZADANIA_PODPUNKTY = """# Zadania
 ### Ważne
 - Z2 · drugie
 - Z3 · trzecie
+
+## Zrobione w tej podróży
+- Z4 · czwarte
+  ze szczegółem
+
+## Odłożone
+- Z5 · piąte
 """
 
 STAN_BEZ_GALEZI = """# Stan
@@ -336,13 +346,108 @@ class TestTabeleIZadania(Pomoc):
 
     def test_podpunkty_nie_skleja_zadan(self):
         z = self.dane["zadania"]
-        self.assertFalse(any("###" in t for t in z["w_toku"] + z["zaplanowane"] + z["odlozone"]))
-        self.assertIn("Z1 · pierwsze ciąg dalszy", z["w_toku"])
+        self.assertFalse(any("###" in t for k in z.values() for t in k))
+        self.assertIn("Z1 · pierwsze ciąg dalszy", z["zaplanowane"])
 
-    def test_zadania_podrozy_przechodza_do_w_toku(self):
+    def test_zadania_z_linii_planu_nie_przechodza_do_w_toku(self):
+        # linia `Zadania:` planu (Z2, Z10, Z1) niczego nie przenosi: sekcje czyta się tak, jak są w pliku
         z = self.dane["zadania"]
-        self.assertEqual(z["w_toku"], ["Z2 · drugie", "Z10 · dziesiąte", "Z1 · pierwsze ciąg dalszy"])
-        self.assertEqual(z["zaplanowane"], ["Z3 · trzecie"])  # Z10 nie bierze Z1 ani odwrotnie
+        self.assertEqual(z["w_toku"], [])
+        self.assertEqual(z["zaplanowane"], ["Z1 · pierwsze ciąg dalszy", "Z10 · dziesiąte", "Z2 · drugie",
+                                            "Z3 · trzecie"])
+
+    def test_sekcja_zrobione_w_tej_podrozy(self):
+        z = self.dane["zadania"]
+        self.assertEqual(z["zrobione"], ["Z4 · czwarte ze szczegółem"])
+        self.assertEqual(z["odlozone"], ["Z5 · piąte"])
+
+
+STAN_POD_PODROZA = """# Stan
+Archi żył: 2026-11-22 16:05
+
+## Podróż
+03-wiecej (start 2026-11-22)
+
+| Wątek | Zadania | Stan |
+|---|---|---|
+| 03/a | Z2 | scalone do main 21:50 |
+| 03/b | Z1 | |
+| 03/d | Z7 | w toku |
+| Archi | Z9 zrobione | gotowe |
+| 03/e | Z8 | – |
+"""
+
+
+class TestWatkiPodInnymNaglowkiem(Pomoc):
+    def setUp(self) -> None:
+        super().setUp()
+        dok = self.projekt / "dokumentacja"
+        (dok / "podroze" / "03-wiecej").mkdir(parents=True)
+        (dok / "podroze" / "03-wiecej" / "plan.md").write_text(PLAN_DODATKOWE, encoding="utf-8")
+        (dok / "Stan.md").write_text(STAN_POD_PODROZA, encoding="utf-8")
+        cwd = str(self.projekt.resolve())
+        self.sesja("wyko-p-03-d", [linia("d1", "claude-sonnet-5-5", czas(0, 9), cwd, input_tokens=1)], "u-d")
+        self.dane = generuj.zbuduj(self.projekt, "p", teraz=TERAZ, katalog_sesji=self.sesje)
+        self.watki = {w["nazwa"]: w for w in self.dane["podroz"]["watki"]}
+
+    def test_wszystkie_watki_ze_stanu(self):
+        self.assertEqual(set(self.watki), {"03/a", "03/b", "03/c", "03/d", "Archi", "03/e"})
+
+    def test_kto_i_stan_nigdy_puste(self):
+        for w in self.watki.values():
+            self.assertTrue(w["kto"], w["nazwa"])
+            self.assertTrue(w["stan"], w["nazwa"])
+            self.assertNotEqual(w["stan"], "?")
+        self.assertEqual(self.watki["03/a"]["kto"], "wyko")        # z planu
+        self.assertEqual(self.watki["03/d"]["kto"], "wyko")        # z logów: wyko-p-03-d
+        self.assertEqual(self.watki["Archi"]["kto"], "Archi")
+        self.assertEqual(self.watki["03/e"]["kto"], "nie wiadomo")  # brak kolumny i brak sesji
+        self.assertEqual(self.watki["03/e"]["stan"], "nie wiadomo")  # sama kreska to brak
+        self.assertEqual(self.watki["03/b"]["stan"], "scalone 22.11")  # pusty w Stan.md → z planu
+
+
+class TestAktywnosc(Pomoc):
+    def setUp(self) -> None:
+        super().setUp()
+        self.cwd = str(self.projekt.resolve())
+
+    def zbuduj(self) -> list[dict]:
+        self.projekt.mkdir(exist_ok=True)
+        return generuj.zbuduj(self.projekt, "probny", teraz=TERAZ, katalog_sesji=self.sesje)["aktywnosc"]
+
+    def test_odcinki_z_przerwa_ponad_30_minut(self):
+        self.sesja("archi-probny", [
+            linia("a1", "claude-opus-5-5", czas(0, 9, 0), self.cwd, input_tokens=1),
+            linia("a2", "claude-opus-5-5", czas(0, 9, 20), self.cwd, input_tokens=1),   # przerwa 20 min: ten sam odcinek
+            linia("a3", "claude-opus-5-5", czas(0, 10, 0), self.cwd, input_tokens=1),   # przerwa 40 min: nowy
+            linia("a4", "claude-opus-5-5", czas(0, 10, 30), self.cwd, input_tokens=1),  # dokładnie 30 min: ten sam
+        ], "u-archi")
+        wiersz, = self.zbuduj()
+        self.assertEqual((wiersz["nazwa"], wiersz["rola"], wiersz["watek"]), ("archi-probny", "Archi", None))
+        przedzialy = [[generuj.lokalny(a), generuj.lokalny(b)] for a, b in wiersz["odcinki"]]
+        self.assertEqual(przedzialy, [[czas(0, 9), czas(0, 9, 20)], [czas(0, 10), czas(0, 10, 30)]])
+
+    def test_agent_liczy_sie_do_sesji_ktora_go_wywolala(self):
+        self.sesja("wyko-probny-02-css", [linia("w1", "claude-sonnet-5-5", czas(0, 9, 0), self.cwd, input_tokens=1),
+                                          linia("w2", "claude-sonnet-5-5", czas(0, 11, 0), self.cwd, input_tokens=1)],
+                   "u-w")
+        # agent pracuje w środku przerwy: odcinek się skleja, a agent nie ma własnego wiersza
+        self.sesja("wyko-probny-02-css", [linia("g1", "claude-haiku-5-5", czas(0, 9, 30), self.cwd, input_tokens=1),
+                                          linia("g2", "claude-haiku-5-5", czas(0, 10, 0), self.cwd, input_tokens=1),
+                                          linia("g3", "claude-haiku-5-5", czas(0, 10, 30), self.cwd, input_tokens=1)],
+                   "u-w", agent="agent1")
+        wiersz, = self.zbuduj()
+        self.assertEqual((wiersz["rola"], wiersz["watek"]), ("wyko", "02/css"))
+        self.assertEqual([[generuj.lokalny(a), generuj.lokalny(b)] for a, b in wiersz["odcinki"]],
+                         [[czas(0, 9), czas(0, 11)]])
+
+    def test_tylko_ostatnie_7_dni_i_archi_pierwszy(self):
+        self.sesja("rozmowa", [linia("p1", "claude-sonnet-5-5", czas(8, 9), self.cwd, input_tokens=1),
+                               linia("p2", "claude-sonnet-5-5", czas(1, 9), self.cwd, input_tokens=1)], "u-p")
+        self.sesja("archi-probny", [linia("a1", "claude-opus-5-5", czas(0, 9), self.cwd, input_tokens=1)], "u-a")
+        wiersze = self.zbuduj()
+        self.assertEqual([w["nazwa"] for w in wiersze], ["archi-probny", "rozmowa"])
+        self.assertEqual(len(wiersze[1]["odcinki"]), 1)  # wpis sprzed 8 dni odpadł
 
 
 class TestGit(Pomoc):

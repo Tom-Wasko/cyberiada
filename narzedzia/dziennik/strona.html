@@ -24,7 +24,8 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--page);color:var(--ink);
   font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   padding:0 max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
-header,main{max-width:1080px;margin:0 auto}
+header{max-width:1180px;margin:0 auto}
+main{min-width:0}
 header{padding:28px 0 4px}
 h1{font-size:30px;line-height:1.1;letter-spacing:-.02em;margin:0}
 #odswiezono{color:var(--ink2);margin:6px 0 0;font-size:14px}
@@ -43,14 +44,9 @@ a{color:var(--s1)}
 .kropka{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
 
 /* Czeka na Ciebie */
-details.czeka{background:color-mix(in srgb,var(--s2) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--s2) 35%,var(--border));border-left:6px solid var(--s2);border-radius:var(--r)}
-details.czeka>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:var(--r);min-height:48px}
-details.czeka>summary::-webkit-details-marker{display:none}
-details.czeka>summary:hover{background:var(--hover)}
-details.czeka>summary h2{margin:0}
-details.czeka>summary .strzalka{margin-left:auto}
-details.czeka[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
-.czeka-cialo{padding:0 16px 8px}
+.czeka-box{background:color-mix(in srgb,var(--s2) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--s2) 35%,var(--border));border-left:6px solid var(--s2);border-radius:var(--r);padding:14px 16px 6px}
+.czeka-box h2{margin:0 0 12px}
+.czeka-cialo{padding:0}
 .pytanie{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
 .pytanie.nowe{border-color:var(--s2)}
 .pytanie .glowa{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:6px;font-size:13px;color:var(--ink2)}
@@ -73,6 +69,8 @@ button{font:inherit;color:inherit}
 .kafel .et{color:var(--ink);font-size:13px;font-weight:600}
 .kafel .wart{font-size:30px;font-weight:650;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
 .kafel .pod{color:var(--ink2);font-size:13px;margin-top:2px}
+.kafel.klik{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%}
+.kafel.klik:hover{background:color-mix(in srgb,var(--k) 20%,var(--surface))}
 .kafel.szeroki{grid-column:1/-1}
 .okno{display:grid;gap:8px 24px;grid-template-columns:auto 1fr;align-items:end}
 @media (max-width:560px){.okno{grid-template-columns:1fr}}
@@ -126,16 +124,15 @@ tbody th{font-weight:500}
 .lista .zn.nie{color:var(--muted)}
 
 /* Karty projektów */
-details.karta{--pk:var(--s1);background:var(--surface);border:1px solid color-mix(in srgb,var(--pk) 30%,var(--border));border-left:8px solid var(--pk);border-radius:var(--r);margin-bottom:12px}
-details.karta>summary{background:color-mix(in srgb,var(--pk) 14%,var(--surface));list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;border-radius:var(--r)}
-details.karta>summary::-webkit-details-marker{display:none}
-details.karta>summary:hover{background:color-mix(in srgb,var(--pk) 22%,var(--surface))}
-summary .kropka{width:12px;height:12px}
-summary .opis{grid-column:2;color:var(--ink2);font-size:14px}
-summary .chipy{grid-column:2/4;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.karta{--pk:var(--s1);background:var(--surface);border:1px solid color-mix(in srgb,var(--pk) 30%,var(--border));border-left:8px solid var(--pk);border-radius:var(--r);margin-bottom:12px}
+.karta>.glowa{background:color-mix(in srgb,var(--pk) 14%,var(--surface));padding:16px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;border-radius:var(--r)}
+.karta>.glowa h3{margin:0}
+.glowa .kropka{width:12px;height:12px}
+.glowa .opis{grid-column:2;color:var(--ink2);font-size:14px}
+.glowa .chipy{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .strzalka{width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:0 6px 4px 0;transition:transform .2s}
 details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
-.cialo{padding:0 16px 18px;display:grid;gap:16px}
+.cialo{padding:16px 16px 18px;display:grid;gap:16px}
 .cialo figure.wykres{background:var(--page)}
 .blok{background:var(--page);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:0}
 .blok>h4{margin-bottom:8px}
@@ -150,7 +147,7 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .zadanie .nr{font-weight:700;font-variant-numeric:tabular-nums;flex:none}
 .zadanie .tyt{min-width:0}
 .zadanie[open]>summary{border-bottom:1px solid var(--grid)}
-.tablica{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.tablica{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .kol-zad{border-radius:12px;padding:8px;background:var(--surface);border:1px dashed transparent;transition:background .15s,border-color .15s}
 .kol-zad.nad{border-color:var(--ink2);background:var(--hover)}
 .kol-zad h5{margin:2px 4px 8px}
@@ -161,7 +158,8 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .zadanie.ciagniety{opacity:.35}
 .zadanie.duch{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:rotate(1.5deg)}
 .zadanie .opis{font-size:14px;color:var(--ink2);padding:8px 0 12px;line-height:1.45}
-.decyzja{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
+.decyzja{display:grid;grid-template-columns:62px minmax(0,1fr);overflow-wrap:anywhere;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
+.cialo,.blok,.pytanie,.karta li{overflow-wrap:anywhere}
 .decyzja:first-of-type{border-top:0}
 .decyzja .kiedy{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
 details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:6px 0}
@@ -174,7 +172,9 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .stan.toku{--c:var(--s1)}.stan.scalone{--c:var(--s3)}.stan.czeka{--c:var(--s4)}.stan.cisza{--c:var(--s8)}
 .watki-lista{display:grid;gap:8px;margin-top:12px}
 .wl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--border)}
-.wl .nazwa{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.wl .nazwa{font-weight:600;overflow-wrap:anywhere;min-width:0}
+@media (max-width:719px){.wl{grid-template-columns:minmax(0,1fr)}.wl .stany{justify-self:start;flex-wrap:wrap}}
+.kto-watku{color:var(--ink2);font-weight:400;font-size:13px}
 .wl .ost{grid-column:1/-1;color:var(--ink2);font-size:13px;overflow-wrap:anywhere}
 .stany{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .chip.postep-archi{display:block;white-space:normal;overflow-wrap:anywhere;border-radius:12px}
@@ -188,13 +188,21 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 #dymek .dw .n{color:var(--ink2);flex:1}
 #dymek .dw .v{margin-left:12px}
 #dymek .dr{color:var(--ink2)}
-#skok{position:sticky;top:0;z-index:20;max-width:1080px;margin:8px auto 0;padding:8px 0;display:flex;gap:6px;overflow-x:auto;
-  background:var(--page);border-bottom:1px solid var(--border);scrollbar-width:none}
-#skok::-webkit-scrollbar{display:none}
-#skok a{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--hover);
-  color:var(--ink);text-decoration:none;font-size:14px;min-height:32px;box-sizing:border-box}
-#skok a:hover{background:var(--border)}
-section,.karta{scroll-margin-top:64px}
+#ramka{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0 24px;max-width:1180px;margin:8px auto 0;align-items:start}
+#skok{position:sticky;top:12px;display:flex;flex-direction:column;gap:6px;padding:4px 0}
+#skok button{--pk:var(--ink2);display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 12px;border-radius:12px;border:1px solid transparent;border-left:5px solid transparent;background:var(--hover);
+  color:var(--ink);font-size:15px;min-height:44px;cursor:pointer}
+#skok button:hover{background:var(--border)}
+#skok button.aktywny{background:color-mix(in srgb,var(--pk) 20%,var(--surface));border-color:color-mix(in srgb,var(--pk) 40%,var(--border));border-left-color:var(--pk);font-weight:650}
+#skok button .nazwa{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#skok .znacznik-nowe{font-size:11px;padding:0 7px}
+@media (max-width:719px){
+  #ramka{display:block}
+  #skok{position:sticky;top:0;z-index:20;flex-direction:row;overflow-x:auto;margin:0 0 8px;padding:8px 0;background:var(--page);border-bottom:1px solid var(--border);scrollbar-width:none}
+  #skok::-webkit-scrollbar{display:none}
+  #skok button{width:auto;flex:none;border-radius:999px;min-height:40px;padding:6px 14px;border-left-width:1px;white-space:nowrap}
+  #skok button.aktywny{border-left-color:var(--pk)}
+}
 .prac{display:grid;gap:8px}
 .pr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--pk,var(--border))}
 .pr .kto{font-weight:600;overflow-wrap:anywhere}
@@ -205,6 +213,16 @@ section,.karta{scroll-margin-top:64px}
 .stan-pr{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--hover);margin-left:6px}
 .stan-pr.pracuje{color:var(--ok-text)}
 .wiecej{margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;min-height:32px}
+/* oś czasu pracowników */
+.os-ster{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 8px}
+.os-ster button{min-height:36px;min-width:40px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:transparent;font-size:14px;cursor:pointer}
+.os-ster button:hover:not(:disabled){background:var(--hover)}
+.os-ster button:disabled{opacity:.4;cursor:default}
+.os-ster .zakres{color:var(--ink2);font-size:13px;margin-left:6px;font-variant-numeric:tabular-nums}
+.os-plot svg{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.os-plot.ciagnie svg{cursor:grabbing}
+.scal{stroke:var(--surface);stroke-width:2}
+.stan-pr.czeka{color:var(--s4)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
@@ -212,14 +230,16 @@ section,.karta{scroll-margin-top:64px}
   <h1>Dziennik</h1>
   <p id="odswiezono">Stan wszystkich projektów</p>
 </header>
-<nav id="skok" aria-label="Przejdź do" hidden></nav>
+<div id="ramka">
+<nav id="skok" aria-label="Panele" hidden></nav>
 <main>
   <div id="stan-komunikat" class="komunikat">Ładuję dane…</div>
   <section id="czeka" hidden></section>
   <section id="pracownicy" hidden></section>
   <section id="przeglad" hidden></section>
-  <section id="projekty" hidden></section>
+  <div id="projekty"></div>
 </main>
+</div>
 <div id="dymek" role="tooltip" hidden></div>
 
 <script>
@@ -299,11 +319,13 @@ function norm(id,d){
     wygenerowano:data(d.wygenerowano),puls:data(d.puls),
     podroz:p?{numer:tekst(p.numer),temat:tekst(p.temat),start:data(p.start),tryb:tekst(p.tryb),
       kryteria:tab(p.kryteria).map(z=>{z=obj(z);return{tekst:tekst(z.tekst),zrobione:z.zrobione===true};}).filter(z=>z.tekst),
-      watki:tab(p.watki).map(w=>{w=obj(w);return{nazwa:tekst(w.nazwa)||"?",kto:tekst(w.kto),stan:tekst(w.stan),galaz:tekst(w.galaz),start:data(w.start),scalono:data(w.scalono)};})}:null,
+      watki:tab(p.watki).map(w=>{w=obj(w);return{nazwa:tekst(w.nazwa)||"bez nazwy",kto:tekst(w.kto)||"nie wiadomo",stan:tekst(w.stan)||"nie wiadomo",galaz:tekst(w.galaz),start:data(w.start),scalono:data(w.scalono)};})}:null,
     czeka:tab(d.czeka).map(c=>{c=obj(c);return{id:tekst(c.id),tresc:tekst(c.tresc),
       opcje:tab(c.opcje).map(z=>{z=obj(z);return{litera:tekst(z.litera),tekst:tekst(z.tekst),rekomendowana:z.rekomendowana===true};}).filter(z=>z.litera||z.tekst)};}).filter(c=>c.tresc),
     decyzje:{szefa:dl(dec.szefa),archiego:dl(dec.archiego)},
-    zadania:{w_toku:ls(zad.w_toku),nastepnie:ls(zad.nastepnie),zaplanowane:ls(zad.zaplanowane),odlozone:ls(zad.odlozone)},
+    zadania:{w_toku:ls(zad.w_toku),nastepnie:ls(zad.nastepnie),zaplanowane:ls(zad.zaplanowane),zrobione:ls(zad.zrobione),odlozone:ls(zad.odlozone)},
+    aktywnosc:tab(d.aktywnosc).map(a=>{a=obj(a);return{nazwa:tekst(a.nazwa),rola:tekst(a.rola)||"pomo",watek:tekst(a.watek),
+      odcinki:tab(a.odcinki).map(o=>{o=tab(o);return[data(o[0]),data(o[1])];}).filter(o=>o[0]&&o[1])};}).filter(a=>a.nazwa),
     historia:tab(d.historia).map(h=>{h=obj(h);return{numer:tekst(h.numer),temat:tekst(h.temat),start:data(h.start),koniec:data(h.koniec),podsumowanie:tekst(h.podsumowanie)};}),
     koszty:{
       dni:tab(k.dni).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),wazone:liczba(z.wazone),wejscie:liczba(z.wejscie),wyjscie:liczba(z.wyjscie),cache_odczyt:liczba(z.cache_odczyt),cache_zapis:liczba(z.cache_zapis)};}).filter(z=>DZIEN_RE.test(z.dzien)),
@@ -449,54 +471,116 @@ function wykresRole(tytul,podpis,wiersze,klasa){
   return ramka(tytul,podpis,obecne,tresc,tabela,klasa);
 }
 
-/* ---------- oś czasu wątków ---------- */
-function watkiRysuj(podroz){
-  return plot=>{
-    const watki=podroz.watki;
-    if(!watki.length){plot.replaceChildren(el("p",{class:"pusto"},"Brak wątków."));return;}
-    const W=Math.max(260,plot.clientWidth),lw=Math.min(120,W*.3),ml=lw+8,mr=12,mt=18,wr=28,bh=16,mb=24;
-    const H=mt+watki.length*wr+mb,iw=W-ml-mr,teraz=Date.now();
-    const starty=watki.map(w=>w.start).filter(Boolean).map(d=>d.getTime());
-    let t0=starty.length?Math.min(...starty):(podroz.start?podroz.start.getTime():teraz-2*36e5);
-    let t1=Math.max(teraz,...watki.map(w=>w.scalono?w.scalono.getTime():0));
-    t1=Math.max(t1,t0+2*36e5);
-    const pad=(t1-t0)*.04;t0-=pad;t1+=pad;
-    const x=t=>ml+(t-t0)/(t1-t0)*iw;
-    const H1=36e5,D1=864e5,kand=[H1,2*H1,3*H1,6*H1,12*H1,D1,2*D1,7*D1];
-    const maxT=Math.max(2,Math.floor(iw/64));
-    const krok=kand.find(c=>(t1-t0)/c<=maxT)||7*D1;
-    const d=new Date(t0);
-    if(krok<D1){d.setMinutes(0,0,0);const hk=krok/H1;while(d.getTime()<t0||d.getHours()%hk)d.setHours(d.getHours()+1);}
-    else{d.setHours(0,0,0,0);if(d.getTime()<t0)d.setDate(d.getDate()+1);}
-    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu wątków"});
-    for(let g=0;g<40&&d.getTime()<=t1;g++){
+/* ---------- oś czasu pracowników ---------- */
+const DOBA=864e5,MAX_WSTECZ=7*DOBA;
+const OS={};  // przesunięcie osi (ms wstecz od „teraz”) osobno dla każdego projektu
+const krotkaNazwa=n=>tekst(n).split("/").pop();
+const tenSamWatek=(a,b)=>!!a&&!!b&&(a===b||krotkaNazwa(a)===krotkaNazwa(b));
+function watekPodrozy(p,watek){return p.podroz&&watek?p.podroz.watki.find(w=>tenSamWatek(w.nazwa,watek)):null;}
+function pracownikSesji(p,a){
+  if(!PRACOWNICY)return null;
+  return PRACOWNICY.lista.find(x=>x.nazwa===a.nazwa&&(!x.projekt||x.projekt===p.klucz||x.projekt===p.nazwa))||null;
+}
+function wierszeOsi(p,od,doo){
+  const w=p.aktywnosc.filter(a=>a.odcinki.some(o=>o[1]>=od&&o[0]<=doo));
+  let archi=w.find(a=>a.rola==="Archi");
+  if(!archi)archi=p.aktywnosc.find(a=>a.rola==="Archi")||{nazwa:"archi-"+p.nazwa,rola:"Archi",watek:"",odcinki:[]};
+  const reszta=w.filter(a=>a!==archi).sort((a,b)=>a.odcinki[0][0]-b.odcinki[0][0]);
+  return[archi,...reszta];
+}
+const podpisSesji=a=>a.rola==="Archi"?"Archi":(a.rola==="wyko"&&a.watek?a.watek:a.nazwa);
+function opisStanu(p,a){
+  const w=watekPodrozy(p,a.watek),pr=pracownikSesji(p,a),cz=[];
+  if(pr)cz.push(pr.stan);
+  if(w&&w.stan&&w.stan!=="nie wiadomo")cz.push(w.stan);
+  return cz.length?cz.join(" · "):"nie wiadomo";
+}
+const fOd=d=>fCzas.format(d),fDo=(a,b)=>(a.toDateString()===b.toDateString()?fGodz.format(b):fCzas.format(b));
+function osCzasu(p){
+  const st=OS[p.klucz]=OS[p.klucz]||{przes:0};
+  let plot=null,zakres=null,bWstecz=null,bNaprzod=null,bDzis=null;
+  const zmien=v=>{st.przes=Math.max(0,Math.min(MAX_WSTECZ,v));odswiez();};
+  function odswiez(){
+    if(zakres){const k=Date.now()-st.przes,o=k-DOBA;
+      zakres.textContent=st.przes===0?"ostatnie 24 h":fDzienPelny.format(new Date(o))+" "+fGodz.format(new Date(o))+" – "+fGodz.format(new Date(k));}
+    if(bWstecz)bWstecz.disabled=st.przes>=MAX_WSTECZ;
+    if(bNaprzod)bNaprzod.disabled=st.przes<=0;
+    if(bDzis)bDzis.disabled=st.przes<=0;
+    if(plot&&plot.isConnected&&plot.clientWidth)rysuj(plot);
+  }
+  function rysuj(pl){
+    const teraz=Date.now(),t1=teraz-st.przes,t0=t1-DOBA;
+    const wiersze=wierszeOsi(p,t0,t1);
+    const W=Math.max(260,pl.clientWidth),lw=Math.min(112,W*.28),ml=lw+8,mr=14,mt=20,wr=30,bh=16,mb=24;
+    const H=mt+wiersze.length*wr+mb,iw=W-ml-mr;
+    const x=t=>ml+(t-t0)/DOBA*iw;
+    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu pracowników, 24 godziny"});
+    const krokH=iw<340?6:3;
+    const d=new Date(t0);d.setMinutes(0,0,0);
+    while(d.getTime()<t0||d.getHours()%krokH)d.setHours(d.getHours()+1);
+    for(let g=0;g<30&&d.getTime()<=t1;g++){
       const xx=x(d.getTime());
       svg.append(s("line",{x1:xx,x2:xx,y1:mt-4,y2:H-mb,class:"siatka"}));
-      svg.append(sTekst({x:xx,y:H-6,"text-anchor":"middle",class:"etykieta"},krok<D1?fGodz.format(d):fDzien.format(d)));
-      if(krok<D1)d.setHours(d.getHours()+krok/H1);else d.setDate(d.getDate()+krok/D1);
+      svg.append(sTekst({x:xx,y:H-6,"text-anchor":"middle",class:"etykieta"},d.getHours()===0?fDzien.format(d):fGodz.format(d)));
+      d.setHours(d.getHours()+krokH);
     }
     svg.append(s("line",{x1:ml,x2:W-mr,y1:H-mb,y2:H-mb,class:"os"}));
-    const maxZn=Math.max(4,Math.floor(lw/7));
-    watki.forEach((w,i)=>{
-      const yc=mt+i*wr+wr/2;
+    const maxZn=Math.max(4,Math.floor(lw/6.6));
+    wiersze.forEach((a,i)=>{
+      const yc=mt+i*wr+wr/2,pod=podpisSesji(a),kolor=rolaKolor(a.rola);
+      const wpw=watekPodrozy(p,a.watek),sc=wpw&&wpw.scalono;
+      const widoczne=a.odcinki.filter(o=>o[1]>=t0&&o[0]<=t1);
       const traf=s("rect",{x:0,y:mt+i*wr,width:W,height:wr,rx:4,class:"traf","data-tip":""});
-      traf.__tip=[w.nazwa,"Kto: "+(w.kto||"?"),"Stan: "+(w.stan||"?"),"Start: "+(w.start?fCzas.format(w.start):"nie wiadomo"),w.scalono?"Scalono: "+fCzas.format(w.scalono):"Jeszcze nie scalony",...(w.galaz?["Gałąź: "+w.galaz]:[])];
+      traf.__tip=[pod+(a.nazwa!==pod?" ("+a.nazwa+")":""),"Stan: "+opisStanu(p,a),
+        widoczne.length?"W tym oknie: "+widoczne.length+" "+odm(widoczne.length,"odcinek","odcinki","odcinków"):"W tym oknie nie pracował",
+        sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
       svg.append(traf);
-      const nz=w.nazwa.length>maxZn?w.nazwa.slice(0,maxZn-1)+"…":w.nazwa;
-      const et=sTekst({x:lw,y:yc+4,"text-anchor":"end",class:"etykieta ink"},nz);et.style.pointerEvents="none";svg.append(et);
-      const xa=x(w.start?w.start.getTime():t0+pad),xb=x(w.scalono?w.scalono.getTime():teraz);
-      svg.append(s("rect",{x:Math.min(xa,xb),y:yc-bh/2,width:Math.max(4,Math.abs(xb-xa)),height:bh,rx:4,class:"slupek",fill:rolaKolor(w.kto)}));
+      const et=sTekst({x:lw,y:yc+4,"text-anchor":"end",class:"etykieta ink"},pod.length>maxZn?pod.slice(0,maxZn-1)+"…":pod);et.style.pointerEvents="none";svg.append(et);
+      svg.append(s("line",{x1:ml,x2:W-mr,y1:yc,y2:yc,class:"siatka"}));
+      for(const o of widoczne){
+        const xa=Math.max(ml,x(o[0].getTime())),xb=Math.min(W-mr,x(o[1].getTime()));
+        const b=s("rect",{x:xa,y:yc-bh/2,width:Math.max(5,xb-xa),height:bh,rx:4,fill:kolor,"data-tip":""});
+        b.__tip=[pod,"Stan: "+opisStanu(p,a),"Odcinek: "+fOd(o[0])+" – "+fDo(o[0],o[1]),sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
+        svg.append(b);
+      }
+      if(sc&&sc.getTime()>=t0&&sc.getTime()<=t1){
+        const koniecO=widoczne.length?Math.min(W-mr,x(widoczne[widoczne.length-1][1].getTime())):ml;
+        const kr=s("circle",{cx:Math.min(W-mr-4,Math.max(x(sc.getTime()),koniecO+7)),cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
+        kr.__tip=[pod,"Scalono: "+fCzas.format(sc)];svg.append(kr);
+      }
     });
-    const xt=x(teraz);
-    svg.append(s("line",{x1:xt,x2:xt,y1:mt-6,y2:H-mb,class:"teraz"}));
-    svg.append(sTekst({x:Math.min(xt,W-mr-14),y:mt-8,"text-anchor":"middle",class:"etykieta"},"teraz"));
-    plot.replaceChildren(svg);
-  };
-}
-function wykresWatki(podroz){
-  const kto=[...new Set(podroz.watki.map(w=>w.kto))].map(k=>({nazwa:k||"?",kolor:rolaKolor(k)}));
-  const tabela=tabelka(["Wątek","Kto","Stan","Gałąź","Start","Scalono"],podroz.watki.map(w=>[w.nazwa,w.kto||"?",w.stan||"?",w.galaz||"—",w.start?fCzas.format(w.start):"—",w.scalono?fCzas.format(w.scalono):"—"]));
-  return ramka("Wątki","Od startu do scalenia albo do teraz",kto,watkiRysuj(podroz),tabela);
+    if(st.przes===0){
+      const xt=x(teraz);
+      svg.append(s("line",{x1:xt,x2:xt,y1:mt-6,y2:H-mb,class:"teraz"}));
+      svg.append(sTekst({x:Math.min(xt,W-mr-14),y:mt-8,"text-anchor":"middle",class:"etykieta"},"teraz"));
+    }
+    pl.replaceChildren(svg);
+    // przeciąganie w poziomie (mysz i palec); pionowo przewija się strona (touch-action:pan-y)
+    let x0=null,p0=0;
+    svg.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;x0=e.clientX;p0=st.przes;});
+    svg.addEventListener("pointermove",e=>{
+      if(x0===null)return;
+      const dx=e.clientX-x0;
+      if(Math.abs(dx)<4&&!pl.classList.contains("ciagnie"))return;
+      if(!pl.classList.contains("ciagnie")){pl.classList.add("ciagnie");try{svg.setPointerCapture(e.pointerId);}catch(_){}ukryjDymek();}
+      const nowe=Math.max(0,Math.min(MAX_WSTECZ,p0+dx/iw*DOBA));
+      if(nowe!==st.przes){st.przes=nowe;odswiez();}
+    });
+    const koniec=()=>{x0=null;pl.classList.remove("ciagnie");};
+    svg.addEventListener("pointerup",koniec);svg.addEventListener("pointercancel",koniec);
+  }
+  bWstecz=el("button",{type:"button","aria-label":"Dzień wcześniej",onclick:()=>zmien(st.przes+DOBA)},"◀");
+  bDzis=el("button",{type:"button",onclick:()=>zmien(0)},"Dziś");
+  bNaprzod=el("button",{type:"button","aria-label":"Dzień później",onclick:()=>zmien(st.przes-DOBA)},"▶");
+  zakres=el("span",{class:"zakres"});
+  const role=[...new Set(p.aktywnosc.map(a=>a.rola))].map(r=>({nazwa:r,kolor:rolaKolor(r)}));
+  const tabela=tabelka(["Sesja","Rola","Wątek","Odcinki (7 dni)","Scalono"],p.aktywnosc.map(a=>{
+    const w=watekPodrozy(p,a.watek);
+    return[a.nazwa,a.rola,a.watek||"—",a.odcinki.map(o=>fCzas.format(o[0])+" – "+fDo(o[0],o[1])).join("; ")||"—",w&&w.scalono?fCzas.format(w.scalono):"—"];}));
+  const fig=ramka("Oś czasu pracowników","Kto i kiedy pracował; przesuń w lewo, żeby zobaczyć wcześniejsze dni",role,pl=>{plot=pl;pl.classList.add("os-plot");rysuj(pl);},tabela);
+  fig.querySelector(".plot").before(el("div",{class:"os-ster"},bWstecz,bDzis,bNaprzod,zakres));
+  odswiez();
+  return fig;
 }
 
 /* ---------- postęp na żywo (kolekcja `postep`) ---------- */
@@ -530,7 +614,7 @@ function klasaStanu(st){
   return"";
 }
 function pigulaStanu(st){
-  const t=tekst(st).split(/[;(]/)[0].trim()||"?";
+  const t=tekst(st).split(/[;(]/)[0].trim()||"nie wiadomo";
   return el("span",{class:"stan "+klasaStanu(st)},t);
 }
 function wierszeWatkow(p){
@@ -542,9 +626,11 @@ function wierszeWatkow(p){
     const baza=x?x.czas:w.start;
     const cisza=wToku(w)&&POSTEP.length>0&&baza&&teraz-baza.getTime()>GODZ;
     const pil=el("span",{class:"stan cisza","data-cisza":baza?String(baza.getTime()):"",hidden:!cisza},"cisza");
+    const pr=PRACOWNICY?PRACOWNICY.lista.find(y=>(!y.projekt||y.projekt===p.klucz||y.projekt===p.nazwa)&&tenSamWatek(y.watek,w.nazwa)):null;
     const wiersz=el("div",{class:"wl"},
-      el("span",{class:"nazwa"},w.nazwa),
-      el("span",{class:"stany"},pigulaStanu(w.stan),wToku(w)?pil:null));
+      el("span",{class:"nazwa"},w.nazwa,el("span",{class:"kto-watku"}," · "+(w.kto||"nie wiadomo"))),
+      el("span",{class:"stany"},pr?el("span",{class:"stan-pr "+(pr.stan==="pracuje"?"pracuje":pr.stan==="czeka"?"czeka":""),title:"Stan pracownika"},pr.stan):null,
+        pigulaStanu(w.stan),wToku(w)?pil:null));
     if(x)wiersz.append(el("span",{class:"ost"},ostatnioTekst(x)+" · ",el("span",{class:"temu","data-czas":x.czas.toISOString()},temu(x.czas))));
     box.append(wiersz);
   }
@@ -553,7 +639,7 @@ function wierszeWatkow(p){
 
 /* ---------- sekcje ---------- */
 function chipProjektu(p){return el("span",{class:"chip"},kropka(p.kolor),p.nazwa);}
-let czekaOtwarta=false;
+let czekaOtwarta=false;  // panel „Czeka” jest teraz widoczny
 function wczytajWidziane(){try{const t=localStorage.getItem("dziennik.widziane");if(t){const o=JSON.parse(t);if(o&&typeof o==="object"&&!Array.isArray(o))return o;}}catch(e){}return{};}
 let widziane=wczytajWidziane();
 function zapiszWidziane(){try{localStorage.setItem("dziennik.widziane",JSON.stringify(widziane));}catch(e){}}
@@ -567,16 +653,16 @@ function oznaczWidziane(P){
   }
   if(zmiana)zapiszWidziane();
 }
+function nowePytania(P){
+  let n=0;for(const p of P)for(const c of p.czeka)if(!tab(widziane[p.nazwa]).includes(kluczSprawy(c)))n++;return n;
+}
 function renderCzeka(P){
   const sek=$("czeka");const wszystkie=[];
   for(const p of P)for(const c of p.czeka)wszystkie.push({p,c,nowa:!tab(widziane[p.nazwa]).includes(kluczSprawy(c))});
   const nowe=wszystkie.filter(x=>x.nowa).length;
-  if(nowe)czekaOtwarta=true;
-  if(!wszystkie.length)czekaOtwarta=false;
-  const det=el("details",{class:"czeka",open:czekaOtwarta&&wszystkie.length>0},
-    el("summary",{},el("h2",{},"Czeka na Ciebie",el("span",{class:"licznik"+(wszystkie.length?"":" zero")},String(wszystkie.length))),
-      nowe?el("span",{class:"znacznik-nowe"},nowe+" "+odm(nowe,"nowa","nowe","nowych")):null,
-      el("span",{class:"strzalka","aria-hidden":"true"})));
+  const box=el("div",{class:"czeka-box"},
+    el("h2",{},"Czeka na Ciebie",el("span",{class:"licznik"+(wszystkie.length?"":" zero")},String(wszystkie.length)),
+      nowe?el("span",{class:"znacznik-nowe"},nowe+" "+odm(nowe,"nowa","nowe","nowych")):null));
   const cialo=el("div",{class:"czeka-cialo"});
   if(!wszystkie.length)cialo.append(el("p",{class:"pusto"},"Nic nie czeka na Ciebie."));
   for(const{p,c,nowa}of wszystkie){
@@ -591,10 +677,9 @@ function renderCzeka(P){
     }
     cialo.append(karta);
   }
-  det.append(cialo);
-  det.addEventListener("toggle",()=>{czekaOtwarta=det.open;if(det.open)planujWidziane();});
-  sek.replaceChildren(det);
-  if(det.open)planujWidziane();
+  box.append(cialo);
+  sek.replaceChildren(box);
+  if(czekaOtwarta)planujWidziane();
 }
 let widzianeT=0;
 function planujWidziane(){
@@ -626,7 +711,12 @@ function budujOkno(P){
   prawa.append(el("div",{class:"pod",style:"margin-top:6px"},"Szacunek, limit nieznany"+(z?" · stan na "+fGodz.format(z.wygenerowano):"")));
   box.append(lewa,prawa);return box;
 }
-function kafel(et,wart,pod,kolor){const k=el("div",{class:"kafel"},el("div",{class:"et"},et),el("div",{class:"wart"},wart),pod?el("div",{class:"pod"},pod):null);if(kolor)k.style.setProperty("--k",kolor);return k;}
+function kafel(et,wart,pod,kolor,panel){
+  const k=el(panel?"button":"div",{class:"kafel"+(panel?" klik":""),type:panel?"button":null},el("div",{class:"et"},et),el("div",{class:"wart"},wart),pod?el("div",{class:"pod"},pod):null);
+  if(kolor)k.style.setProperty("--k",kolor);
+  if(panel)k.addEventListener("click",()=>wybierzPanel(panel));
+  return k;
+}
 function renderPrzeglad(P){
   const sek=$("przeglad");const dni7=ostatnieDni(7),dni14=ostatnieDni(14),z7=new Set(dni7);
   const czeka=P.reduce((a,p)=>a+p.czeka.length,0),wPodrozy=P.filter(p=>p.podroz).length;
@@ -635,8 +725,8 @@ function renderPrzeglad(P){
   const okno=el("div",{class:"kafel szeroki",id:"okno"},budujOkno(P));okno.style.setProperty("--k","var(--s4)");
   sek.replaceChildren(el("h2",{},"Przegląd"),
     el("div",{class:"kafle"},
-      kafel("Czeka na Ciebie",String(czeka),czeka?odm(czeka,"sprawa","sprawy","spraw"):"wszystko załatwione","var(--s2)"),
-      kafel("Projekty",String(P.length),"w podróży: "+wPodrozy,"var(--s1)"),
+      kafel("Czeka na Ciebie",String(czeka),czeka?odm(czeka,"sprawa","sprawy","spraw"):"wszystko załatwione","var(--s2)","czeka"),
+      kafel("Projekty",String(P.length),"w podróży: "+wPodrozy+(P.length?" · otwórz "+P[0].nazwa:""),"var(--s1)",P.length?"p:"+P[0].klucz:null),
       kafel("Tokeny, 7 dni",fKompakt.format(tok7),"ważone","var(--s7)"),
       kafel("Commity, 7 dni",fLiczba.format(com7),odm(com7,"commit","commity","commitów"),"var(--s3)"),
       okno));
@@ -644,12 +734,9 @@ function renderPrzeglad(P){
   wyk.append(
     wykresDni("Tokeny dzień po dniu","Ostatnie 14 dni, tokeny ważone (odczyt z pamięci podręcznej liczy się taniej)",dni14,serieProjektow(P,p=>mapaDni(p.koszty.dni,"wazone")),fTok,false,"caly"),
     wykresDni("Commity dzień po dniu","Ostatnie 14 dni",dni14,serieProjektow(P,p=>mapaDni(p.commity,"liczba")),fCom,true),
-    wykresRole("Kto zużywa","Tokeny ważone według roli, cały okres",Object.assign(P.flatMap(p=>{const v={},przed={};for(const r of p.koszty.role){const c=r.podroz==="przed"?przed:v;c[r.rola||"?"]=(c[r.rola||"?"]||0)+r.wazone;}const w=[{etykieta:p.nazwa,wartosci:v}];if(Object.keys(przed).length)w.push({etykieta:p.nazwa+" przed cyberiadą",wartosci:przed});return w;}),{etykietaKolumny:"Projekt"})));
+    wykresRole("Kto zużywa","Tokeny ważone według roli, cały okres",Object.assign(P.flatMap(p=>{const v={},przed={};for(const r of p.koszty.role){const c=r.podroz==="przed"?przed:v;c[r.rola||"inne"]=(c[r.rola||"inne"]||0)+r.wazone;}const w=[{etykieta:p.nazwa,wartosci:v}];if(Object.keys(przed).length)w.push({etykieta:p.nazwa+" przed cyberiadą",wartosci:przed});return w;}),{etykietaKolumny:"Projekt"})));
   sek.append(wyk);
 }
-let otwarte=null;
-function wczytajOtwarte(){try{const t=localStorage.getItem("dziennik.otwarte");if(t){const a=JSON.parse(t);if(Array.isArray(a))return new Set(a.map(String));}}catch(e){}return null;}
-function zapiszOtwarte(){try{localStorage.setItem("dziennik.otwarte",JSON.stringify([...otwarte]));}catch(e){}}
 function tytulZadania(opis){
   let t=opis.replace(/`/g,"").split(/[:;(—]|\. /)[0].trim();
   if(t.length>48){t=t.slice(0,48);const s=t.lastIndexOf(" ");t=(s>20?t.slice(0,s):t)+"…";}
@@ -662,7 +749,7 @@ function zadanie(t){
     el("summary",{},nr?el("span",{class:"uchwyt","aria-hidden":"true"},"⠿"):null,nr?el("span",{class:"nr"},nr):null,el("span",{class:"tyt"},tytulZadania(opis))),
     el("div",{class:"opis"},opis));
 }
-const KOLUMNY=[["w_toku","W toku"],["nastepnie","Następnie"],["zaplanowane","Zaplanowane"],["odlozone","Odłożone"]];
+const KOLUMNY=[["w_toku","W toku"],["nastepnie","Następnie"],["zaplanowane","Zaplanowane"],["zrobione","Zrobione w tej podróży"],["odlozone","Odłożone"]];
 let UKLAD={},DB=null,ciagnie=false;
 function ukladZadan(p){
   const ruchy=UKLAD[p.klucz]||{},k={};KOLUMNY.forEach(([x])=>k[x]=[]);
@@ -680,7 +767,7 @@ function kolumnaZadan(p,klucz,tytul,lista){
 }
 function tablicaZadan(p){
   const k=ukladZadan(p);
-  return el("div",{},el("div",{class:"tablica"},KOLUMNY.slice(0,3).map(([x,n])=>kolumnaZadan(p,x,n,k[x]))),
+  return el("div",{},el("div",{class:"tablica"},KOLUMNY.slice(0,4).map(([x,n])=>kolumnaZadan(p,x,n,k[x]))),
     el("details",{class:"odlozone"},el("summary",{},"Odłożone ("+k.odlozone.length+")"),kolumnaZadan(p,"odlozone","",k.odlozone)));
 }
 async function przesunZadanie(proj,nr,kol){
@@ -727,8 +814,7 @@ function decyzje(tytul,lista){
   return box;
 }
 function renderProjekty(P){
-  const sek=$("projekty");sek.replaceChildren(el("h2",{},"Projekty"));
-  if(otwarte===null){otwarte=wczytajOtwarte();if(otwarte===null){otwarte=new Set(P.length===1?[P[0].nazwa]:[]);}}
+  const sek=$("projekty");sek.replaceChildren();
   const dni14=ostatnieDni(14);
   for(const p of P){
     const pd=p.podroz;
@@ -738,7 +824,7 @@ function renderProjekty(P){
       el("span",{class:"chip"},"Archi żył ",el("span",{class:"temu","data-czas":p.puls?p.puls.toISOString():""},temu(p.puls))));
     const pa=postepArchiego(p);
     if(pa)chipy.append(el("span",{class:"chip postep-archi"},"Archi, "+ostatnioTekst(pa)+" · ",el("span",{class:"temu","data-czas":pa.czas.toISOString()},temu(pa.czas))));
-    const summary=el("summary",{},kropka(p.kolor),el("h3",{},p.nazwa),el("span",{class:"strzalka","aria-hidden":"true"}),
+    const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa),
       p.opis?el("span",{class:"opis"},p.opis):null,chipy);
     const cialo=el("div",{class:"cialo"});
     if(pd){
@@ -750,11 +836,11 @@ function renderProjekty(P){
         el("p",{class:"meta"},zrob+" z "+pd.kryteria.length+" "+odm(pd.kryteria.length,"kryterium","kryteriów","kryteriów")+" spełnione"),
         pd.kryteria.length?miernik:null,
         el("ul",{class:"lista"},pd.kryteria.map(k=>el("li",{},el("span",{class:"zn "+(k.zrobione?"ok":"nie"),"aria-label":k.zrobione?"zrobione":"do zrobienia"},k.zrobione?"✓":"○"),el("span",{},k.tekst))))),
-        wykresWatki(pd),wierszeWatkow(p));
-    }else cialo.append(el("div",{class:"blok"},el("p",{class:"pusto"},"Brak podróży w toku.")));
+        osCzasu(p),wierszeWatkow(p));
+    }else cialo.append(el("div",{class:"blok"},el("p",{class:"pusto"},"Brak podróży w toku.")),osCzasu(p));
     const jedna=[{nazwa:p.nazwa,kolor:p.kolor}];
     const tokTab=tabelka(["Dzień","Ważone","Wejście","Wyjście","Cache odczyt","Cache zapis"],p.koszty.dni.slice().sort((a,b)=>b.dzien.localeCompare(a.dzien)).map(d=>[fDzien.format(data(d.dzien)),fTok(d.wazone),fTok(d.wejscie),fTok(d.wyjscie),fTok(d.cache_odczyt),fTok(d.cache_zapis)]));
-    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz==="przed"?"Przed cyberiadą":(r.podroz&&r.podroz!=="poza")?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"?"]=(rolePodroz[k][r.rola||"?"]||0)+r.wazone;}
+    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz==="przed"?"Przed cyberiadą":(r.podroz&&r.podroz!=="poza")?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"inne"]=(rolePodroz[k][r.rola||"inne"]||0)+r.wazone;}
     const wieRole=Object.keys(rolePodroz).sort((a,b)=>b.localeCompare(a,"pl")).map(k=>({etykieta:k,wartosci:rolePodroz[k]}));
     wieRole.etykietaKolumny="Podróż";
     cialo.append(el("div",{class:"wykresy dwa"},
@@ -765,11 +851,10 @@ function renderProjekty(P){
     cialo.append(el("div",{class:"blok"},el("h4",{},"Zadania"),tablicaZadan(p)));
     const hist=p.historia.slice().sort((a,b)=>b.numer.localeCompare(a.numer));
     cialo.append(el("div",{class:"blok"},el("h4",{},"Historia podróży"),hist.length?el("ul",{class:"historia"},hist.map(h=>el("li",{},
-      el("div",{},el("strong",{},h.numer+" "+h.temat)," ",el("span",{class:"kiedy"},(h.start?fDzien.format(h.start):"?")+" – "+(h.koniec?fDzien.format(h.koniec):"w toku"))),
+      el("div",{},el("strong",{},h.numer+" "+h.temat)," ",el("span",{class:"kiedy"},(h.start?fDzien.format(h.start):"nie wiadomo")+" – "+(h.koniec?fDzien.format(h.koniec):"w toku"))),
       h.podsumowanie?el("div",{class:"meta",style:"margin:2px 0 0"},h.podsumowanie):null))):el("p",{class:"pusto"},"Brak podróży.")));
     if(/^[\w.-]+\/[\w.-]+$/.test(p.repo))cialo.append(el("p",{class:"meta"},"Repozytorium: ",el("a",{href:"https://github.com/"+p.repo,target:"_blank",rel:"noopener noreferrer"},p.repo)));
-    const karta=el("details",{class:"karta",id:"p-"+p.klucz,open:otwarte.has(p.nazwa)},summary,cialo);karta.style.setProperty("--pk",p.kolor);
-    karta.addEventListener("toggle",()=>{if(karta.open)otwarte.add(p.nazwa);else otwarte.delete(p.nazwa);zapiszOtwarte();if(karta.open)poRenderze();});
+    const karta=el("section",{class:"karta panel",id:"p-"+p.klucz,hidden:true},glowa,cialo);karta.style.setProperty("--pk",p.kolor);
     sek.append(karta);
   }
 }
@@ -789,7 +874,7 @@ function normPrac(d){d=obj(d);return{wygenerowano:data(d.wygenerowano),lista:tab
 function wierszPrac(x,P){
   const pr=P.find(p=>p.klucz===x.projekt);
   const w=el("div",{class:"pr"+(x.stan==="zakończony"?" koniec":"")},
-    el("div",{},el("span",{class:"kto"},x.nazwa),el("span",{class:"stan-pr "+(x.stan==="pracuje"?"pracuje":"")},x.stan)),
+    el("div",{},el("span",{class:"kto"},x.nazwa),el("span",{class:"stan-pr "+(x.stan==="pracuje"?"pracuje":x.stan==="czeka"?"czeka":"")},x.stan)),
     el("div",{class:"tok"},fKompakt.format(x.tokeny)+" tok."+(x.model?" · "+x.model:"")),
     el("div",{class:"gdzie"},[ROLA_PR[x.rola]||x.rola,x.projekt,x.watek?"wątek "+x.watek:null,x.w_tle?"w tle":"czat"].filter(Boolean).join(" · ")),
     el("div",{class:"tok"},x.ostatnio?el("span",{class:"temu","data-czas":x.ostatnio.toISOString()},temu(x.ostatnio)):null),
@@ -807,14 +892,41 @@ function renderPracownicy(P){
     PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):null);
   sek.hidden=false;
 }
+let PANEL=null;
+function wczytajPanel(){try{return localStorage.getItem("dziennik.panel")||"";}catch(e){return"";}}
+function zapiszPanel(){try{localStorage.setItem("dziennik.panel",PANEL);}catch(e){}}
+function panelIstnieje(id,P){
+  if(id==="przeglad"||id==="czeka")return true;
+  if(id==="pracownicy")return!!PRACOWNICY;
+  return id.startsWith("p:")&&P.some(p=>"p:"+p.klucz===id);
+}
+function zastosujPanel(){
+  const P=ostatnieP;
+  if(PANEL===null)PANEL=wczytajPanel();
+  if(!PANEL||!panelIstnieje(PANEL,P))PANEL="przeglad";
+  const cel={czeka:"czeka",pracownicy:"pracownicy",przeglad:"przeglad"}[PANEL]||PANEL.replace(/^p:/,"p-");
+  for(const id of["czeka","pracownicy","przeglad"])$(id).hidden=id!==cel||(id==="pracownicy"&&!PRACOWNICY);
+  document.querySelectorAll("#projekty .panel").forEach(x=>{x.hidden=x.id!==cel;});
+  document.querySelectorAll("#skok button").forEach(b=>b.classList.toggle("aktywny",b.dataset.panel===PANEL));
+  const bylo=czekaOtwarta;czekaOtwarta=PANEL==="czeka";
+  if(czekaOtwarta&&!bylo)planujWidziane();
+  poRenderze();
+}
+function wybierzPanel(id){
+  PANEL=id;zapiszPanel();ukryjDymek();zastosujPanel();
+  try{window.scrollTo({top:0});}catch(e){}
+}
 function renderSkok(P){
-  const link=(cel,tekst,przed)=>el("a",{href:"#"+cel,onclick:e=>{e.preventDefault();const c=$(cel);if(!c)return;if(c.tagName==="DETAILS")c.open=true;c.scrollIntoView({behavior:"smooth",block:"start"});}},przed||null,tekst);
-  const czeka=P.reduce((a,p)=>a+p.czeka.length,0);
+  const czeka=P.reduce((a,p)=>a+p.czeka.length,0),nowe=nowePytania(P);
+  const przycisk=(id,tekst,kolor,dodatki)=>{
+    const b=el("button",{type:"button","data-panel":id,onclick:()=>wybierzPanel(id)},kolor?kropka(kolor):null,el("span",{class:"nazwa"},tekst),dodatki||null);
+    if(kolor)b.style.setProperty("--pk",kolor);return b;
+  };
   $("skok").replaceChildren(...[
-    czeka?link("czeka","Czeka ("+czeka+")"):null,
-    PRACOWNICY?link("pracownicy","Pracownicy"):null,
-    link("przeglad","Przegląd"),
-    ...P.map(p=>link("p-"+p.klucz,p.nazwa,kropka(p.kolor)))].filter(Boolean));
+    przycisk("przeglad","Przegląd"),
+    przycisk("czeka","Czeka",null,[el("span",{class:"licznik"+(czeka?"":" zero")},String(czeka)),nowe?el("span",{class:"znacznik-nowe"},"nowe"):null]),
+    PRACOWNICY?przycisk("pracownicy","Pracownicy"):null,
+    ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor))].filter(Boolean));
 }
 function render(P){
   if(ciagnie){ostatnieP=P;return;}
@@ -826,8 +938,7 @@ function render(P){
   if(!P.length){sekcje.forEach(x=>{x.hidden=true;x.replaceChildren();});naglowek(P);komunikat("Na razie brak danych. Archi zapisze tu swój projekt przy następnym odświeżeniu dziennika.");return;}
   komunikat("");naglowek(P);
   renderCzeka(P);renderPracownicy(P);renderPrzeglad(P);renderProjekty(P);renderSkok(P);
-  sekcje.forEach(x=>{x.hidden=false;});
-  poRenderze();
+  zastosujPanel();
 }
 function odswiezCzasy(){
   if(!ostatnieP.length)return;
