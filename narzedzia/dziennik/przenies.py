@@ -1,7 +1,7 @@
 """Przenosi zadania między sekcjami `Zadania.md` (ruchy z dziennika: przeciąganie kart).
 
 Użycie: python -X utf8 przenies.py --projekt <nazwa albo ścieżka> Z5=nastepnie Z1=w_toku ...
-Kolumny: w_toku, nastepnie, zaplanowane, odlozone. Brakująca sekcja powstaje przed kolejną w tej kolejności.
+Kolumny: w_toku, nastepnie, zaplanowane, zrobione, odlozone. Brakująca sekcja powstaje przed kolejną w tej kolejności.
 Zadanie przenosi się z podpunktami (linie wcięte pod nim). Końce linii pliku zostają.
 """
 from __future__ import annotations
@@ -14,7 +14,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from wspolne import projekty  # noqa: E402
 
-SEKCJE = {"w_toku": "W toku", "nastepnie": "Następnie", "zaplanowane": "Zaplanowane", "odlozone": "Odłożone"}
+SEKCJE = {"w_toku": "W toku", "nastepnie": "Następnie", "zaplanowane": "Zaplanowane",
+          "zrobione": "Zrobione w tej podróży", "odlozone": "Odłożone"}
 
 
 def przenies(tekst: str, ruchy: dict[str, str]) -> tuple[str, list[str]]:

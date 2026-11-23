@@ -6,7 +6,7 @@
 
 Skąd dane (każdy plik może nie istnieć: wtedy puste pola):
   dokumentacja/Stan.md       puls, bieżąca podróż, tabela wątków, „Czeka na szefa”
-  dokumentacja/Zadania.md    zadania (w toku, następnie, zaplanowane, odłożone)
+  dokumentacja/Zadania.md    zadania (w toku, następnie, zaplanowane, zrobione w tej podróży, odłożone)
   dokumentacja/Decyzje.md    decyzje szefa i Archiego
   dokumentacja/podroze/NN-temat/plan.md   podróże: kryteria, wątki, historia
   ~/.claude/projects         zużycie tokenów (przez zuzycie.py): dni, role, okno 5 h
@@ -131,6 +131,11 @@ def pytanie(p: list[str]) -> dict:
     return {"id": "P" + m.group(1), "tresc": sklej(tresc), "opcje": wynik}
 
 
+def bez_kresek(t: str | None) -> str | None:
+    """Pusta komórka albo sama kreska (— – -) to brak wartości."""
+    return None if t is None or t.strip() in ("", "—", "–", "-") else t.strip()
+
+
 def czytaj_stan(projekt: Path) -> dict:
     wstep, sek = sekcje(czytaj(projekt / "dokumentacja" / "Stan.md"))
     m = re.search(r"Archi żył:[ \t]*(.*)", "\n".join(wstep))
@@ -142,8 +147,12 @@ def czytaj_stan(projekt: Path) -> dict:
             if m:
                 podroz = (m.group(1), m.group(2).strip("-"))
             break
-    watki = {w["wątek"]: {"stan": w.get("stan"), "galaz": w.get("gałąź")}
-             for w in tabela(sekcja(sek, "Wątki")) if w.get("wątek")}
+    watki: dict[str, dict] = {}
+    for wiersze in sek.values():  # tabela wątków może być w dowolnej sekcji (np. pod „Podróż”)
+        for w in tabela(wiersze):
+            if w.get("wątek") and w["wątek"] not in watki:
+                watki[w["wątek"]] = {"stan": bez_kresek(w.get("stan")), "galaz": w.get("gałąź"),
+                                     "kto": bez_kresek(w.get("kto")), "sesja": bez_kresek(w.get("sesja"))}
     return {"puls": None if puls in ("", "—", "–", "-") else puls,
             "podroz": podroz, "watki": watki,
             "czeka": [pytanie(p) for p in punkty(sekcja(sek, "Czeka na szefa"))]}
@@ -188,21 +197,12 @@ def czytaj_decyzje(projekt: Path) -> dict:
     return {"szefa": lista("Szefa"), "archiego": lista("Archiego")}
 
 
-def czytaj_zadania(projekt: Path, w_podrozy: list[str] | None = None) -> dict:
-    """Zadania z Zadania.md; te z `w_podrozy` (numery z linii `Zadania:` planu) przechodzą do „w toku”."""
+def czytaj_zadania(projekt: Path) -> dict:
+    """Zadania z Zadania.md według sekcji. Zadania między sekcjami przesuwa Archi, generator tylko czyta."""
     _, sek = sekcje(czytaj(projekt / "dokumentacja" / "Zadania.md"))
-    wynik = {k: [sklej(p) for p in punkty(sekcja(sek, n))]
-             for k, n in (("w_toku", "W toku"), ("nastepnie", "Następnie"), ("zaplanowane", "Zaplanowane"),
-                         ("odlozone", "Odłożone"))}
-    for numer in w_podrozy or []:
-        wzor = re.compile(rf"{re.escape(numer)}\b")
-        for z in [z for k in ("nastepnie", "zaplanowane") for z in wynik[k] if wzor.match(z)]:
-            for k in ("nastepnie", "zaplanowane"):
-                if z in wynik[k]:
-                    wynik[k].remove(z)
-            if z not in wynik["w_toku"]:
-                wynik["w_toku"].append(z)
-    return wynik
+    return {k: [sklej(p) for p in punkty(sekcja(sek, n))]
+            for k, n in (("w_toku", "W toku"), ("nastepnie", "Następnie"), ("zaplanowane", "Zaplanowane"),
+                         ("zrobione", "Zrobione w tej podróży"), ("odlozone", "Odłożone"))}
 
 
 def katalogi_podrozy(projekt: Path) -> list[tuple[str, str, Path]]:
@@ -281,33 +281,61 @@ def zbuduj_watek(projekt: Path, katalog: Path, numer: str, nazwa: str, kto: str 
     if not plik or plik.startswith("("):
         plik = f"watek-{krotka}.md"
     plik_wateku = katalog / plik
-    sc = scalenie(projekt, galaz, nazwa)
+    ma_galaz = bool(re.fullmatch(r"[\w-]+(/[\w-]+)?", nazwa)) and nazwa.lower() != "archi"
+    sc = scalenie(projekt, galaz, nazwa) if ma_galaz else None
     scalono = sc[0] if sc else None
-    start = (start_galezi(projekt, galaz) or (sc[1] if sc else None)
+    start = ((start_galezi(projekt, galaz) if ma_galaz else None) or (sc[1] if sc else None)
              or (data_dodania(projekt, plik_wateku) if plik_wateku.exists() else None)
              or data_dodania(projekt, katalog / "plan.md"))
-    if not scalono and (stan or "").lower().startswith("scalone"):
+    if not scalono and ma_galaz and (stan or "").lower().startswith("scalon"):
         scalono = koniec_galezi(projekt, galaz)
     return {"nazwa": nazwa, "kto": kto, "stan": stan, "galaz": galaz,
             "start": start or start_podrozy, "scalono": scalono}
 
 
-def zbuduj_podroz(stan: dict, projekt: Path, plan: dict | None = None) -> dict | None:
+def kto_watku(nazwa: str, numer: str, kto_plan: str | None, s: dict, sesje: set[str], projekt: str) -> str:
+    """Kto pracuje: kolumna „Kto” (plan, potem Stan.md), `Archi` dla wiersza „Archi”, `wyko`, gdy w logach jest
+    sesja wyko-<projekt>-NN-<nazwa> (albo kolumna „Sesja” zaczyna się od wyko-); inaczej „nie wiadomo”."""
+    kto = bez_kresek(kto_plan) or s.get("kto")
+    if kto:
+        return kto
+    if nazwa.strip().lower() == "archi":
+        return "Archi"
+    krotka = nazwa.split("/")[-1]
+    if f"wyko-{projekt}-{numer}-{krotka}" in sesje or (s.get("sesja") or "").startswith("wyko-"):
+        return "wyko"
+    return "nie wiadomo"
+
+
+def zbuduj_podroz(stan: dict, projekt: Path, plan: dict | None = None, sesje: set[str] | None = None,
+                  nazwa_projektu: str = "") -> dict | None:
     if not stan["podroz"]:
         return None
     numer, temat = stan["podroz"]
     katalog = projekt / "dokumentacja" / "podroze" / f"{numer}-{temat}"
     plan = plan or czytaj_plan(katalog)
+    sesje = sesje or set()
     watki, widziane = [], set()
+
+    def nazwa_w_stanie(nazwa: str) -> str | None:
+        if nazwa in stan["watki"]:
+            return nazwa
+        krotka = nazwa.split("/")[-1]
+        return next((n for n in stan["watki"] if n.split("/")[-1] == krotka), None)
+
     for w in plan["watki"]:
-        s = stan["watki"].get(w["nazwa"], {})
-        watki.append(zbuduj_watek(projekt, katalog, numer, w["nazwa"], w["kto"], s.get("stan") or w["stan"],
+        n = nazwa_w_stanie(w["nazwa"])
+        s = stan["watki"].get(n, {})
+        watki.append(zbuduj_watek(projekt, katalog, numer, w["nazwa"],
+                                  kto_watku(w["nazwa"], numer, w["kto"], s, sesje, nazwa_projektu),
+                                  s.get("stan") or w["stan"] or "nie wiadomo",
                                   s.get("galaz"), w["plik"], plan["start"]))
-        widziane.add(w["nazwa"])
+        widziane.add(n)
     for nazwa, s in stan["watki"].items():
         if nazwa not in widziane:
-            watki.append(zbuduj_watek(projekt, katalog, numer, nazwa, None, s["stan"], s["galaz"], None,
-                                      plan["start"]))
+            watki.append(zbuduj_watek(projekt, katalog, numer, nazwa,
+                                      kto_watku(nazwa, numer, None, s, sesje, nazwa_projektu),
+                                      s["stan"] or "nie wiadomo", s["galaz"], None, plan["start"]))
     return {"numer": numer, "temat": temat, "start": plan["start"], "tryb": plan["tryb"],
             "kryteria": plan["kryteria"], "watki": watki}
 
@@ -321,6 +349,38 @@ def rola(sesja: str, agent: bool, model: str = "") -> str:
     if sesja.startswith("archi-"):
         return "Archi"
     return "wyko" if sesja.startswith("wyko-") else "pomo"
+
+
+PRZERWA = timedelta(minutes=30)
+DNI_AKTYWNOSCI = 7
+
+
+def aktywnosc(projekt: Path, nazwa: str, teraz: datetime, katalog: Path | None) -> list[dict]:
+    """Odcinki pracy sesji z ostatnich 7 dni. Nowy odcinek zaczyna się po przerwie dłuższej niż 30 minut;
+    wpisy agentów liczą się do sesji, która ich wywołała. Archi pierwszy, potem wg pierwszego startu."""
+    granica = teraz - timedelta(days=DNI_AKTYWNOSCI)
+    czasy: dict[str, list[datetime]] = defaultdict(list)
+    for w in wpisy(projekt, katalog):
+        t = lokalny(w["czas"])
+        if granica <= t <= teraz:
+            czasy[w["sesja"]].append(t)
+    wynik = []
+    for sesja, lista in czasy.items():
+        lista.sort()
+        odcinki, start, ostatni = [], lista[0], lista[0]
+        for t in lista[1:]:
+            if t - ostatni > PRZERWA:
+                odcinki.append([start, ostatni])
+                start = t
+            ostatni = t
+        odcinki.append([start, ostatni])
+        m = re.fullmatch(rf"wyko-{re.escape(nazwa)}-(\d+)-(.+)", sesja)
+        wynik.append({"nazwa": sesja, "rola": rola(sesja, False),
+                      "watek": f"{m.group(1)}/{m.group(2)}" if m else None,
+                      "odcinki": [[a.isoformat(timespec="seconds"), b.isoformat(timespec="seconds")]
+                                  for a, b in odcinki]})
+    wynik.sort(key=lambda x: (x["rola"] != "Archi", x["odcinki"][0][0]))
+    return wynik
 
 
 def ostatnie_dni(teraz: datetime) -> list[str]:
@@ -401,6 +461,7 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
     teraz = (teraz or datetime.now()).astimezone()
     stan = czytaj_stan(projekt)
     plan_biezacy = None
+    logi = aktywnosc(projekt, nazwa, teraz, katalog_sesji)
     if stan["podroz"]:
         plan_biezacy = czytaj_plan(projekt / "dokumentacja" / "podroze" / "-".join(stan["podroz"]))
     historia = []
@@ -416,10 +477,10 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
                          "od": od, "do": do, "podsumowanie": p["podsumowanie"]})
     return {"nazwa": nazwa, "opis": opis, "repo": repo,
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
-            "podroz": zbuduj_podroz(stan, projekt, plan_biezacy), "czeka": stan["czeka"],
-            "decyzje": czytaj_decyzje(projekt), "zadania": czytaj_zadania(projekt, (plan_biezacy or {}).get("zadania")),
+            "podroz": zbuduj_podroz(stan, projekt, plan_biezacy, {x["nazwa"] for x in logi}, nazwa), "czeka": stan["czeka"],
+            "decyzje": czytaj_decyzje(projekt), "zadania": czytaj_zadania(projekt),
             "historia": historia, "koszty": koszty(projekt, nazwa, historia, teraz, katalog_sesji),
-            "commity": commity(projekt, teraz)}
+            "commity": commity(projekt, teraz), "aktywnosc": logi}
 
 
 def main() -> int:
