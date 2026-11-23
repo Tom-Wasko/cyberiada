@@ -97,3 +97,19 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
+
+**Zrobione (commity 0d0965d generator, następny: strona + dokument):**
+- Generator: klucz zrobione, brak przenoszenia przez Zadania:, wątki z każdej sekcji Stan.md (kto/stan bez ?, brak = nie wiadomo), aktywnosc (odcinki, przerwa >30 min, agent do sesji, Archi pierwszy); przenies.py cel zrobione.
+- Strona: pasek przycisków po lewej (poniżej 720 px poziomy u góry), panele zamiast kart (wybór w localStorage, domyślnie Przegląd), Czeka z licznikiem i znaczkiem nowe, kafle przełączają panel, kolumna Zrobione w tej podróży, przy wątku kto + stan ze Stan.md + stan pracownika, oś czasu pracowników zamiast wykresu Wątki (24 h, ◀ Dziś ▶, przeciąganie, dymki, kropka scalenia, tabela, touch-action:pan-y).
+- Dokument: watek-generator.md (uzupełnienie schematu podróży 05).
+
+**Dowody:**
+- unittest discover -s narzedzia/dziennik/testy → Ran 39 tests ... OK
+- JSON lukrum: 22 wątki, każdy z kto i stan; aktywnosc: 30 sesji, pierwsza archi-lukrum.
+- grep -c '"?"' strona.html → 5, wszystkie to porównania/pusty tekst, żadne nie jest stanem ani kto.
+- Zrzuty w _robocze/05-dziennik/ (poza gitem): pc-przeglad.png, pc-lukrum.png (1280), tel-lukrum.png (390), pc-wstecz.png (oś o dzień wcześniej, inne podpisy: system, 01/notatki, 02/sklepy…). Podgląd: podglad.html (budowany zbuduj.py).
+
+**Nie sprawdzone:** tryb ciemny i dymki/przeciąganie palcem tylko z kodu, bez zrzutu; nie dodano nowych kolorów (walidator palety niepotrzebny). Strony nie publikowałem.
+
+**Propozycje:** wiersz „podroz-03 (całość)” w lukrum ma kto „nie wiadomo” (to nie wątek); w lukrum oś ma ~25 wierszy w oknie scalenia, można by zwijać.
+
