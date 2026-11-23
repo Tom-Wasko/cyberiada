@@ -17,15 +17,17 @@ Polecenie: `/podroz $ARGUMENTS`. Wykonuje Archi w folderze projektu. Szablony: `
    inaczej zapisz pytanie w „Czeka na szefa” i czekaj.
 4. Utwórz `dokumentacja/podroze/NN-temat/plan.md` z `plan-podrozy.md` (NN = następny numer, dwie cyfry);
    w nagłówku numery zadań `Z<n>`, które podróż realizuje (nowe zadanie dostaje numer z licznika).
-   Te zadania przenieś w `Zadania.md` do „W toku”. Wpisz podróż i wątki do `Stan.md`. Commit.
+   Kryteria piszesz teraz; gdy podróż się rozszerza, dopisujesz nowe. Zadania podróży przenieś w `Zadania.md` do „Następnie”. Wpisz podróż i wątki do `Stan.md`. Commit.
 5. Dla każdego wątku wyko: `watek-<nazwa>.md` z `watek.md` (pełny brief), commit, potem
    `python -X utf8 C:/Users/PC/cyberiada/narzedzia/wyko.py <plik>`. Wątki Archiego robisz sam.
+   Gdy wątek startuje, jego zadania idą do „W toku”; po scaleniu do „Zrobione w tej podróży”, a kryteria z dowodem
+   odhaczasz w `plan.md` od razu (hook po scaleniu przypomina).
 6. Odśwież dziennik.
 
 ## Koniec (`/podroz koniec`)
 Tylko na polecenie szefa. Gdy kryteria są spełnione, Archi proponuje zamknięcie i czeka.
 1. Każdy wątek scalony albo odłożony (→ `Zadania.md` „Zaplanowane”, z powodem). Każde kryterium z dowodem.
-2. Podsumowanie w `plan.md`: co zrobione (numery `Z<n>`; zrobione usuń z `Zadania.md`), co odłożone, koszt
+2. Podsumowanie w `plan.md`: co zrobione (numery `Z<n>` z sekcji „Zrobione w tej podróży”, potem ją wyczyść), co odłożone, koszt
    (`python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py --projekt . --od <data startu>`).
 3. Dokumentacja: README, CLAUDE.md, `Zadania.md`, `Decyzje.md`, `funkcje/` (jeśli są).
 4. Skrzynka (`C:/Users/PC/cyberiada/skrzynka.md`): w trybie nadzorowanym zaproponuj szefowi okienkiem, co przenieść

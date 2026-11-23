@@ -55,6 +55,11 @@ def instrukcja(wejscie: dict) -> str | None:
              f"collection postep, doc_id {sesja}, data {json.dumps(dane, ensure_ascii=False)}. "
              f"if_version: wersja z Twojego poprzedniego zapisu tego dokumentu (pierwszy raz bez; gdy zapis "
              f"odmówi z powodu wersji, ponów z wersją podaną w odmowie). Nie czytaj dokumentu.")
+    rodzice = git(cwd, "rev-list", "--parents", "-n", "1", "HEAD").split()
+    if rola == "Archi" and (len(rodzice) > 2 or krok.lower().startswith("scalenie")):
+        tekst = ("Po scaleniu (zasada podróży, zrób w tej samej turze): odhacz w `plan.md` bieżącej podróży kryteria, "
+                 "które mają już dowód, przenieś zadania tego wątku w `Zadania.md` do „Zrobione w tej podróży” i "
+                 "zaktualizuj stan wątku w `Stan.md`; jeśli scalony wątek rozszerzył podróż, dopisz kryteria. ") + tekst
     if rola == "Archi":
         tekst += (f" Potem ruchy zadań z dziennika: ArtifactData get, collection uklad, doc_id {projekt}; jeśli jest i ma "
                   f"`ruchy` ({{\"Z9\": \"nastepnie\", ...}}), uruchom `python -X utf8 {CYBERIADA.as_posix()}/narzedzia/dziennik/"

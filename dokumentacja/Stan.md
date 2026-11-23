@@ -9,7 +9,7 @@ Tryb: nadzorowany od 21:26. (Autonomiczny 16:45–16:55: próba hooka T18 udana.
 | Wątek | Kto | Stan |
 |---|---|---|
 | 05/dziennik | wyko | w toku |
-| 05/zasady | Archi | w toku |
+| 05/zasady | Archi | gotowe |
 
 ## Czeka na szefa
 

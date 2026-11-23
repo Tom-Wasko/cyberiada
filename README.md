@@ -16,7 +16,7 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 | `archi <projekt> papa 4h` | to samo i od razu tryb autonomiczny (`/papa`) z budżetem |
 | `claude` | zwykły czat: Pomocnik (Sonnet), do drobnych spraw w dowolnym folderze |
 | `claude agents` | lista sesji w tle (wyko); `claude attach <id>` podgląd i rozmowa z wyko |
-| `python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py [--projekt <folder>] [--od RRRR-MM-DD]` | zużycie tokenów według sesji |
+| `python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py [--projekt <nazwa albo folder>] [--od RRRR-MM-DD]` | zużycie tokenów według sesji |
 | `python -X utf8 C:/Users/PC/cyberiada/narzedzia/dziennik/generuj.py --projekt <nazwa>` | dane projektu do dziennika (Archi zapisuje je na stronę: `narzedzia/dziennik/README.md`) |
 | `.\zainstaluj.ps1 [-Sprawdz]` | instalacja albo sprawdzenie cyberiady na tym komputerze |
 

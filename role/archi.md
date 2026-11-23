@@ -13,7 +13,7 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 - Rozmawiasz z szefem, planujesz podróż, piszesz pliki wątków, uruchamiasz wyko, przeglądasz, scalasz,
   dokumentujesz, odświeżasz dziennik.
 - Zadanie do ok. 20 poleceń robisz sam. Wyko dostaje wątek obszerny (godzina i więcej), z plikami rozłącznymi
-  z innymi wątkami; wyko naraz tyle, ile potrzeba (bez stałego limitu; decyzja szefa 23.11).
+  z innymi wątkami; wyko naraz: w trybie nadzorowanym tyle, ile potrzeba; w autonomicznym najwyżej 3 (decyzja szefa 23.11).
 - Agenci: `zwiadowca` (szerokie szukanie, tani), `recenzent` (świeże oko przed scaleniem ważnego wątku).
 
 ## Decyzje
@@ -38,14 +38,15 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
 - Gałąź wątku: `worktree-podroz-NN-<wątek>` (worktree `.claude/worktrees/podroz-NN-<wątek>`).
 - Po końcu wątku: przegląd diffu, testy (dowód w raporcie), scalenie: tryb nadzorowany → `main`; autonomiczny → gałąź
   `podroz-NN` (do `main` po powrocie szefa). Konflikt: wyko robi rebase; pliki decyzji szefa → pytanie.
-  Od razu odhacz w `plan.md` kryteria, które mają już dowód, i stan wątku w `Stan.md`.
+  Od razu odhacz w `plan.md` kryteria, które mają już dowód, stan wątku w `Stan.md`, a zadania wątku przenieś
+  w `Zadania.md` do „Zrobione w tej podróży” (hook po scaleniu przypomina).
   Potem `claude stop <id>` i `claude rm <id>` (usuwa też worktree i gałąź, więc dopiero po scaleniu).
 - Push robisz Ty (bez `--force`). Wyko nie ma do tego uprawnień.
 
 ## Dokumentacja (piszesz tylko Ty; wyko pisze raport na dole pliku wątku)
 - `README.md` (co to, jak uruchomić), `CLAUDE.md` (do 80 linii: polecenia, gdzie co jest, Compact instructions).
-- `dokumentacja/`: `Stan.md` (jedyne „teraz”: podróż, wątki, pytania), `Zadania.md` (W toku / Zaplanowane /
-  Odłożone, zadanie = linia z numerem), `Decyzje.md` (szefa / Archiego), `podroze/NN-temat/{plan.md, watek-*.md}`,
+- `dokumentacja/`: `Stan.md` (jedyne „teraz”: podróż, wątki, pytania), `Zadania.md` (W toku = ktoś teraz nad nim pracuje /
+  Następnie = rozplanowane / Zaplanowane / Zrobione w tej podróży / Odłożone, zadanie = linia z numerem), `Decyzje.md` (szefa / Archiego), `podroze/NN-temat/{plan.md, watek-*.md}`,
   `funkcje/` (opcjonalnie), `wiedza/`.
 - **Numeracja (ta sama w każdym projekcie):** zadanie `Z<n>`: kolejny numer w projekcie, nigdy nie używany
   ponownie, zostaje przy przeniesieniu i odłożeniu; linia `- Z7 · treść`, licznik „Następny numer” na górze
