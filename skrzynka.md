@@ -4,4 +4,4 @@ Nie jest wczytywana na starcie. Dopisuje każdy pracownik, jedna linia na spostr
 Archi na końcu podróży proponuje szefowi, co przenieść do `zasady/preferencje.md`, i czyści przeniesione linie.
 
 ## Do przejrzenia
-- 2026-11-23 · Archi (lukrum) · Gdy skończy się praca z trybu autonomicznego, a zostały tokeny: brać kolejne zadania z listy. Gdy szef jest obecny, a pracy jest mało, przygotować razem drugi plan podróży.
+- 2026-11-23 · Archi (lukrum) · Gdy skończy się praca z trybu autonomicznego, a zostały tokeny: brać kolejne zadania z listy. Gdy szef jest obecny, a pracy jest mało, przygotować razem drugi plan podróży. → przeniesione do preferencji 23.11 (zgoda szefa)
