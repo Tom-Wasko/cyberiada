@@ -158,7 +158,8 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .zadanie.ciagniety{opacity:.35}
 .zadanie.duch{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:rotate(1.5deg)}
 .zadanie .opis{font-size:14px;color:var(--ink2);padding:8px 0 12px;line-height:1.45}
-.decyzja{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
+.decyzja{display:grid;grid-template-columns:62px minmax(0,1fr);overflow-wrap:anywhere;gap:8px;padding:6px 0;border-top:1px solid var(--grid);font-size:14px}
+.cialo,.blok,.pytanie,.karta li{overflow-wrap:anywhere}
 .decyzja:first-of-type{border-top:0}
 .decyzja .kiedy{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
 details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:6px 0}
@@ -171,7 +172,8 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .stan.toku{--c:var(--s1)}.stan.scalone{--c:var(--s3)}.stan.czeka{--c:var(--s4)}.stan.cisza{--c:var(--s8)}
 .watki-lista{display:grid;gap:8px;margin-top:12px}
 .wl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--border)}
-.wl .nazwa{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.wl .nazwa{font-weight:600;overflow-wrap:anywhere;min-width:0}
+@media (max-width:719px){.wl{grid-template-columns:minmax(0,1fr)}.wl .stany{justify-self:start;flex-wrap:wrap}}
 .kto-watku{color:var(--ink2);font-weight:400;font-size:13px}
 .wl .ost{grid-column:1/-1;color:var(--ink2);font-size:13px;overflow-wrap:anywhere}
 .stany{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
@@ -542,7 +544,8 @@ function osCzasu(p){
         svg.append(b);
       }
       if(sc&&sc.getTime()>=t0&&sc.getTime()<=t1){
-        const kr=s("circle",{cx:x(sc.getTime()),cy:yc,r:6,class:"scal",fill:"var(--ink)","data-tip":""});
+        const koniecO=widoczne.length?Math.min(W-mr,x(widoczne[widoczne.length-1][1].getTime())):ml;
+        const kr=s("circle",{cx:Math.min(W-mr-4,Math.max(x(sc.getTime()),koniecO+7)),cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
         kr.__tip=[pod,"Scalono: "+fCzas.format(sc)];svg.append(kr);
       }
     });
