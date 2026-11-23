@@ -34,3 +34,11 @@ pracowników zamiast wykresu „Wątki”, stany wątków bez „?”, pasek po 
 | 05/zasady | Archi | (bez pliku) | gotowe (skill i rola: zadania, kryteria; hook) |
 
 ## Podsumowanie
+Zakończona 2026-11-23 (szef). Zrobione: **Z7** (lista poprawek szefa z 23.11).
+- Zasady: limit 3 wyko w trybie autonomicznym; zadania W toku / Następnie / Zrobione w tej podróży; kryteria pisane na starcie,
+  odhaczane przy scaleniu (przypomnienie w hooku); kryteria krótkie (preferencja szefa).
+- `zuzycie.py --projekt <nazwa>` naprawiony; brakujące liczby lukrum przekazane archi-lukrum.
+- Dziennik: wszystko pod sobą z paskiem po lewej, projekty jako klocki, oś czasu pracowników (rzędy „naraz”,
+  podpis przy lewej krawędzi, zwężone przerwy, widok podróży i „Wszystko”), stany wątków bez „?”, kolumna Zrobione.
+- Odłożone: nic. Nie sprawdzone na żywo: ciemny tryb i przesuwanie palcem na telefonie.
+- Koszt (`zuzycie.py --projekt . --od 2026-11-23`): 5,25M ważonych (Archi 3,06M; wyko 05/dziennik 1,09M, 05/dziennik2 0,50M, 05/dziennik3 0,60M).

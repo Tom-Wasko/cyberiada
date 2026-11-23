@@ -17,7 +17,7 @@ Polecenie: `/podroz $ARGUMENTS`. Wykonuje Archi w folderze projektu. Szablony: `
    inaczej zapisz pytanie w „Czeka na szefa” i czekaj.
 4. Utwórz `dokumentacja/podroze/NN-temat/plan.md` z `plan-podrozy.md` (NN = następny numer, dwie cyfry);
    w nagłówku numery zadań `Z<n>`, które podróż realizuje (nowe zadanie dostaje numer z licznika).
-   Kryteria piszesz teraz; gdy podróż się rozszerza, dopisujesz nowe. Zadania podróży przenieś w `Zadania.md` do „Następnie”. Wpisz podróż i wątki do `Stan.md`. Commit.
+   Kryteria piszesz teraz, krótko (jedna linia, kilka słów; dowody w raporcie wątku, nie pod kryterium); gdy podróż się rozszerza, dopisujesz nowe. Zadania podróży przenieś w `Zadania.md` do „Następnie”. Wpisz podróż i wątki do `Stan.md`. Commit.
 5. Dla każdego wątku wyko: `watek-<nazwa>.md` z `watek.md` (pełny brief), commit, potem
    `python -X utf8 C:/Users/PC/cyberiada/narzedzia/wyko.py <plik>`. Wątki Archiego robisz sam.
    Gdy wątek startuje, jego zadania idą do „W toku”; po scaleniu do „Zrobione w tej podróży”, a kryteria z dowodem

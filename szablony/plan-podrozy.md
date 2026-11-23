@@ -6,7 +6,7 @@ Zadania: Z…, Z…
 Jedno-dwa zdania: po co ta podróż.
 
 ## Kryteria sukcesu (zatwierdzone przez szefa)
-- [ ] sprawdzalne kryterium 1 (jak sprawdzić)
+- [ ] krótkie sprawdzalne kryterium (jedna linia, kilka słów)
 - [ ] …
 
 ## Wątki

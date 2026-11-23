@@ -11,6 +11,5 @@ Następny numer: Z8
 ## Zaplanowane
 
 ## Zrobione w tej podróży
-- Z7 · lista poprawek szefa z 23.11: limit wyko w trybie autonomicznym, zadania (W toku / Następnie / Zrobione w tej podróży), kryteria, oś czasu pracowników, stany wątków, pasek po lewej i panele, narzędzie tokenów
 
 ## Odłożone

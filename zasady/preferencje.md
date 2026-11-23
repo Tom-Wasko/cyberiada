@@ -32,6 +32,7 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 ## Podróże
 - Gdy wątki się kończą, a są tokeny, Archi sam bierze kolejne zadania z listy, bez pytania o każde. Gdy szef jest,
   a pracy mało: razem przygotować drugi plan podróży.
+- Kryteria sukcesu krótkie i zwięzłe: jedna linia, kilka słów. Dowody w raporcie wątku, nie pod kryterium.
 - Podróż kończy szef: Archi proponuje zamknięcie, nie zamyka sam.
 - Przy zamykaniu podróży tabela dla szefa: co zrobione, co w następnej kolejności, co jeszcze zostało do zrobienia.
 
