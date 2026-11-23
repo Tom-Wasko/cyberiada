@@ -16,7 +16,8 @@ pracowników zamiast wykresu „Wątki”, stany wątków bez „?”, pasek po 
 - [x] Oś czasu pracowników: domyślnie dziś, przesuwanie w lewo, Archi na górze z przerwami (zrzuty: komputer, telefon, przesunięta).
 - [x] `zuzycie.py --projekt lukrum` działa, testy OK, archi-lukrum dostał brakujące liczby.
   Dowód: `--projekt lukrum --od 2026-11-23` → RAZEM 25,2M; testy `Ran 31 tests … OK`; liczby trybu autonomicznego (22,0M) wysłane.
-- [ ] Po uwagach szefa: wszystko widać przewijając w dół, projekty jako klocki, oś 6 h z rzędami „naraz” i podpisem przy lewej krawędzi (zrzuty).
+- [x] Po uwagach szefa: wszystko widać przewijając w dół, projekty jako klocki, oś 6 h z rzędami „naraz” i podpisem przy lewej krawędzi (zrzuty).
+  Dowód (05/dziennik2, scalone 26be214): testy 39 OK; lukrum 6 wyko naraz = 6 rzędów; podpisy zmieniają się przy przesunięciu (teraz 03/zestawy, −5 h 03/ukryte, −1 dzień 02/sklepy); telefon scrollWidth 390; strona opublikowana.
 - [x] Pasek przycisków po lewej przełącza panele zamiast rozwijanych kart (zrzuty komputer i telefon).
 - [x] Testy dziennika OK, strona opublikowana.
   Dowód (05/dziennik, scalone ee0fe12): `unittest discover` → OK (39 testów); JSON lukrum 22 wątki z kto i stanem;
@@ -26,7 +27,7 @@ pracowników zamiast wykresu „Wątki”, stany wątków bez „?”, pasek po 
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
 | 05/dziennik | wyko | `watek-dziennik.md` | scalony |
-| 05/dziennik2 | wyko | `watek-dziennik2.md` | w toku (uwagi szefa po obejrzeniu) |
+| 05/dziennik2 | wyko | `watek-dziennik2.md` | scalony |
 | 05/zasady | Archi | (bez pliku) | gotowe (skill i rola: zadania, kryteria; hook) |
 
 ## Podsumowanie
