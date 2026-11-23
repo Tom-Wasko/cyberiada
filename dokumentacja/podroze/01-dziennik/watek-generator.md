@@ -57,7 +57,9 @@
   - **Zadania.md:** sekcje `## W toku`, `## Zaplanowane`, `## Odłożone` → listy tekstów (z kontynuacjami).
   - **historia:** wszystkie katalogi `podroze/NN-*` posortowane po numerze → `{numer, temat, start, koniec,
     podsumowanie}`; `koniec` z linii `Koniec:` albo `null`; `podsumowanie` = tekst sekcji `## Podsumowanie`
-    bez komentarzy, przycięty do 600 znaków (pusty → `""`).
+    bez komentarzy, przycięty do 600 znaków (pusty → `""`). Wpisy mają też `od`/`do` (ISO z gita, gdy znane).
+  - **ostatnia_podroz** (dodane w 05/dziennik3): `{nazwa: "Podróż NN", od, do}` = ostatnia zakończona podróż z
+    `historia` (z `koniec`), pomijając bieżącą; `od`/`do` ISO z gita, a gdy brak, daty z planu. Brak → `null`.
   - **koszty.dni:** ostatnie 30 dni (włącznie z dziś, dni bez zużycia jako zera), sumy dla sesji, których
     `cwd` zaczyna się od ścieżki projektu (tak jak `zuzycie.py --projekt`, więc z worktree). Dzień według
     czasu lokalnego (logi mają UTC `...Z`; przelicz `datetime.fromisoformat(...).astimezone()`).

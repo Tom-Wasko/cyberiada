@@ -218,6 +218,14 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .os-plot{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 .os-plot svg{touch-action:pan-y}
 .os-plot.ciagnie{cursor:grabbing}
+.os-plot.nieprzewija{cursor:default;touch-action:auto}
+.os-plot.nieprzewija svg{touch-action:auto}
+.os-gora{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;margin:0 0 8px}
+.os-gora .zakres{margin:0}
+.os-przel{display:flex;gap:6px}
+.przelacz[aria-pressed="true"]{background:var(--hover);color:var(--ink);border-color:var(--ink2)}
+.etykieta.przerwa{font-size:11px;fill:var(--ink2)}
+.etykieta.data{font-weight:600;fill:var(--ink2)}
 .etykieta.szary{opacity:.45}
 /* klocki projektów */
 .klocki{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
@@ -337,7 +345,8 @@ function norm(id,d){
     zadania:{w_toku:ls(zad.w_toku),nastepnie:ls(zad.nastepnie),zaplanowane:ls(zad.zaplanowane),zrobione:ls(zad.zrobione),odlozone:ls(zad.odlozone)},
     aktywnosc:tab(d.aktywnosc).map(a=>{a=obj(a);return{nazwa:tekst(a.nazwa),rola:tekst(a.rola)||"pomo",watek:tekst(a.watek),
       odcinki:tab(a.odcinki).map(o=>{o=tab(o);return[data(o[0]),data(o[1])];}).filter(o=>o[0]&&o[1])};}).filter(a=>a.nazwa),
-    historia:tab(d.historia).map(h=>{h=obj(h);return{numer:tekst(h.numer),temat:tekst(h.temat),start:data(h.start),koniec:data(h.koniec),podsumowanie:tekst(h.podsumowanie)};}),
+    historia:tab(d.historia).map(h=>{h=obj(h);return{numer:tekst(h.numer),temat:tekst(h.temat),start:data(h.start),koniec:data(h.koniec),od:data(h.od),do:data(h.do),podsumowanie:tekst(h.podsumowanie)};}),
+    ostatniaPodroz:(()=>{const o=obj(d.ostatnia_podroz),od=data(o.od),dd=data(o.do);return od&&dd?{nazwa:tekst(o.nazwa)||"Ostatnia podróż",od,do:dd,doDzien:DZIEN_RE.test(tekst(o.do))}:null;})(),
     koszty:{
       dni:tab(k.dni).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),wazone:liczba(z.wazone),wejscie:liczba(z.wejscie),wyjscie:liczba(z.wyjscie),cache_odczyt:liczba(z.cache_odczyt),cache_zapis:liczba(z.cache_zapis)};}).filter(z=>DZIEN_RE.test(z.dzien)),
       role:tab(k.role).map(z=>{z=obj(z);return{podroz:tekst(z.podroz),rola:tekst(z.rola),wazone:liczba(z.wazone)};}),
@@ -483,8 +492,8 @@ function wykresRole(tytul,podpis,wiersze,klasa){
 }
 
 /* ---------- oś czasu pracowników ---------- */
-const GODZINA=36e5,OKNO=6*GODZINA,MAX_WSTECZ=7*864e5,ZAPAS=3*6e4;
-const OS={};  // przesunięcie osi (ms wstecz od „teraz”) osobno dla każdego projektu
+const GODZINA=36e5,ZAPAS=3*6e4;
+const OS={};  // stan osi (widok, przesunięcie w px) osobno dla każdego projektu
 const krotkaNazwa=n=>tekst(n).split("/").pop();
 const tenSamWatek=(a,b)=>!!a&&!!b&&(a===b||krotkaNazwa(a)===krotkaNazwa(b));
 function watekPodrozy(p,watek){return p.podroz&&watek?p.podroz.watki.find(w=>tenSamWatek(w.nazwa,watek)):null;}
@@ -527,77 +536,165 @@ function opisStanu(p,a){
   return cz.length?cz.join(" · "):"nie wiadomo";
 }
 const fOd=d=>fCzas.format(d),fDo=(a,b)=>(a.toDateString()===b.toDateString()?fGodz.format(b):fCzas.format(b));
-function osCzasu(p){
-  const st=OS[p.klucz]=OS[p.klucz]||{przes:0};
-  const rzedy=ukladRzedow(p.aktywnosc);
-  let plot=null,zakres=null,klatka=0,iwOsi=300;
-  function odswiez(){
-    if(zakres){const k=Date.now()-st.przes,o=k-OKNO;
-      zakres.textContent=(st.przes===0?"Ostatnie 6 h, do teraz":fDzienPelny.format(new Date(o))+", "+fGodz.format(new Date(o))+" – "+fGodz.format(new Date(k)))+" · przeciągnij, żeby zobaczyć wcześniej";}
-    if(plot&&plot.isConnected&&plot.clientWidth)rysuj(plot);
+const GODZ_PRZERWY=GODZINA,SZER_PRZERWY=28,MIN_PX_H=40;
+const fDzienKrotki=new Intl.DateTimeFormat("pl-PL",{day:"numeric",month:"numeric"});
+function fDlugosc(ms){const m=Math.round(ms/6e4);if(m<90)return m+" min";return Math.round(m/60)+" h";}
+/* Zakres osi: [A,B] w ms oraz podpis. Widok „podroz”: bieżąca podróż od startu do teraz albo ostatnia zakończona; „wszystko”: 7 dni. */
+function zakresOsi(p,widok,teraz){
+  if(widok==="podroz"){
+    if(p.podroz){
+      const h=p.historia.find(x=>x.numer===p.podroz.numer);
+      const od=(h&&h.od)||p.podroz.start;
+      if(od)return{A:od.getTime(),B:teraz,podpis:"Podróż "+p.podroz.numer+": od "+fDzienKrotki.format(od)};
+    }else if(p.ostatniaPodroz){
+      const o=p.ostatniaPodroz,B=o.doDzien?o.do.getTime()+864e5-1:o.do.getTime();
+      return{A:o.od.getTime(),B,podpis:o.nazwa+" (zakończona)"};
+    }
   }
+  return{A:teraz-7*864e5,B:teraz,podpis:"Wszystko (7 dni)"};
+}
+/* Odcinki ograniczone do [A,B]; sesje bez odcinków w zakresie odpadają (Archi zostaje, żeby pierwszy rząd był zawsze). */
+function przytnij(akt,A,B){
+  return akt.map(a=>({...a,odcinki:a.odcinki.map(o=>[new Date(Math.max(o[0].getTime(),A)),new Date(Math.min(o[1].getTime(),B))]).filter(o=>o[1]>o[0])})).filter(a=>a.odcinki.length||a.rola==="Archi");
+}
+/* Praca (suma wszystkich rzędów) i przerwy dłuższe niż 1 h: [{a,b,przerwa}] od A do B. */
+function odcinkiOsi(akt,A,B){
+  const wsz=akt.flatMap(a=>a.odcinki.map(o=>[o[0].getTime(),o[1].getTime()])).sort((x,y)=>x[0]-y[0]);
+  const sc=[];
+  for(const o of wsz){const o2=sc[sc.length-1];if(o2&&o[0]-o2[1]<=GODZ_PRZERWY)o2[1]=Math.max(o2[1],o[1]);else sc.push([o[0],o[1]]);}
+  if(!sc.length)return[];
+  const wyn=[];
+  let poz=A;
+  for(const o of sc){
+    if(o[0]-poz>GODZ_PRZERWY)wyn.push({a:poz,b:o[0],przerwa:true});
+    wyn.push({a:o[0],b:o[1],przerwa:false});poz=o[1];
+  }
+  if(B-poz>GODZ_PRZERWY)wyn.push({a:poz,b:B,przerwa:true});
+  return wyn;
+}
+function opisPrzerwy(a,b){
+  const d=b-a;let noc=false;
+  if(d>=4*GODZINA){const t=new Date(a);t.setHours(3,0,0,0);if(t.getTime()<a)t.setDate(t.getDate()+1);noc=t.getTime()<=b;}
+  return{dlugi:"przerwa "+fDlugosc(d)+(noc?" · noc":""),krotki:fDlugosc(d)};
+}
+function osCzasu(p){
+  const st=OS[p.klucz]=OS[p.klucz]||{};
+  const maPodroz=!!(p.podroz||p.ostatniaPodroz);
+  if(!st.widok||(st.widok==="podroz"&&!maPodroz))st.widok=maPodroz?"podroz":"wszystko";
+  if(st.przes===undefined)st.przes=0;
+  let plot=null,zakres=null,klatka=0,przyciski=null,model={przewija:false,z:{podpis:""}};
+  function odswiez(){if(plot&&plot.isConnected&&plot.clientWidth)rysuj(plot);}
   function rysuj(pl){
     plot=pl;
-    const teraz=Date.now(),t1=teraz-st.przes,t0=t1-OKNO;
-    const W=Math.max(260,pl.clientWidth),lw=Math.min(112,W*.28),ml=lw+8,mr=14,mt=20,wr=30,bh=16,mb=24;
-    const H=mt+rzedy.length*wr+mb,iw=W-ml-mr;iwOsi=iw;
-    const x=t=>ml+(t-t0)/OKNO*iw;
-    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu pracowników, okno 6 godzin"});
-    const krokH=iw<340?2:1;
-    const d=new Date(t0);d.setMinutes(0,0,0);
-    while(d.getTime()<t0||d.getHours()%krokH)d.setHours(d.getHours()+1);
-    for(let g=0;g<30&&d.getTime()<=t1;g++){
-      const xx=x(d.getTime());
-      svg.append(s("line",{x1:xx,x2:xx,y1:mt-4,y2:H-mb,class:"siatka"}));
-      svg.append(sTekst({x:xx,y:H-6,"text-anchor":"middle",class:"etykieta"},d.getHours()===0?fDzien.format(d):fGodz.format(d)));
-      d.setHours(d.getHours()+krokH);
+    const teraz=Date.now(),z=zakresOsi(p,st.widok,teraz);
+    const akt=przytnij(p.aktywnosc,z.A,z.B),rzedy=ukladRzedow(akt),seg=odcinkiOsi(akt,z.A,z.B);
+    model={z,przewija:false};
+    const W=Math.max(260,pl.clientWidth),lw=Math.min(112,W*.28),ml=lw+8,mr=14,mt=20,wr=30,bh=16,mb=40;
+    const H=mt+rzedy.length*wr+mb,iw=W-ml-mr;
+    const praca=seg.filter(q=>!q.przerwa),przerwy=seg.filter(q=>q.przerwa);
+    const msPracy=praca.reduce((n,q)=>n+q.b-q.a,0);
+    if(!praca.length){
+      const svg0=s("svg",{width:W,height:50,viewBox:`0 0 ${W} 50`,role:"img","aria-label":"Oś czasu pracowników: brak pracy w tym zakresie"});
+      svg0.append(sTekst({x:ml,y:30,class:"etykieta"},"Brak pracy w tym zakresie"));
+      pl.classList.add("nieprzewija");pl.replaceChildren(svg0);zakres.textContent=z.podpis;return;
     }
-    svg.append(s("line",{x1:ml,x2:W-mr,y1:H-mb,y2:H-mb,class:"os"}));
+    let pxh=(iw-przerwy.length*SZER_PRZERWY)/(msPracy/GODZINA);
+    model.przewija=pxh<MIN_PX_H;
+    if(model.przewija)pxh=MIN_PX_H;
+    const pxms=pxh/GODZINA;
+    let c=0;for(const q of seg){q.c0=c;q.sz=q.przerwa?SZER_PRZERWY:(q.b-q.a)*pxms;c+=q.sz;}
+    const L=c,maxPrzes=Math.max(0,L-iw);
+    st.przes=Math.max(0,Math.min(maxPrzes,st.przes));
+    const off=model.przewija?L-iw-st.przes:0;
+    const xc=cc=>ml+cc-off;
+    const x=t=>{for(const q of seg)if(t<=q.b)return xc(q.c0+(q.przerwa?0:Math.max(t-q.a,0)*pxms));return xc(L);};
+    const tAt=xx=>{const cc=xx-ml+off;for(const q of seg)if(cc<=q.c0+q.sz)return q.przerwa?(cc-q.c0<q.sz/2?q.a:q.b):q.a+Math.max(0,cc-q.c0)/pxms;return seg[seg.length-1].b;};
+    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu pracowników: "+z.podpis});
+    const bez=p.klucz.replace(/[^\w-]/g,"_"),idKl="kl-"+bez,idKr="kr-"+bez;
+    const defs=s("defs");
+    const kl=s("clipPath",{id:idKl});kl.append(s("rect",{x:ml,y:0,width:iw,height:H}));
+    const kr=s("pattern",{id:idKr,width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"});
+    kr.append(s("line",{x1:0,y1:0,x2:0,y2:6,stroke:"var(--axis)","stroke-width":2}));
+    defs.append(kl,kr);svg.append(defs);
+    const g=s("g",{"clip-path":`url(#${idKl})`});svg.append(g);
+    const dol=mt+rzedy.length*wr;
+    for(const q of przerwy){
+      const x0=xc(q.c0);
+      const r=s("rect",{x:x0,y:mt-4,width:q.sz,height:dol-mt+4,fill:`url(#${idKr})`,opacity:.55,"data-tip":""});
+      r.__tip=["Przerwa "+fDlugosc(q.b-q.a),fCzas.format(new Date(q.a))+" – "+fCzas.format(new Date(q.b)),"Nikt nie pracował"];
+      g.append(r);
+      g.append(s("line",{x1:x0,x2:x0,y1:mt-4,y2:dol,class:"siatka"}));
+      g.append(s("line",{x1:x0+q.sz,x2:x0+q.sz,y1:mt-4,y2:dol,class:"siatka"}));
+      const op=opisPrzerwy(q.a,q.b),dost=dol-mt-6;
+      const t=sTekst({x:0,y:0,"text-anchor":"middle",class:"etykieta przerwa",transform:`translate(${x0+q.sz/2+4},${(mt-4+dol)/2}) rotate(-90)`},dost>=op.dlugi.length*6.2?op.dlugi:op.krotki);
+      t.style.pointerEvents="none";g.append(t);
+    }
+    const krok=[1,2,3,6,12,24].find(k=>k*pxh>=34)||24;
+    let ostatniDzien=null;
+    for(const q of praca){
+      const xa=xc(q.c0);
+      if(xa>ml+iw||xa+q.sz<ml)continue;
+      if(new Date(q.a).toDateString()!==ostatniDzien)g.append(sTekst({x:xa+2,y:H-6,class:"etykieta data"},fDzien.format(new Date(q.a))));
+      const d=new Date(q.a);d.setMinutes(0,0,0);
+      while(d.getTime()<q.a||d.getHours()%krok)d.setHours(d.getHours()+1);
+      for(let n=0;n<200&&d.getTime()<=q.b;n++){
+        const xx=x(d.getTime());
+        g.append(s("line",{x1:xx,x2:xx,y1:mt-4,y2:dol,class:"siatka"}));
+        g.append(sTekst({x:xx,y:H-22,"text-anchor":"middle",class:"etykieta"},fGodz.format(d)));
+        if(d.getHours()===0&&d.getTime()>q.a+6e4)g.append(sTekst({x:xx+2,y:H-6,class:"etykieta data"},fDzien.format(d)));
+        d.setHours(d.getHours()+krok);
+      }
+      ostatniDzien=new Date(q.b).toDateString();
+    }
+    svg.append(s("line",{x1:ml,x2:W-mr,y1:dol,y2:dol,class:"os"}));
+    const tL=tAt(ml),tR=tAt(W-mr);
     const maxZn=Math.max(4,Math.floor(lw/6.6));
     rzedy.forEach((rz,i)=>{
       const yc=mt+i*wr+wr/2;
-      const pd=podpisRzedu(rz,t0,t1),la=pd.a;
+      const pd=podpisRzedu(rz,tL,tR),la=pd.a;
       const pod=i===0?"Archi":podpisSesji(la);
       const traf=s("rect",{x:0,y:mt+i*wr,width:W,height:wr,rx:4,class:"traf","data-tip":""});
       if(la)traf.__tip=[pod+(la.nazwa!==pod?" ("+la.nazwa+")":""),"Stan: "+opisStanu(p,la),pd.szary?"W tym oknie nie pracował":"Sesja najbliżej lewej krawędzi okna"];
       else traf.__tip=[pod,"Brak sesji w danych"];
       svg.append(traf);
       const et=sTekst({x:lw,y:yc+4,"text-anchor":"end",class:"etykieta ink"+(pd.szary?" szary":"")},pod.length>maxZn?pod.slice(0,maxZn-1)+"…":pod);et.style.pointerEvents="none";svg.append(et);
-      svg.append(s("line",{x1:ml,x2:W-mr,y1:yc,y2:yc,class:"siatka"}));
+      g.append(s("line",{x1:ml,x2:W-mr,y1:yc,y2:yc,class:"siatka"}));
       for(const a of rz){
         const kolor=rolaKolor(a.rola),wpw=watekPodrozy(p,a.watek),sc=wpw&&wpw.scalono;
         const nazwa=podpisSesji(a);
-        const widoczne=a.odcinki.filter(o=>o[1]>=t0&&o[0]<=t1);
-        for(const o of widoczne){
-          const xa=Math.max(ml,x(o[0].getTime())),xb=Math.min(W-mr,x(o[1].getTime()));
+        for(const o of a.odcinki){
+          const xa=x(o[0].getTime()),xb=x(o[1].getTime());
+          if(xb<ml||xa>W-mr)continue;
           const b=s("rect",{x:xa,y:yc-bh/2,width:Math.max(5,xb-xa),height:bh,rx:4,fill:kolor,"data-tip":""});
           b.__tip=[nazwa+(a.nazwa!==nazwa?" ("+a.nazwa+")":""),"Stan: "+opisStanu(p,a),"Odcinek: "+fOd(o[0])+" – "+fDo(o[0],o[1]),sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
-          svg.append(b);
+          g.append(b);
         }
-        if(sc&&a.odcinki.length&&sc.getTime()>=t0&&sc.getTime()<=t1){
-          const koniecO=Math.min(W-mr,Math.max(ml,x(a.odcinki[a.odcinki.length-1][1].getTime())));
-          const kr=s("circle",{cx:Math.min(W-mr-4,Math.max(x(sc.getTime()),koniecO+7)),cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
-          kr.__tip=[nazwa,"Scalono: "+fCzas.format(sc)];svg.append(kr);
+        if(sc&&a.odcinki.length&&sc.getTime()>=z.A&&sc.getTime()<=z.B){
+          const cx=Math.max(x(sc.getTime()),x(a.odcinki[a.odcinki.length-1][1].getTime())+7);
+          const k2=s("circle",{cx,cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
+          k2.__tip=[nazwa,"Scalono: "+fCzas.format(sc)];g.append(k2);
         }
       }
     });
-    if(st.przes===0){
-      const xt=x(teraz);
-      svg.append(s("line",{x1:xt,x2:xt,y1:mt-6,y2:H-mb,class:"teraz"}));
+    if(z.B>=teraz-6e4&&st.przes===0){
+      const xt=Math.min(x(teraz),W-mr);
+      svg.append(s("line",{x1:xt,x2:xt,y1:mt-6,y2:dol,class:"teraz"}));
       svg.append(sTekst({x:Math.min(xt,W-mr-14),y:mt-8,"text-anchor":"middle",class:"etykieta"},"teraz"));
     }
+    pl.classList.toggle("nieprzewija",!model.przewija);
+    pl.__maxPrzes=maxPrzes;
     pl.replaceChildren(svg);
+    zakres.textContent=z.podpis+(model.przewija?" · przeciągnij, żeby zobaczyć resztę":"");
     if(!pl.__przeciaganie){
       pl.__przeciaganie=true;
-      // przeciąganie myszą i palcem; pionowo przewija się strona (touch-action:pan-y), wtedy przeglądarka wysyła pointercancel
       let x0=null,p0=0,id=null;
-      pl.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;x0=e.clientX;p0=st.przes;id=e.pointerId;});
+      pl.addEventListener("pointerdown",e=>{if(!model.przewija)return;if(e.pointerType==="mouse"&&e.button!==0)return;x0=e.clientX;p0=st.przes;id=e.pointerId;});
       pl.addEventListener("pointermove",e=>{
         if(x0===null||e.pointerId!==id)return;
         const dx=e.clientX-x0;
         if(Math.abs(dx)<4&&!pl.classList.contains("ciagnie"))return;
         if(!pl.classList.contains("ciagnie")){pl.classList.add("ciagnie");try{pl.setPointerCapture(e.pointerId);}catch(_){}ukryjDymek();}
-        const nowe=Math.max(0,Math.min(MAX_WSTECZ,p0+dx/iwOsi*OKNO));
+        const nowe=Math.max(0,Math.min(pl.__maxPrzes||0,p0+dx));
         if(nowe!==st.przes){st.przes=nowe;cancelAnimationFrame(klatka);klatka=requestAnimationFrame(odswiez);}
       });
       const koniec=()=>{x0=null;id=null;pl.classList.remove("ciagnie");};
@@ -609,8 +706,16 @@ function osCzasu(p){
   const tabela=tabelka(["Sesja","Rola","Wątek","Odcinki (7 dni)","Scalono"],p.aktywnosc.map(a=>{
     const w=watekPodrozy(p,a.watek);
     return[a.nazwa,a.rola,a.watek||"—",a.odcinki.map(o=>fCzas.format(o[0])+" – "+fDo(o[0],o[1])).join("; ")||"—",w&&w.scalono?fCzas.format(w.scalono):"—"];}));
-  const fig=ramka("Oś czasu pracowników","Kto i kiedy pracował: okno 6 godzin, do 7 dni wstecz",role,pl=>{pl.classList.add("os-plot");rysuj(pl);},tabela);
-  fig.querySelector(".plot").before(zakres);
+  const fig=ramka("Oś czasu pracowników","Kto i kiedy pracował; przerwy dłuższe niż godzina są zwężone",role,pl=>{pl.classList.add("os-plot");rysuj(pl);},tabela);
+  let gora;
+  if(maPodroz){
+    const ustaw=w=>{st.widok=w;st.przes=0;for(const k of Object.keys(przyciski))przyciski[k].setAttribute("aria-pressed",String(k===w));odswiez();};
+    przyciski={podroz:el("button",{class:"przelacz",type:"button","aria-pressed":String(st.widok==="podroz")},"Ta podróż"),
+               wszystko:el("button",{class:"przelacz",type:"button","aria-pressed":String(st.widok==="wszystko")},"Wszystko (7 dni)")};
+    przyciski.podroz.addEventListener("click",()=>ustaw("podroz"));przyciski.wszystko.addEventListener("click",()=>ustaw("wszystko"));
+    gora=el("div",{class:"os-gora"},zakres,el("div",{class:"os-przel"},przyciski.podroz,przyciski.wszystko));
+  }else gora=el("div",{class:"os-gora"},zakres);
+  fig.querySelector(".plot").before(gora);
   odswiez();
   return fig;
 }

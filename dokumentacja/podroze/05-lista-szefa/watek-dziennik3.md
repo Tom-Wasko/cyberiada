@@ -47,4 +47,21 @@
 - **Archi:** archi-cyberiada
 
 ## Raport
-<!-- Pisze wyko na końcu. -->
+**Zrobione (wyko, 23.11):**
+- `generuj.py`: `ostatnia_podroz {nazwa, od, do}` (ostatnia zakończona, bez bieżącej). Testy: `TestOstatniaPodroz` (3) + pusty projekt → `None`.
+- `strona.html`: oś liczona od `ostatnia_podroz`/startu bieżącej podróży do teraz; przerwy >1 h (nikt nie pracował) to stała kolumna 28 px z kreskowaniem, podpisem „przerwa 9 h · noc”, dymkiem od–do; godziny tylko w odcinkach pracy, data (krótka) pod osią przy zmianie dnia; przełącznik „Ta podróż / Wszystko (7 dni)”; podpis „Podróż 05: od 23.11” / „Podróż 03 (zakończona)”; gdy <40 px/h, oś ma przeciąganie (okno na tej gęstości), inaczej mieści się bez przeciągania; rzędy liczone tylko z sesji w zakresie (po czasie: Archi, pomo, wyko); bez podróży domyślnie „Wszystko”.
+- Dopisek o `ostatnia_podroz` w schemacie `01-dziennik/watek-generator.md`.
+
+**Dowody:**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 42 tests … OK`.
+- JSON lukrum: `ostatnia_podroz` = `{'nazwa': 'Podróż 03', 'od': '2026-11-22T21:28:09+01:00', 'do': '2026-11-23T18:13:41+01:00'}` (JSON-y w `_robocze/dziennik/` odświeżone).
+- Telefon 390 px (emulacja CDP, podgląd z fałszywą bazą): `scrollWidth` = 390 (widok podróży i „Wszystko”); konsola czysta.
+- Zrzuty: `_robocze/05-dziennik3/` (też w głównym `cyberiada/_robocze/05-dziennik3/`): `komputer-lukrum-podroz.png`, `komputer-lukrum-wszystko.png`, `komputer-cyberiada-podroz.png`, `telefon-os.png`, `telefon-os-wszystko.png`.
+
+**Uwagi:**
+- Lukrum „Ta podróż” (Podróż 03): 2 przerwy (8 h noc, 6 h) zwężone, oś mieści się bez przesuwania. „Wszystko”: 7 przerw, przeciąganie włączone (gęstość ≈ 40 px/h).
+- Cyberiada „Ta podróż” (05, 1,5 h pracy): bez przerw >1 h, mieści się; sesje przerwane o <1 h zostają rozciągnięte, bo tak ustalono próg.
+- Na telefonie w „Wszystko” podpis rotowany w wąskiej przerwie bywa skrócony do samej długości (np. „68 min”).
+- Strony nie publikowałem.
+
+**Propozycje:** brak.
