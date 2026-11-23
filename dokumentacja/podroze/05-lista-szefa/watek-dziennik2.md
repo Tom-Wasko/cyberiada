@@ -48,3 +48,15 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
+**Zrobione (wyko, 23.11):** wszystko w `narzedzia/dziennik/strona.html`; generator i testy bez zmian, bo pakowanie w rzędy liczę w JS (`ukladRzedow`), schemat `aktywnosc` się nie zmienił (`watek-generator.md` bez poprawek).
+- **Układ:** wszystkie sekcje pod sobą: Czeka → Pracownicy → Przegląd → Projekty. Pasek (u góry na telefonie) przewija do sekcji i podświetla bieżącą. W Projektach klocki w kolorze projektu, pod nimi panel jednego projektu (domyślnie pierwszy albo ostatnio wybrany, localStorage `dziennik.projekt` w try/catch). Przycisk projektu w pasku przewija i otwiera projekt. „Czeka” liczy się jako obejrzane, gdy sekcja jest widoczna (IntersectionObserver).
+- **Oś:** okno 6 h, bez strzałek, przeciąganie myszą i palcem do 7 dni wstecz (`touch-action:pan-y`). Rząd 1 = Archi; wyko i pomo pakowane zachłannie (rozpiętość sesji ± 3 min). Podpis rzędu według zasady lewej krawędzi (obejmująca → pierwsza na prawo → ostatnia przed, szara).
+- Przy okazji: z sekcji Pracownicy znikło wypisywane „null” (stara usterka `replaceChildren(null)`).
+- **Dowód:**
+  - `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 39 tests ... OK`.
+  - Lukrum: 6 rzędów wyko; liczone osobno z danych, najwięcej wyko naraz = 6.
+  - Telefon (emulacja urządzenia, 390 px, Edge): `scrollWidth` = 390 (przy starcie, po przejściu do lukrum, na końcu). Błędów JS brak.
+  - Podpisy zmieniają się przy przesunięciu: teraz `03/zestawy, 03/przewodnik…`, −5 h `03/ukryte, 03/kartki…`, −1 dzień `02/sklepy, 02/mapa, 02/drobne…`.
+- **Test jednostkowy „3 sesje → 2 rzędy”:** nie dodany, bo pakowanie jest w JS (brief wymagał go tylko dla generatora). Sprawdziłem tylko na danych lukrum, bez testu automatycznego.
+- **Zrzuty:** `_robocze/05-dziennik2/`: `komputer-cala.png`, `komputer-lukrum-cala.png`, `os-teraz.png`, `os-wstecz.png`, `os-daleko.png`, `telefon-gora.png`, `telefon-projekty.png`, `telefon-os.png`, `telefon-cala.png`. Skrypt: `zrzuty.py`, podgląd z fałszywą bazą: `podglad.html`.
+- **Propozycje:** inercja po puszczeniu osi; przycisk „wróć do teraz”, gdy oś jest przesunięta (szef kazał bez strzałek, więc nie dodawałem).
