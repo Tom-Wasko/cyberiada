@@ -135,7 +135,7 @@ class TestDokumenty(Pomoc):
 
     def test_schemat_i_json(self):
         self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "wygenerowano", "puls", "podroz", "czeka",
-                                          "decyzje", "zadania", "historia", "koszty", "commity", "aktywnosc"})
+                                          "decyzje", "zadania", "historia", "ostatnia_podroz", "koszty", "commity", "aktywnosc"})
         self.assertEqual(set(self.dane["koszty"]), {"dni", "role", "okno5h"})
         json.dumps(self.dane, ensure_ascii=False)  # serializuje się bez błędu
         self.assertEqual((self.dane["nazwa"], self.dane["opis"], self.dane["repo"]),
@@ -185,6 +185,27 @@ class TestDokumenty(Pomoc):
         self.assertEqual(self.dane["historia"], [{"numer": "02", "temat": "wyglad", "start": "2026-11-18",
                                                   "koniec": None, "od": None, "do": None,
                                                   "podsumowanie": "Krótko o tym, co wyszło."}])
+
+
+class TestOstatniaPodroz(unittest.TestCase):
+    H = [{"numer": "01", "temat": "a", "start": "2026-11-10", "koniec": "2026-11-11",
+          "od": "2026-11-10T10:00:00+01:00", "do": "2026-11-11T12:00:00+01:00", "podsumowanie": "x"},
+         {"numer": "02", "temat": "b", "start": "2026-11-12", "koniec": "2026-11-13",
+          "od": None, "do": None, "podsumowanie": "x"},
+         {"numer": "03", "temat": "c", "start": "2026-11-20", "koniec": None,
+          "od": "2026-11-20T09:00:00+01:00", "do": None, "podsumowanie": ""}]
+
+    def test_ostatnia_zakonczona_pomija_biezaca(self):
+        self.assertEqual(generuj.ostatnia_podroz(self.H, "03"),
+                         {"nazwa": "Podróż 02", "od": "2026-11-12", "do": "2026-11-13"})
+
+    def test_z_czasem_z_gita(self):
+        self.assertEqual(generuj.ostatnia_podroz(self.H[:1], None),
+                         {"nazwa": "Podróż 01", "od": "2026-11-10T10:00:00+01:00", "do": "2026-11-11T12:00:00+01:00"})
+
+    def test_brak_zakonczonych(self):
+        self.assertIsNone(generuj.ostatnia_podroz(self.H[2:], "03"))
+        self.assertIsNone(generuj.ostatnia_podroz([], None))
 
 
 class TestKoszty(Pomoc):
@@ -249,6 +270,7 @@ class TestBrakDanych(Pomoc):
                                         "odlozone": []})
         self.assertEqual(d["aktywnosc"], [])
         self.assertEqual(d["historia"], [])
+        self.assertIsNone(d["ostatnia_podroz"])
         self.assertEqual(len(d["koszty"]["dni"]), 30)
         self.assertTrue(all(x["wazone"] == 0 for x in d["koszty"]["dni"]))
         self.assertEqual(d["koszty"]["role"], [])
