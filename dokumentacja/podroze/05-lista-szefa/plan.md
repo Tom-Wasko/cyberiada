@@ -16,7 +16,8 @@ pracowników zamiast wykresu „Wątki”, stany wątków bez „?”, pasek po 
 - [x] Oś czasu pracowników: domyślnie dziś, przesuwanie w lewo, Archi na górze z przerwami (zrzuty: komputer, telefon, przesunięta).
 - [x] `zuzycie.py --projekt lukrum` działa, testy OK, archi-lukrum dostał brakujące liczby.
   Dowód: `--projekt lukrum --od 2026-11-23` → RAZEM 25,2M; testy `Ran 31 tests … OK`; liczby trybu autonomicznego (22,0M) wysłane.
-- [ ] Oś czasu: zwężone przerwy, na start cała bieżąca podróż, przełącznik „Wszystko” (zrzuty).
+- [x] Oś czasu: zwężone przerwy, na start cała bieżąca podróż, przełącznik „Wszystko” (zrzuty).
+  Dowód (05/dziennik3): testy 42 OK; lukrum „Ta podróż” = Podróż 03 z 2 zwężonymi przerwami (8 h noc, 6 h), mieści się bez przesuwania; telefon scrollWidth 390; strona opublikowana.
 - [x] Po uwagach szefa: wszystko widać przewijając w dół, projekty jako klocki, oś 6 h z rzędami „naraz” i podpisem przy lewej krawędzi (zrzuty).
   Dowód (05/dziennik2, scalone 26be214): testy 39 OK; lukrum 6 wyko naraz = 6 rzędów; podpisy zmieniają się przy przesunięciu (teraz 03/zestawy, −5 h 03/ukryte, −1 dzień 02/sklepy); telefon scrollWidth 390; strona opublikowana.
 - [x] Pasek przycisków po lewej przełącza panele zamiast rozwijanych kart (zrzuty komputer i telefon).
@@ -29,7 +30,7 @@ pracowników zamiast wykresu „Wątki”, stany wątków bez „?”, pasek po 
 |---|---|---|---|
 | 05/dziennik | wyko | `watek-dziennik.md` | scalony |
 | 05/dziennik2 | wyko | `watek-dziennik2.md` | scalony |
-| 05/dziennik3 | wyko | `watek-dziennik3.md` | w toku |
+| 05/dziennik3 | wyko | `watek-dziennik3.md` | scalony |
 | 05/zasady | Archi | (bez pliku) | gotowe (skill i rola: zadania, kryteria; hook) |
 
 ## Podsumowanie
