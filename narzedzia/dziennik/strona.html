@@ -214,13 +214,20 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .stan-pr.pracuje{color:var(--ok-text)}
 .wiecej{margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;min-height:32px}
 /* oś czasu pracowników */
-.os-ster{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 8px}
-.os-ster button{min-height:36px;min-width:40px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:transparent;font-size:14px;cursor:pointer}
-.os-ster button:hover:not(:disabled){background:var(--hover)}
-.os-ster button:disabled{opacity:.4;cursor:default}
-.os-ster .zakres{color:var(--ink2);font-size:13px;margin-left:6px;font-variant-numeric:tabular-nums}
-.os-plot svg{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
-.os-plot.ciagnie svg{cursor:grabbing}
+.zakres{color:var(--ink2);font-size:13px;margin:0 0 8px;font-variant-numeric:tabular-nums}
+.os-plot{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.os-plot svg{touch-action:pan-y}
+.os-plot.ciagnie{cursor:grabbing}
+.etykieta.szary{opacity:.45}
+/* klocki projektów */
+.klocki{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.klocek{--pk:var(--s1);display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:12px;cursor:pointer;font-size:15px;color:var(--ink);
+  background:color-mix(in srgb,var(--pk) 16%,var(--surface));border:2px solid color-mix(in srgb,var(--pk) 45%,var(--border));max-width:100%}
+.klocek:hover{background:color-mix(in srgb,var(--pk) 26%,var(--surface))}
+.klocek.aktywny{background:color-mix(in srgb,var(--pk) 38%,var(--surface));border-color:var(--pk);font-weight:700}
+.klocek .nazwa{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main section{scroll-margin-top:16px}
+@media (max-width:719px){main section{scroll-margin-top:76px}}
 .scal{stroke:var(--surface);stroke-width:2}
 .stan-pr.czeka{color:var(--s4)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -237,7 +244,11 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
   <section id="czeka" hidden></section>
   <section id="pracownicy" hidden></section>
   <section id="przeglad" hidden></section>
-  <div id="projekty"></div>
+  <section id="projekty-sekcja" hidden>
+    <h2>Projekty</h2>
+    <div id="klocki" class="klocki"></div>
+    <div id="projekty"></div>
+  </section>
 </main>
 </div>
 <div id="dymek" role="tooltip" hidden></div>
@@ -472,7 +483,7 @@ function wykresRole(tytul,podpis,wiersze,klasa){
 }
 
 /* ---------- oś czasu pracowników ---------- */
-const DOBA=864e5,MAX_WSTECZ=7*DOBA;
+const GODZINA=36e5,OKNO=6*GODZINA,MAX_WSTECZ=7*864e5,ZAPAS=3*6e4;
 const OS={};  // przesunięcie osi (ms wstecz od „teraz”) osobno dla każdego projektu
 const krotkaNazwa=n=>tekst(n).split("/").pop();
 const tenSamWatek=(a,b)=>!!a&&!!b&&(a===b||krotkaNazwa(a)===krotkaNazwa(b));
@@ -481,14 +492,34 @@ function pracownikSesji(p,a){
   if(!PRACOWNICY)return null;
   return PRACOWNICY.lista.find(x=>x.nazwa===a.nazwa&&(!x.projekt||x.projekt===p.klucz||x.projekt===p.nazwa))||null;
 }
-function wierszeOsi(p,od,doo){
-  const w=p.aktywnosc.filter(a=>a.odcinki.some(o=>o[1]>=od&&o[0]<=doo));
-  let archi=w.find(a=>a.rola==="Archi");
-  if(!archi)archi=p.aktywnosc.find(a=>a.rola==="Archi")||{nazwa:"archi-"+p.nazwa,rola:"Archi",watek:"",odcinki:[]};
-  const reszta=w.filter(a=>a!==archi).sort((a,b)=>a.odcinki[0][0]-b.odcinki[0][0]);
-  return[archi,...reszta];
+/* Rzędy osi: Archi sam w pierwszym; wyko i pomo pakowane zachłannie (sesja trafia do najniższego wolnego rzędu).
+   Rozpiętość sesji = od początku pierwszego do końca ostatniego odcinka, z małym zapasem.
+   Liczba rzędów = największa liczba sesji pracujących naraz w całych danych; układ nie zależy od okna. */
+function ukladRzedow(akt){
+  const archi=akt.filter(a=>a.rola==="Archi");
+  const inni=akt.filter(a=>a.rola!=="Archi"&&a.odcinki.length).map(a=>({a,od:Math.min(...a.odcinki.map(o=>o[0].getTime()))-ZAPAS,do:Math.max(...a.odcinki.map(o=>o[1].getTime()))+ZAPAS})).sort((x,y)=>x.od-y.od);
+  const rzedy=[],konce=[];
+  for(const z of inni){
+    let i=konce.findIndex(k=>k<=z.od);
+    if(i<0){i=konce.length;rzedy.push([]);konce.push(0);}
+    rzedy[i].push(z.a);konce[i]=z.do;
+  }
+  return[archi,...rzedy];
 }
-const podpisSesji=a=>a.rola==="Archi"?"Archi":(a.rola==="wyko"&&a.watek?a.watek:a.nazwa);
+/* Podpis rzędu: sesja pracująca najbliżej lewej krawędzi okna [t0,t1]; gdy w oknie nic, ostatnia przed krawędzią (szara). */
+function podpisRzedu(rz,t0,t1){
+  let naj=null,klucz=Infinity;
+  for(const a of rz)for(const o of a.odcinki){
+    const b=o[0].getTime(),e=o[1].getTime();
+    if(e>=t0&&b<=t1){const k=Math.max(b,t0);if(k<klucz){klucz=k;naj=a;}}
+  }
+  if(naj)return{a:naj,szary:false};
+  let przed=null,pe=-Infinity;
+  for(const a of rz)for(const o of a.odcinki){const e=o[1].getTime();if(e<t0&&e>pe){pe=e;przed=a;}}
+  if(przed)return{a:przed,szary:true};
+  return{a:rz[0]||null,szary:true};
+}
+const podpisSesji=a=>!a?"":a.rola==="Archi"?"Archi":(a.rola==="wyko"&&a.watek?a.watek:a.nazwa);
 function opisStanu(p,a){
   const w=watekPodrozy(p,a.watek),pr=pracownikSesji(p,a),cz=[];
   if(pr)cz.push(pr.stan);
@@ -498,24 +529,21 @@ function opisStanu(p,a){
 const fOd=d=>fCzas.format(d),fDo=(a,b)=>(a.toDateString()===b.toDateString()?fGodz.format(b):fCzas.format(b));
 function osCzasu(p){
   const st=OS[p.klucz]=OS[p.klucz]||{przes:0};
-  let plot=null,zakres=null,bWstecz=null,bNaprzod=null,bDzis=null;
-  const zmien=v=>{st.przes=Math.max(0,Math.min(MAX_WSTECZ,v));odswiez();};
+  const rzedy=ukladRzedow(p.aktywnosc);
+  let plot=null,zakres=null,klatka=0,iwOsi=300;
   function odswiez(){
-    if(zakres){const k=Date.now()-st.przes,o=k-DOBA;
-      zakres.textContent=st.przes===0?"ostatnie 24 h":fDzienPelny.format(new Date(o))+" "+fGodz.format(new Date(o))+" – "+fGodz.format(new Date(k));}
-    if(bWstecz)bWstecz.disabled=st.przes>=MAX_WSTECZ;
-    if(bNaprzod)bNaprzod.disabled=st.przes<=0;
-    if(bDzis)bDzis.disabled=st.przes<=0;
+    if(zakres){const k=Date.now()-st.przes,o=k-OKNO;
+      zakres.textContent=(st.przes===0?"Ostatnie 6 h, do teraz":fDzienPelny.format(new Date(o))+", "+fGodz.format(new Date(o))+" – "+fGodz.format(new Date(k)))+" · przeciągnij, żeby zobaczyć wcześniej";}
     if(plot&&plot.isConnected&&plot.clientWidth)rysuj(plot);
   }
   function rysuj(pl){
-    const teraz=Date.now(),t1=teraz-st.przes,t0=t1-DOBA;
-    const wiersze=wierszeOsi(p,t0,t1);
+    plot=pl;
+    const teraz=Date.now(),t1=teraz-st.przes,t0=t1-OKNO;
     const W=Math.max(260,pl.clientWidth),lw=Math.min(112,W*.28),ml=lw+8,mr=14,mt=20,wr=30,bh=16,mb=24;
-    const H=mt+wiersze.length*wr+mb,iw=W-ml-mr;
-    const x=t=>ml+(t-t0)/DOBA*iw;
-    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu pracowników, 24 godziny"});
-    const krokH=iw<340?6:3;
+    const H=mt+rzedy.length*wr+mb,iw=W-ml-mr;iwOsi=iw;
+    const x=t=>ml+(t-t0)/OKNO*iw;
+    const svg=s("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Oś czasu pracowników, okno 6 godzin"});
+    const krokH=iw<340?2:1;
     const d=new Date(t0);d.setMinutes(0,0,0);
     while(d.getTime()<t0||d.getHours()%krokH)d.setHours(d.getHours()+1);
     for(let g=0;g<30&&d.getTime()<=t1;g++){
@@ -526,27 +554,31 @@ function osCzasu(p){
     }
     svg.append(s("line",{x1:ml,x2:W-mr,y1:H-mb,y2:H-mb,class:"os"}));
     const maxZn=Math.max(4,Math.floor(lw/6.6));
-    wiersze.forEach((a,i)=>{
-      const yc=mt+i*wr+wr/2,pod=podpisSesji(a),kolor=rolaKolor(a.rola);
-      const wpw=watekPodrozy(p,a.watek),sc=wpw&&wpw.scalono;
-      const widoczne=a.odcinki.filter(o=>o[1]>=t0&&o[0]<=t1);
+    rzedy.forEach((rz,i)=>{
+      const yc=mt+i*wr+wr/2;
+      const pd=podpisRzedu(rz,t0,t1),la=pd.a;
+      const pod=i===0?"Archi":podpisSesji(la);
       const traf=s("rect",{x:0,y:mt+i*wr,width:W,height:wr,rx:4,class:"traf","data-tip":""});
-      traf.__tip=[pod+(a.nazwa!==pod?" ("+a.nazwa+")":""),"Stan: "+opisStanu(p,a),
-        widoczne.length?"W tym oknie: "+widoczne.length+" "+odm(widoczne.length,"odcinek","odcinki","odcinków"):"W tym oknie nie pracował",
-        sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
+      if(la)traf.__tip=[pod+(la.nazwa!==pod?" ("+la.nazwa+")":""),"Stan: "+opisStanu(p,la),pd.szary?"W tym oknie nie pracował":"Sesja najbliżej lewej krawędzi okna"];
+      else traf.__tip=[pod,"Brak sesji w danych"];
       svg.append(traf);
-      const et=sTekst({x:lw,y:yc+4,"text-anchor":"end",class:"etykieta ink"},pod.length>maxZn?pod.slice(0,maxZn-1)+"…":pod);et.style.pointerEvents="none";svg.append(et);
+      const et=sTekst({x:lw,y:yc+4,"text-anchor":"end",class:"etykieta ink"+(pd.szary?" szary":"")},pod.length>maxZn?pod.slice(0,maxZn-1)+"…":pod);et.style.pointerEvents="none";svg.append(et);
       svg.append(s("line",{x1:ml,x2:W-mr,y1:yc,y2:yc,class:"siatka"}));
-      for(const o of widoczne){
-        const xa=Math.max(ml,x(o[0].getTime())),xb=Math.min(W-mr,x(o[1].getTime()));
-        const b=s("rect",{x:xa,y:yc-bh/2,width:Math.max(5,xb-xa),height:bh,rx:4,fill:kolor,"data-tip":""});
-        b.__tip=[pod,"Stan: "+opisStanu(p,a),"Odcinek: "+fOd(o[0])+" – "+fDo(o[0],o[1]),sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
-        svg.append(b);
-      }
-      if(sc&&sc.getTime()>=t0&&sc.getTime()<=t1){
-        const koniecO=widoczne.length?Math.min(W-mr,x(widoczne[widoczne.length-1][1].getTime())):ml;
-        const kr=s("circle",{cx:Math.min(W-mr-4,Math.max(x(sc.getTime()),koniecO+7)),cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
-        kr.__tip=[pod,"Scalono: "+fCzas.format(sc)];svg.append(kr);
+      for(const a of rz){
+        const kolor=rolaKolor(a.rola),wpw=watekPodrozy(p,a.watek),sc=wpw&&wpw.scalono;
+        const nazwa=podpisSesji(a);
+        const widoczne=a.odcinki.filter(o=>o[1]>=t0&&o[0]<=t1);
+        for(const o of widoczne){
+          const xa=Math.max(ml,x(o[0].getTime())),xb=Math.min(W-mr,x(o[1].getTime()));
+          const b=s("rect",{x:xa,y:yc-bh/2,width:Math.max(5,xb-xa),height:bh,rx:4,fill:kolor,"data-tip":""});
+          b.__tip=[nazwa+(a.nazwa!==nazwa?" ("+a.nazwa+")":""),"Stan: "+opisStanu(p,a),"Odcinek: "+fOd(o[0])+" – "+fDo(o[0],o[1]),sc?"Scalono: "+fCzas.format(sc):"Scalenie: brak"];
+          svg.append(b);
+        }
+        if(sc&&a.odcinki.length&&sc.getTime()>=t0&&sc.getTime()<=t1){
+          const koniecO=Math.min(W-mr,Math.max(ml,x(a.odcinki[a.odcinki.length-1][1].getTime())));
+          const kr=s("circle",{cx:Math.min(W-mr-4,Math.max(x(sc.getTime()),koniecO+7)),cy:yc,r:4,class:"scal",fill:"var(--ink)","data-tip":""});
+          kr.__tip=[nazwa,"Scalono: "+fCzas.format(sc)];svg.append(kr);
+        }
       }
     });
     if(st.przes===0){
@@ -555,30 +587,30 @@ function osCzasu(p){
       svg.append(sTekst({x:Math.min(xt,W-mr-14),y:mt-8,"text-anchor":"middle",class:"etykieta"},"teraz"));
     }
     pl.replaceChildren(svg);
-    // przeciąganie w poziomie (mysz i palec); pionowo przewija się strona (touch-action:pan-y)
-    let x0=null,p0=0;
-    svg.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;x0=e.clientX;p0=st.przes;});
-    svg.addEventListener("pointermove",e=>{
-      if(x0===null)return;
-      const dx=e.clientX-x0;
-      if(Math.abs(dx)<4&&!pl.classList.contains("ciagnie"))return;
-      if(!pl.classList.contains("ciagnie")){pl.classList.add("ciagnie");try{svg.setPointerCapture(e.pointerId);}catch(_){}ukryjDymek();}
-      const nowe=Math.max(0,Math.min(MAX_WSTECZ,p0+dx/iw*DOBA));
-      if(nowe!==st.przes){st.przes=nowe;odswiez();}
-    });
-    const koniec=()=>{x0=null;pl.classList.remove("ciagnie");};
-    svg.addEventListener("pointerup",koniec);svg.addEventListener("pointercancel",koniec);
+    if(!pl.__przeciaganie){
+      pl.__przeciaganie=true;
+      // przeciąganie myszą i palcem; pionowo przewija się strona (touch-action:pan-y), wtedy przeglądarka wysyła pointercancel
+      let x0=null,p0=0,id=null;
+      pl.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;x0=e.clientX;p0=st.przes;id=e.pointerId;});
+      pl.addEventListener("pointermove",e=>{
+        if(x0===null||e.pointerId!==id)return;
+        const dx=e.clientX-x0;
+        if(Math.abs(dx)<4&&!pl.classList.contains("ciagnie"))return;
+        if(!pl.classList.contains("ciagnie")){pl.classList.add("ciagnie");try{pl.setPointerCapture(e.pointerId);}catch(_){}ukryjDymek();}
+        const nowe=Math.max(0,Math.min(MAX_WSTECZ,p0+dx/iwOsi*OKNO));
+        if(nowe!==st.przes){st.przes=nowe;cancelAnimationFrame(klatka);klatka=requestAnimationFrame(odswiez);}
+      });
+      const koniec=()=>{x0=null;id=null;pl.classList.remove("ciagnie");};
+      pl.addEventListener("pointerup",koniec);pl.addEventListener("pointercancel",koniec);
+    }
   }
-  bWstecz=el("button",{type:"button","aria-label":"Dzień wcześniej",onclick:()=>zmien(st.przes+DOBA)},"◀");
-  bDzis=el("button",{type:"button",onclick:()=>zmien(0)},"Dziś");
-  bNaprzod=el("button",{type:"button","aria-label":"Dzień później",onclick:()=>zmien(st.przes-DOBA)},"▶");
-  zakres=el("span",{class:"zakres"});
+  zakres=el("p",{class:"zakres"});
   const role=[...new Set(p.aktywnosc.map(a=>a.rola))].map(r=>({nazwa:r,kolor:rolaKolor(r)}));
   const tabela=tabelka(["Sesja","Rola","Wątek","Odcinki (7 dni)","Scalono"],p.aktywnosc.map(a=>{
     const w=watekPodrozy(p,a.watek);
     return[a.nazwa,a.rola,a.watek||"—",a.odcinki.map(o=>fCzas.format(o[0])+" – "+fDo(o[0],o[1])).join("; ")||"—",w&&w.scalono?fCzas.format(w.scalono):"—"];}));
-  const fig=ramka("Oś czasu pracowników","Kto i kiedy pracował; przesuń w lewo, żeby zobaczyć wcześniejsze dni",role,pl=>{plot=pl;pl.classList.add("os-plot");rysuj(pl);},tabela);
-  fig.querySelector(".plot").before(el("div",{class:"os-ster"},bWstecz,bDzis,bNaprzod,zakres));
+  const fig=ramka("Oś czasu pracowników","Kto i kiedy pracował: okno 6 godzin, do 7 dni wstecz",role,pl=>{pl.classList.add("os-plot");rysuj(pl);},tabela);
+  fig.querySelector(".plot").before(zakres);
   odswiez();
   return fig;
 }
@@ -815,6 +847,10 @@ function decyzje(tytul,lista){
 }
 function renderProjekty(P){
   const sek=$("projekty");sek.replaceChildren();
+  $("klocki").replaceChildren(...P.map(p=>{
+    const b=el("button",{type:"button",class:"klocek","data-proj":p.klucz,"aria-pressed":"false",onclick:()=>wybierzProjekt(p.klucz)},
+      el("span",{class:"nazwa"},p.nazwa),p.czeka.length?el("span",{class:"licznik"},String(p.czeka.length)):null);
+    b.style.setProperty("--pk",p.kolor);return b;}));
   const dni14=ostatnieDni(14);
   for(const p of P){
     const pd=p.podroz;
@@ -888,34 +924,45 @@ function renderPracownicy(P){
   const akt=PRACOWNICY.lista.filter(x=>x.stan!=="zakończony"),kon=PRACOWNICY.lista.filter(x=>x.stan==="zakończony");
   sek.replaceChildren(el("h2",{},"Pracownicy ",el("span",{class:"chip"},String(akt.length))),
     akt.length?el("div",{class:"prac"},akt.map(x=>wierszPrac(x,P))):el("p",{class:"pusto"},"Nikt teraz nie pracuje."),
-    kon.length?el("details",{class:"odlozone"},el("summary",{},"Zakończeni dziś ("+kon.length+")"),el("div",{class:"prac"},kon.map(x=>wierszPrac(x,P)))):null,
-    PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):null);
+    kon.length?el("details",{class:"odlozone"},el("summary",{},"Zakończeni dziś ("+kon.length+")"),el("div",{class:"prac"},kon.map(x=>wierszPrac(x,P)))):el("span"),
+    PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):el("span"));
   sek.hidden=false;
 }
-let PANEL=null;
-function wczytajPanel(){try{return localStorage.getItem("dziennik.panel")||"";}catch(e){return"";}}
-function zapiszPanel(){try{localStorage.setItem("dziennik.panel",PANEL);}catch(e){}}
-function panelIstnieje(id,P){
-  if(id==="przeglad"||id==="czeka")return true;
-  if(id==="pracownicy")return!!PRACOWNICY;
-  return id.startsWith("p:")&&P.some(p=>"p:"+p.klucz===id);
+let PROJ=null;
+function wczytajProjekt(){try{return localStorage.getItem("dziennik.projekt")||"";}catch(e){return"";}}
+function zapiszProjekt(){try{localStorage.setItem("dziennik.projekt",PROJ);}catch(e){}}
+const SEKCJE=[["czeka","czeka"],["pracownicy","pracownicy"],["przeglad","przeglad"],["projekty-sekcja","projekty"]];
+function podswietlPasek(){
+  const prog=innerWidth<720?84:24;let akt="czeka";
+  for(const[id,nazwa]of SEKCJE){const e=$(id);if(e&&!e.hidden&&e.getBoundingClientRect().top<=prog)akt=nazwa;}
+  if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)akt="projekty";
+  document.querySelectorAll("#skok button").forEach(b=>{
+    const id=b.dataset.panel;
+    b.classList.toggle("aktywny",akt==="projekty"?id==="p:"+PROJ:id===akt);
+  });
 }
-function zastosujPanel(){
-  const P=ostatnieP;
-  if(PANEL===null)PANEL=wczytajPanel();
-  if(!PANEL||!panelIstnieje(PANEL,P))PANEL="przeglad";
-  const cel={czeka:"czeka",pracownicy:"pracownicy",przeglad:"przeglad"}[PANEL]||PANEL.replace(/^p:/,"p-");
-  for(const id of["czeka","pracownicy","przeglad"])$(id).hidden=id!==cel||(id==="pracownicy"&&!PRACOWNICY);
-  document.querySelectorAll("#projekty .panel").forEach(x=>{x.hidden=x.id!==cel;});
-  document.querySelectorAll("#skok button").forEach(b=>b.classList.toggle("aktywny",b.dataset.panel===PANEL));
-  const bylo=czekaOtwarta;czekaOtwarta=PANEL==="czeka";
-  if(czekaOtwarta&&!bylo)planujWidziane();
-  poRenderze();
+let paskiT=0;addEventListener("scroll",()=>{cancelAnimationFrame(paskiT);paskiT=requestAnimationFrame(podswietlPasek);},{passive:true});
+function zastosujWidok(){
+  const P=ostatnieP;if(!P.length)return;
+  if(PROJ===null)PROJ=wczytajProjekt();
+  if(!P.some(p=>p.klucz===PROJ))PROJ=P[0].klucz;
+  $("czeka").hidden=false;$("przeglad").hidden=false;$("projekty-sekcja").hidden=false;$("pracownicy").hidden=!PRACOWNICY;
+  document.querySelectorAll("#projekty .panel").forEach(x=>{x.hidden=x.id!=="p-"+PROJ;});
+  document.querySelectorAll("#klocki button").forEach(b=>{const on=b.dataset.proj===PROJ;b.classList.toggle("aktywny",on);b.setAttribute("aria-pressed",String(on));});
+  podswietlPasek();poRenderze();
 }
+function wybierzProjekt(klucz){PROJ=klucz;zapiszProjekt();ukryjDymek();zastosujWidok();}
 function wybierzPanel(id){
-  PANEL=id;zapiszPanel();ukryjDymek();zastosujPanel();
-  try{window.scrollTo({top:0});}catch(e){}
+  ukryjDymek();let cel;
+  if(id.startsWith("p:")){wybierzProjekt(id.slice(2));cel=$("projekty-sekcja");}
+  else cel=$(id);
+  if(cel&&!cel.hidden){try{cel.scrollIntoView({behavior:"smooth",block:"start"});}catch(e){cel.scrollIntoView();}}
 }
+// „Czeka” liczy się jako obejrzane, gdy sekcja jest widoczna na ekranie
+if("IntersectionObserver"in window)new IntersectionObserver(en=>{
+  const bylo=czekaOtwarta;czekaOtwarta=en.some(e=>e.isIntersecting);
+  if(czekaOtwarta&&!bylo)planujWidziane();
+}).observe($("czeka"));
 function renderSkok(P){
   const czeka=P.reduce((a,p)=>a+p.czeka.length,0),nowe=nowePytania(P);
   const przycisk=(id,tekst,kolor,dodatki)=>{
@@ -923,9 +970,9 @@ function renderSkok(P){
     if(kolor)b.style.setProperty("--pk",kolor);return b;
   };
   $("skok").replaceChildren(...[
-    przycisk("przeglad","Przegląd"),
     przycisk("czeka","Czeka",null,[el("span",{class:"licznik"+(czeka?"":" zero")},String(czeka)),nowe?el("span",{class:"znacznik-nowe"},"nowe"):null]),
     PRACOWNICY?przycisk("pracownicy","Pracownicy"):null,
+    przycisk("przeglad","Przegląd"),
     ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor))].filter(Boolean));
 }
 function render(P){
@@ -934,11 +981,11 @@ function render(P){
   P.sort((a,b)=>a.nazwa.localeCompare(b.nazwa,"pl"));
   P.forEach((p,i)=>{p.kolor=kolorProjektu(i,P.length);});
   ostatnieP=P;
-  const sekcje=["czeka","pracownicy","przeglad","projekty"].map($);$("skok").hidden=!P.length;
+  const sekcje=["czeka","pracownicy","przeglad","projekty-sekcja"].map($);$("skok").hidden=!P.length;
   if(!P.length){sekcje.forEach(x=>{x.hidden=true;x.replaceChildren();});naglowek(P);komunikat("Na razie brak danych. Archi zapisze tu swój projekt przy następnym odświeżeniu dziennika.");return;}
   komunikat("");naglowek(P);
   renderCzeka(P);renderPracownicy(P);renderPrzeglad(P);renderProjekty(P);renderSkok(P);
-  zastosujPanel();
+  zastosujWidok();
 }
 function odswiezCzasy(){
   if(!ostatnieP.length)return;
