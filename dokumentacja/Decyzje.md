@@ -46,6 +46,7 @@
 - 2026-11-23 · Wyko naraz: w trybie nadzorowanym bez limitu, w autonomicznym najwyżej 3.
 - 2026-11-23 · Zadania: „W toku” = nad nimi teraz ktoś pracuje, „Następnie” = rozplanowane, nowa sekcja „Zrobione w tej podróży”; przesuwa Archi w `Zadania.md`, hook po scaleniu przypomina (o kryteriach też).
 - 2026-11-23 · Kryteria podróży: Archi pisze na starcie, dopisuje przy rozszerzeniu, odhacza przy scaleniu. Kryteria lukrum 03 odhacza Archi cyberiady (szef zaczyna nową podróż lukrum).
+- 2026-11-23 · Oś czasu: przerwy ponad 1 h bez pracy zwężone do wąskiego paska z podpisem; na start cała bieżąca podróż na ekranie (bez podróży: ostatnia), przełącznik „Wszystko (7 dni)”; do podróży należy wszystko od jej startu (po czasie).
 - 2026-11-23 · Dziennik (po obejrzeniu): wszystko widać przewijając w dół w dawnej kolejności, pasek boczny przewija; projekty jako klocki obok siebie, klik otwiera projekt pod nimi; oś czasu: okno 6 h przesuwane tylko myszą/palcem, rzędów tyle, ilu pracowało naraz (Archi osobno na górze), podpis = sesja przy lewej krawędzi okna.
 - 2026-11-23 · Dziennik: zamiast wykresu „Wątki” oś czasu pracowników (domyślnie ostatnie 24 h, przesuwanie w lewo, podpisy wg widocznego okresu, Archi zawsze na górze, przerwy w linii, gdy nie pracował); szybki pasek po lewej; projekty jako panele przełączane przyciskami zamiast rozwijanych kart.
 

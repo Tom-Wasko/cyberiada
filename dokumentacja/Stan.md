@@ -10,6 +10,7 @@ Tryb: nadzorowany od 17:55 (23.11).
 |---|---|---|
 | 05/dziennik | wyko | scalony |
 | 05/dziennik2 | wyko | scalony |
+| 05/dziennik3 | wyko | w toku |
 | 05/zasady | Archi | gotowe |
 
 ## Czeka na szefa
