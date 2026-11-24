@@ -528,3 +528,30 @@ class TestFable(Pomoc):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTabelaGrawisy(unittest.TestCase):
+    def test_kreska_pionowa_w_grawisach_nie_dzieli_komorki(self):
+        w = generuj.tabela(["| Nazwa | Opis |", "|---|---|", "| a | `/hejo zolw|krolik` i dalej |", "| b | zwykly |"])
+        self.assertEqual(w, [{"nazwa": "a", "opis": "/hejo zolw|krolik` i dalej"}, {"nazwa": "b", "opis": "zwykly"}])
+
+
+class TestLogiCzytaneRaz(Pomoc):
+    def test_te_same_wpisy_co_zuzycie_wpisy(self):
+        import zuzycie
+        self.logi()
+        self.projekt.mkdir(exist_ok=True)
+        wsz = generuj.wszystkie_wpisy(self.sesje)
+        for projekt in (self.projekt, None):
+            oczekiwane = sorted(json.dumps(w, sort_keys=True) for w in zuzycie.wpisy(projekt, self.sesje))
+            jest = sorted(json.dumps(w, sort_keys=True) for w in generuj.wpisy_projektu(wsz, projekt))
+            self.assertEqual(jest, oczekiwane)
+            self.assertTrue(jest)
+
+    def test_wynik_zbuduj_taki_sam_z_gotowymi_wpisami_i_bez(self):
+        self.logi()
+        self.projekt.mkdir(exist_ok=True)
+        wsz = generuj.wszystkie_wpisy(self.sesje)
+        self.assertEqual(generuj.okno5h(TERAZ, self.sesje), generuj.okno5h(TERAZ, self.sesje, wsz))
+        self.assertEqual(generuj.aktywnosc(self.projekt, "probny", TERAZ, self.sesje),
+                         generuj.aktywnosc(self.projekt, "probny", TERAZ, self.sesje, wsz))
