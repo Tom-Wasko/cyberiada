@@ -30,7 +30,7 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 |---|---|---|---|
 | tempo | wyko | `watek-tempo.md` | scalony |
 | zasady | Archi | — | zrobiony |
-| recenzja | Archi + recenzent | — | w toku |
+| recenzja | recenzent + wyko | `watek-recenzja.md` | scalony do `podroz-06`, strona do publikacji |
 
 ## Podsumowanie
 <!-- Na końcu: co zrobione, co odłożone (→ Zadania.md), koszt (narzedzia/zuzycie.py). -->
