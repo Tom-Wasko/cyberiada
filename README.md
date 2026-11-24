@@ -29,6 +29,8 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 | `/podroz porzuc` | porzucenie podróży (gałęzie zostają, wątki trafiają do zadań) |
 | `/hejo` | „jestem”, włącza **tryb nadzorowany**: podsumowanie pracy pod nieobecność, czekające pytania okienkiem, scalenie do `main` |
 | `/papa <budżet>` | „wychodzę”, włącza **tryb autonomiczny**: praca bez szefa; budżet `4h`, `do 18:00`, `2M` (tokeny) albo `do skończenia X` |
+| `/hejo zolw`, `/papa zolw 4h` | tempo **żółw**: najwięcej pracy z limitu 5h (oszczędnie, bez przestojów; Archi poda `/model opusplan`, `/autocompact 150k`) |
+| `/hejo krolik`, `/papa krolik 2h` | tempo **królik**: szybko teraz, więcej wyko naraz, mniej oszczędnie (bez słowa: tempo zwykłe) |
 | `/wznow` | po restarcie komputera albo po limicie: odtworzenie stanu z plików, wznowienie wyko |
 
 **W dowolnym czacie:** `/nowy-projekt <nazwa>` zakłada projekt (szablon, git, rejestr, zaufanie, GitHub).

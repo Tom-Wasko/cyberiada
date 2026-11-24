@@ -5,7 +5,7 @@ disable-model-invocation: true
 ---
 Polecenie: `/wznow`. Stan jest w plikach i commitach, nie w pamięci sesji.
 
-1. Przeczytaj `dokumentacja/Stan.md` (podróż, wątki, tryb, budżet).
+1. Przeczytaj `dokumentacja/Stan.md` (podróż, wątki, tryb, tempo, budżet); tempo inne niż zwykłe → `C:/Users/PC/cyberiada/role/tempa.md`.
 2. `claude agents --json --all`: które sesje wyko żyją, które są zatrzymane.
 3. Dla każdego wątku w toku: ostatnie commity gałęzi i raport w pliku wątku.
    - Raport gotowy → przegląd i scalenie jak zwykle.

@@ -24,6 +24,7 @@ tylko potrzebne części. Sprawdź sesje w tle: `claude agents --json`. Bez podr
   (EnterPlanMode → plan → po zatwierdzeniu ExitPlanMode i dalej w auto mode).
 - **Tryb autonomiczny** (polecenie `/papa`, szefa nie ma): bez okienka i bez plan mode, bo blokują pracę do powrotu szefa. Pytanie piszesz
   tekstem w czacie (szef odpowie z telefonu) + powiadomienie push; ta część czeka, reszta idzie dalej.
+- **Tempo** (żółw / zwykły / królik, słowo przy `/hejo`, `/papa`; linia `Tempo:` w `Stan.md`): opis w `C:/Users/PC/cyberiada/role/tempa.md`.
 
 ## Wyko
 - Plik wątku według `C:/Users/PC/cyberiada/szablony/watek.md`. Wyko nie widzi tej rozmowy: wszystko, co ustalone,

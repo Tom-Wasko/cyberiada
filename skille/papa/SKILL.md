@@ -1,10 +1,12 @@
 ---
 name: papa
 description: Szef wychodzi – tryb autonomiczny: Archi pracuje sam w ramach budżetu (czas, godzina, tokeny albo zakres), bez okienek i bez rzeczy nieodwracalnych.
-argument-hint: "4h | do 18:00 | 2M | do skończenia <czego>"
+argument-hint: "[zolw | krolik] 4h | do 18:00 | 2M | do skończenia <czego>"
 disable-model-invocation: true
 ---
 Polecenie: `/papa $ARGUMENTS`. Tryb autonomiczny: szefa nie ma, odpowiada z telefonu przez czat Remote Control.
+Słowo `zolw` albo `krolik` ustawia tempo (bez słowa: zwykły); opis temp: `C:/Users/PC/cyberiada/role/tempa.md`.
+Żółw: budżet domyślnie „do końca okna 5h” (pracuje bez przerw, nie czeka).
 
 ## Zanim szef wyjdzie (jest jeszcze chwilę)
 1. Budżet z argumentu: `4h` (czas), `do 18:00` (godzina), `2M` (tokeny wszystkich sesji projektu z
@@ -13,12 +15,13 @@ Polecenie: `/papa $ARGUMENTS`. Tryb autonomiczny: szefa nie ma, odpowiada z tele
    - uśpienie na zasilaniu: `powercfg /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE` (AC różne od 0 → komputer zaśnie);
    - czekający restart po aktualizacji: klucz rejestru
      `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired` istnieje.
-3. Zapisz w `Stan.md`: „Tryb: autonomiczny od GG:MM, budżet …, koniec najpóźniej GG:MM”. Gałąź `podroz-NN` z `main`,
+3. Zapisz w `Stan.md`: „Tryb: autonomiczny od GG:MM, budżet …, koniec najpóźniej GG:MM” i „Tempo: …”. Przy żółwiu
+   daj szefowi do wpisania przed wyjściem `/model opusplan` i `/autocompact 150k`. Gałąź `podroz-NN` z `main`,
    jeśli jej nie ma (wszystkie scalenia w tym trybie idą tam). Odśwież dziennik. Napisz szefowi: „Możesz iść.”
 
 ## Praca
 - Nowe kroki zaczynasz tylko do 85% budżetu; reszta na dokończenie i podsumowanie.
-- Najwyżej 3 wyko naraz (decyzja szefa 23.11). Scalasz do `podroz-NN` tylko wątki bez spraw do potwierdzenia.
+- Najwyżej 3 wyko naraz (decyzja szefa 23.11; żółw: tyle, ile każe `tempo.py`). Scalasz do `podroz-NN` tylko wątki bez spraw do potwierdzenia.
 - **Bez okienka pytań i bez plan mode** (blokują turę do powrotu szefa). Pytanie „co i po co”: tekstem w czacie
   (opcje + rekomendacja), wpis w „Czeka na szefa”, powiadomienie push (PushNotification), dziennik. Ta część
   czeka, reszta idzie dalej. Odpowiedź szefa z telefonu przyjdzie zwykłą wiadomością.
