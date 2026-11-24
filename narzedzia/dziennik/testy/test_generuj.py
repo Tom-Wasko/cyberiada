@@ -134,7 +134,7 @@ class TestDokumenty(Pomoc):
         self.dane = generuj.zbuduj(self.projekt, "probny", "Opis", "u/probny", TERAZ, self.sesje)
 
     def test_schemat_i_json(self):
-        self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "wygenerowano", "puls", "tempo", "podroz", "czeka",
+        self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "kolor", "wygenerowano", "puls", "tempo", "podroz", "czeka",
                                           "decyzje", "zadania", "historia", "ostatnia_podroz", "koszty", "commity", "aktywnosc"})
         self.assertEqual(set(self.dane["koszty"]), {"dni", "role", "okno5h", "limit"})
         json.dumps(self.dane, ensure_ascii=False)  # serializuje się bez błędu
@@ -555,3 +555,12 @@ class TestLogiCzytaneRaz(Pomoc):
         self.assertEqual(generuj.okno5h(TERAZ, self.sesje), generuj.okno5h(TERAZ, self.sesje, wsz))
         self.assertEqual(generuj.aktywnosc(self.projekt, "probny", TERAZ, self.sesje),
                          generuj.aktywnosc(self.projekt, "probny", TERAZ, self.sesje, wsz))
+
+
+class TestKolorProjektu(unittest.TestCase):
+    def test_kolor_z_rejestru_albo_staly_po_nazwie(self):
+        self.assertEqual(generuj.kolor_projektu("x", "s3"), "s3")
+        a = generuj.kolor_projektu("projekt-a")
+        self.assertEqual(a, generuj.kolor_projektu("projekt-a"))
+        self.assertIn(a, generuj.KOLORY_PROJEKTOW)
+        self.assertEqual(generuj.kolor_projektu("x", "zly"), generuj.kolor_projektu("x"))

@@ -1,4 +1,5 @@
 # Rejestr projektów cyberiady (czyta: archi.py, instalator, dziennik).
+# kolor: s1..s8 (paleta dziennika), stały dla projektu; bez pola: z nazwy.
 # sciezka: względem katalogu bazowego komputera; gospodarz: komputer, na którym żyje Archi projektu.
 dziennik: https://claude.ai/artifact/5c5LeHX3ohn5qRanw6XyoT
 
@@ -11,8 +12,10 @@ projekty:
     sciezka: cyberiada
     repo: Tom-Wasko/cyberiada
     gospodarz: TOMEK-PC
+    kolor: s1
   lukrum:
     opis: Gra edukacyjna na lekcje WOS
     sciezka: Pulpit/lukrum
     repo: Tom-Wasko/Lukrum
     gospodarz: TOMEK-PC
+    kolor: s2

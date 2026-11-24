@@ -21,6 +21,7 @@ import json
 import re
 import subprocess
 import sys
+import zlib
 from collections import defaultdict
 from collections.abc import Iterator
 from datetime import datetime, timedelta
@@ -518,9 +519,19 @@ def limit5h(plik: Path | None) -> dict | None:
         return None
 
 
+KOLORY_PROJEKTOW = tuple(f"s{i}" for i in range(1, 9))
+
+
+def kolor_projektu(nazwa: str, kolor: str | None = None) -> str:
+    """Stały kolor projektu: `kolor` z projekty.yaml (s1..s8), inaczej z listy według nazwy (nie kolejności)."""
+    if kolor in KOLORY_PROJEKTOW:
+        return kolor
+    return KOLORY_PROJEKTOW[zlib.crc32(nazwa.encode("utf-8")) % len(KOLORY_PROJEKTOW)]
+
+
 def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None = None,
            teraz: datetime | None = None, katalog_sesji: Path | None = None,
-           plik_limitu: Path | None = None) -> dict:
+           plik_limitu: Path | None = None, kolor: str | None = None) -> dict:
     teraz = (teraz or datetime.now()).astimezone()
     stan = czytaj_stan(projekt)
     plan_biezacy = None
@@ -539,7 +550,7 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
         koniec = p["koniec"] or (lokalny(do).date().isoformat() if do else None)
         historia.append({"numer": numer, "temat": temat, "start": p["start"], "koniec": koniec,
                          "od": od, "do": do, "podsumowanie": p["podsumowanie"]})
-    return {"nazwa": nazwa, "opis": opis, "repo": repo,
+    return {"nazwa": nazwa, "opis": opis, "repo": repo, "kolor": kolor_projektu(nazwa, kolor),
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
             "tempo": stan["tempo"],
             "podroz": zbuduj_podroz(stan, projekt, plan_biezacy, {x["nazwa"] for x in logi}, nazwa), "czeka": stan["czeka"],
@@ -567,7 +578,7 @@ def main() -> int:
         sciezka = a.sciezka.resolve()
         nazwa = next((n for n, s in znane.items() if s.resolve() == sciezka), sciezka.name)
     meta = (rejestr().get("projekty") or {}).get(nazwa) or {}
-    dane = zbuduj(sciezka, nazwa, meta.get("opis"), meta.get("repo"))
+    dane = zbuduj(sciezka, nazwa, meta.get("opis"), meta.get("repo"), kolor=meta.get("kolor"))
     wyjscie = a.wyjscie or CYBERIADA / "_robocze" / "dziennik" / f"{nazwa}.json"
     wyjscie.parent.mkdir(parents=True, exist_ok=True)
     with open(wyjscie, "w", encoding="utf-8", newline="\n") as f:
