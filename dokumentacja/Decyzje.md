@@ -52,6 +52,7 @@
 - 2026-11-23 · Dziennik: zamiast wykresu „Wątki” oś czasu pracowników (domyślnie ostatnie 24 h, przesuwanie w lewo, podpisy wg widocznego okresu, Archi zawsze na górze, przerwy w linii, gdy nie pracował); szybki pasek po lewej; projekty jako panele przełączane przyciskami zamiast rozwijanych kart.
 - 2026-11-24 · Tempa pracy: żółw (najwięcej pracy z limitu; ideał 100% limitu po 5 h ciągłej pracy, nigdy nie czeka ani nie obija się, tempo reguluje oszczędnością), królik (szybko teraz, ale dobrze), zwykły (bez słowa: `/hejo`, `/papa`). Archi w żółwiu: `opusplan` + oszczędne zachowanie. Zgoda na statusline w ustawieniach Claude Code.
 - 2026-11-24 · Eksperymenty o efektywności (Z10) odłożone do wolnych tokenów; testowane na lukrum i cyberiadzie, jakość = testy + ocena recenzenta. Recenzja dziennika: drobne poprawki Archi, reszta pytanie.
+- 2026-11-24 · Dziennik po recenzji: wdrożyć wszystkie zmiany wyglądu (stałe kolory projektów inne niż role, pasek okna 5 h = zużycie limitu, Decyzje/Zadania/Historia zwinięte, gradient paska na telefonie, „Przenieś do…” na dotyku).
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
