@@ -15,21 +15,21 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 | Czekanie | nigdy: Archi robi małe zadania, gdy wyko pracują | — | — |
 
 ## Kryteria sukcesu (zatwierdzone przez szefa)
-- [ ] `/hejo zolw|krolik`, `/papa zolw` działają, tempo w `Stan.md`
-- [ ] `wyko.py --tempo` ustawia model i effort
-- [ ] `tempo.py` pokazuje linię idealną i radę
-- [ ] statusline zapisuje limit 5h
-- [ ] tempo widać w dzienniku
-- [ ] badanie z logów w `tokeny.md`, tryby ustawione z liczb
-- [ ] eksperymenty zapisane jako Z10
+- [x] `/hejo zolw|krolik`, `/papa zolw` działają, tempo w `Stan.md`
+- [x] `wyko.py --tempo` ustawia model i effort
+- [x] `tempo.py` pokazuje linię idealną i radę
+- [x] statusline zapisuje limit 5h
+- [x] tempo widać w dzienniku
+- [x] badanie z logów w `tokeny.md`, tryby ustawione z liczb
+- [x] eksperymenty zapisane jako Z10
 - [ ] recenzja dziennika zrobiona, strona opublikowana
 
 ## Wątki
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
-| tempo | wyko | `watek-tempo.md` | w toku |
-| zasady | Archi | — | plan |
-| recenzja | Archi + recenzent | — | plan |
+| tempo | wyko | `watek-tempo.md` | scalony |
+| zasady | Archi | — | zrobiony |
+| recenzja | Archi + recenzent | — | w toku |
 
 ## Podsumowanie
 <!-- Na końcu: co zrobione, co odłożone (→ Zadania.md), koszt (narzedzia/zuzycie.py). -->
