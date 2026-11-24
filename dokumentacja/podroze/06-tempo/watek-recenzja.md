@@ -33,3 +33,34 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
+Gałąź `worktree-podroz-06-recenzja` (commity: generator `7912407`, `d033230`; strona `c50e677`). Strony nie publikowałem.
+
+**Dowody**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 67 tests in 9.299s` / `OK` (nowe: B7 `TestTabelaGrawisy`, B6 `TestLogiCzytaneRaz`, C16 `TestKolorProjektu`).
+- B6 czas `zbuduj` na żywych logach: 22,4 s → 8,9 s (logi czytane raz, `okno5h` z tych samych wpisów).
+- Zrzuty w `C:/Users/PC/cyberiada/_robocze/06-recenzja/po/`: `komp-jasny/ciemny/brzeg.png`, `tel-jasny/ciemny/brzeg.png`, `tel-przenies.png`. Konsola: czysto. `scrollWidth` telefon 390 px = 390 (pełny i brzeg).
+- Test: otwarte „Zadania” zostają otwarte po `render()`; „Przenieś do…” na 390 px widoczny, 4 kolumny docelowe.
+
+**Numery**
+1 zrobione: `bogaty()` (strong/code/a, bez innerHTML).
+2 zrobione: pigułka = pierwsze słowo (pełny stan w `title`), „kto” skrócony.
+3 zrobione: render pomijany, gdy dane się nie zmieniły (podpis JSON); `details` i przełączniki Tabela zapamiętane.
+4 zrobione w kodzie: podziałka co 5/10/15/30 min dla zakresu < 1 h (nie było takiego zakresu na zrzutach, nie widziałem go).
+5 zrobione: `--muted` #6a6862, link #1f66bd (jasny), „czeka” = tekst + kropka (zmiana „czeka” dotyczy obu trybów).
+6 zrobione (pomiar wyżej). 7 zrobione (test).
+8 zrobione. 9 zrobione („zużycie (tokeny)”, „pamięć podręczna”, „bez ruchu od 1 h”, „przed systemem pracy” z wyjaśnieniem).
+10 zrobione: kolumna nazw min 110 px; tekst przerwy krótszy lub pominięty; daty pod osią nie sklejone. Etykieta „lukrum (przed sys…)” w wykresie ról nadal się ucina.
+11 zrobione. 12 zrobione („zobacz projekty”, kafel przewija do sekcji Projekty).
+13 zrobione: `role="img"` przy tempie, cele dotyku ≥ 44 px (Tabela, uchwyt). Pominięte: przycisk „Pokaż jeszcze” w kolumnach zadań (nie zmieniałem). `cursor:grab` tylko na zadaniach z numerem (przeciągalnych).
+14 zrobione („wczoraj” kalendarzowo, rok przy dacie z innego roku).
+15 zrobione: `<meta viewport>` w treści; nie sprawdzone po publikacji jako Artifact.
+16 zrobione: `kolor` w `projekty.yaml` (cyberiada s1, lukrum s2), generator podaje w JSON; bez pola kolor z hasha nazwy (możliwe kolizje); role z osobnej palety `--r1..--r5`.
+17 zrobione: pasek = zużycie limitu, czas okna tekstem; bez limitu pasek czasu z podpisem „czas okna”.
+18 zrobione: Decyzje/Zadania/Historia zwinięte (`details`, localStorage w try/catch); Pracownicy zwinięci, gdy nikt nie pracuje (ręczny wybór wygrywa).
+19 zrobione: gradient przy prawej krawędzi paska na telefonie, znika na końcu.
+20 zrobione: „Przenieś do…” w rozwiniętym zadaniu (dotyk/wąski ekran), zapis jak przeciąganie (`uklad/<projekt>`); zapisu do bazy nie testowałem na żywo (fałszywa baza).
+
+**Uwagi**
+- Plik wątku był tylko w głównym checkoucie (nieskomitowany); kopię z raportem dodałem w worktree.
+- Zapis listy pracowników do dziennika po commicie pominąłem (`version_mismatch`, hook zakazuje czytania); postęp wyko zapisany (wersja 3).
+- `localStorage` w opublikowanym Artifact może być zablokowany; jest w try/catch, stan wtedy nie przetrwa odświeżenia.

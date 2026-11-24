@@ -21,7 +21,9 @@ import json
 import re
 import subprocess
 import sys
+import zlib
 from collections import defaultdict
+from collections.abc import Iterator
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -29,7 +31,9 @@ NARZEDZIA = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(NARZEDZIA))
 from tempo import PLIK_LIMITU, tempo_nazwa  # noqa: E402
 from wspolne import CYBERIADA, projekty, rejestr  # noqa: E402
-from zuzycie import POLA, wazone, wpisy  # noqa: E402
+from wspolne import SESJE_DIR, tytul_sesji  # noqa: E402
+import zuzycie  # noqa: E402
+from zuzycie import POLA, wazone  # noqa: E402
 
 DNI = 30
 
@@ -97,7 +101,8 @@ def tabela(wiersze: list[str]) -> list[dict[str, str | None]]:
     for w in wiersze:
         if not w.strip().startswith("|"):
             continue
-        k = [c.strip().strip("`").strip() for c in w.strip().strip("|").split("|")]
+        # `|` wewnątrz grawisów nie dzieli komórki
+        k = [c.strip().strip("`").strip() for c in re.split(r"\|(?=(?:[^`]*`[^`]*`)*[^`]*$)", w.strip().strip("|"))]
         if all(re.fullmatch(r":?-+:?", c) for c in k):
             continue
         if naglowek is None:
@@ -355,16 +360,39 @@ def rola(sesja: str, agent: bool, model: str = "") -> str:
     return "wyko" if sesja.startswith("wyko-") else "pomo"
 
 
+def wszystkie_wpisy(katalog: Path | None) -> list[tuple[str, dict]]:
+    """Wszystkie wpisy zużycia z dzienników sesji, czytane jeden raz: [(cwd, wpis)]. Pola wpisu jak w `zuzycie.wpisy`."""
+    wynik = []
+    for plik in (katalog or SESJE_DIR).glob("*/*.jsonl"):
+        nazwa = tytul_sesji(plik) or f"(bez nazwy {plik.stem[:8]})"
+        zrodla = [(plik, False)] + [(z, True) for z in plik.with_suffix("").glob("subagents/*.jsonl")]
+        for zrodlo, agent in zrodla:
+            cwdy: list[str] = []
+            wpisy_pliku = zuzycie.czytaj(zrodlo, lambda cwd, czas: cwdy.append(cwd or "") or True)  # filtr woła się raz na wpis
+            wynik.extend((c, {"sesja": nazwa, "agent": agent, **w}) for c, w in zip(cwdy, wpisy_pliku))
+    return wynik
+
+
+def wpisy_projektu(wsz: list[tuple[str, dict]], projekt: Path | None) -> Iterator[dict]:
+    """Wpisy z `wszystkie_wpisy` dla projektu (po cwd, razem z worktree); bez projektu: wszystkie."""
+    prefiks = str(projekt.resolve()).lower().replace("/", "\\").rstrip("\\") if projekt else None
+    for cwd, w in wsz:
+        c = cwd.lower().replace("/", "\\").rstrip("\\")
+        if not prefiks or c == prefiks or c.startswith(prefiks + "\\"):
+            yield w
+
+
 PRZERWA = timedelta(minutes=30)
 DNI_AKTYWNOSCI = 7
 
 
-def aktywnosc(projekt: Path, nazwa: str, teraz: datetime, katalog: Path | None) -> list[dict]:
+def aktywnosc(projekt: Path, nazwa: str, teraz: datetime, katalog: Path | None, wsz: list | None = None) -> list[dict]:
     """Odcinki pracy sesji z ostatnich 7 dni. Nowy odcinek zaczyna się po przerwie dłuższej niż 30 minut;
     wpisy agentów liczą się do sesji, która ich wywołała. Archi pierwszy, potem wg pierwszego startu."""
     granica = teraz - timedelta(days=DNI_AKTYWNOSCI)
     czasy: dict[str, list[datetime]] = defaultdict(list)
-    for w in wpisy(projekt, katalog):
+    wsz = wszystkie_wpisy(katalog) if wsz is None else wsz
+    for w in wpisy_projektu(wsz, projekt):
         t = lokalny(w["czas"])
         if granica <= t <= teraz:
             czasy[w["sesja"]].append(t)
@@ -392,7 +420,9 @@ def ostatnie_dni(teraz: datetime) -> list[str]:
     return [(dzis - timedelta(days=i)).isoformat() for i in range(DNI - 1, -1, -1)]
 
 
-def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, katalog: Path | None) -> dict:
+def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, katalog: Path | None,
+           wsz: list | None = None) -> dict:
+    wsz = wszystkie_wpisy(katalog) if wsz is None else wsz
     dni = ostatnie_dni(teraz)
     po_dniach = {d: {"dzien": d, "wazone": 0.0, **{k: 0 for k in POLA}} for d in dni}
     def granica(czas: str | None, dzien: str | None, koniec: bool) -> datetime | None:
@@ -407,7 +437,7 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
     role: dict[tuple[str, str], float] = defaultdict(float)
     # przed pierwszą podróżą: praca sprzed cyberiady (sama cyberiada nie ma „przed”)
     pierwszy = None if nazwa == "cyberiada" else min((od for _, od, _ in zakresy), default=None)
-    for w in wpisy(projekt, katalog):
+    for w in wpisy_projektu(wsz, projekt):
         chwila = lokalny(w["czas"])
         dzien = chwila.date().isoformat()
         v = wazone(w)
@@ -425,14 +455,15 @@ def koszty(projekt: Path, nazwa: str, historia: list[dict], teraz: datetime, kat
     return {"dni": [po_dniach[d] for d in dni],
             "role": [{"podroz": p, "rola": r, "wazone": round(v)}
                      for (p, r), v in sorted(role.items(), key=lambda kv: (kv[0][0] in ("poza", "przed"), kv[0]))],
-            "okno5h": okno5h(teraz, katalog)}
+            "okno5h": okno5h(teraz, katalog, wsz)}
 
 
-def okno5h(teraz: datetime, katalog: Path | None) -> dict:
+def okno5h(teraz: datetime, katalog: Path | None, wsz: list | None = None) -> dict:
     """Okno limitu 5 h ze wszystkich projektów: od pełnej godziny pierwszego wpisu; po końcu okna nowe."""
     granica = teraz - timedelta(hours=24)
     lista = []
-    for w in wpisy(None, katalog):
+    wsz = wszystkie_wpisy(katalog) if wsz is None else wsz
+    for w in wpisy_projektu(wsz, None):
         t = lokalny(w["czas"])
         if granica <= t <= teraz:
             lista.append((t, wazone(w)))
@@ -488,13 +519,24 @@ def limit5h(plik: Path | None) -> dict | None:
         return None
 
 
+KOLORY_PROJEKTOW = tuple(f"s{i}" for i in range(1, 9))
+
+
+def kolor_projektu(nazwa: str, kolor: str | None = None) -> str:
+    """Stały kolor projektu: `kolor` z projekty.yaml (s1..s8), inaczej z listy według nazwy (nie kolejności)."""
+    if kolor in KOLORY_PROJEKTOW:
+        return kolor
+    return KOLORY_PROJEKTOW[zlib.crc32(nazwa.encode("utf-8")) % len(KOLORY_PROJEKTOW)]
+
+
 def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None = None,
            teraz: datetime | None = None, katalog_sesji: Path | None = None,
-           plik_limitu: Path | None = None) -> dict:
+           plik_limitu: Path | None = None, kolor: str | None = None) -> dict:
     teraz = (teraz or datetime.now()).astimezone()
     stan = czytaj_stan(projekt)
     plan_biezacy = None
-    logi = aktywnosc(projekt, nazwa, teraz, katalog_sesji)
+    wsz = wszystkie_wpisy(katalog_sesji)  # logi czytane raz dla aktywności, kosztów i okna 5 h
+    logi = aktywnosc(projekt, nazwa, teraz, katalog_sesji, wsz)
     if stan["podroz"]:
         plan_biezacy = czytaj_plan(projekt / "dokumentacja" / "podroze" / "-".join(stan["podroz"]))
     historia = []
@@ -508,13 +550,13 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
         koniec = p["koniec"] or (lokalny(do).date().isoformat() if do else None)
         historia.append({"numer": numer, "temat": temat, "start": p["start"], "koniec": koniec,
                          "od": od, "do": do, "podsumowanie": p["podsumowanie"]})
-    return {"nazwa": nazwa, "opis": opis, "repo": repo,
+    return {"nazwa": nazwa, "opis": opis, "repo": repo, "kolor": kolor_projektu(nazwa, kolor),
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
             "tempo": stan["tempo"],
             "podroz": zbuduj_podroz(stan, projekt, plan_biezacy, {x["nazwa"] for x in logi}, nazwa), "czeka": stan["czeka"],
             "decyzje": czytaj_decyzje(projekt), "zadania": czytaj_zadania(projekt),
             "historia": historia, "ostatnia_podroz": ostatnia_podroz(historia, (stan["podroz"] or (None,))[0]),
-            "koszty": {**koszty(projekt, nazwa, historia, teraz, katalog_sesji),
+            "koszty": {**koszty(projekt, nazwa, historia, teraz, katalog_sesji, wsz),
                        "limit": limit5h(plik_limitu) if plik_limitu or katalog_sesji is None else None},
             "commity": commity(projekt, teraz), "aktywnosc": logi}
 
@@ -536,7 +578,7 @@ def main() -> int:
         sciezka = a.sciezka.resolve()
         nazwa = next((n for n, s in znane.items() if s.resolve() == sciezka), sciezka.name)
     meta = (rejestr().get("projekty") or {}).get(nazwa) or {}
-    dane = zbuduj(sciezka, nazwa, meta.get("opis"), meta.get("repo"))
+    dane = zbuduj(sciezka, nazwa, meta.get("opis"), meta.get("repo"), kolor=meta.get("kolor"))
     wyjscie = a.wyjscie or CYBERIADA / "_robocze" / "dziennik" / f"{nazwa}.json"
     wyjscie.parent.mkdir(parents=True, exist_ok=True)
     with open(wyjscie, "w", encoding="utf-8", newline="\n") as f:

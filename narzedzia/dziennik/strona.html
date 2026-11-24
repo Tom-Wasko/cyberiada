@@ -1,21 +1,25 @@
 <title>Dziennik cyberiady</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root{
   --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;
-  --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;
+  --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#6a6862;--grid:#e1e0d9;--axis:#c3c2b7;--link:#1f66bd;
+  --r1:#17375e;--r2:#8c4a1f;--r3:#5b6770;--r4:#6b6b00;--r5:#7b2d6e;
   --border:rgba(11,11,11,.10);--ok-text:#006300;--hover:rgba(11,11,11,.05);
   --good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;
   --r:14px;color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
-  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;
+  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
+  --r1:#9db8d9;--r2:#c78d62;--r3:#9aa5ad;--r4:#b3b35a;--r5:#c58ab8;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
-  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;
+  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
+  --r1:#9db8d9;--r2:#c78d62;--r3:#9aa5ad;--r4:#b3b35a;--r5:#c58ab8;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -35,7 +39,8 @@ h3{font-size:18px;margin:0;letter-spacing:-.01em}
 h4{font-size:15px;margin:0}
 h5{font-size:13px;margin:0 0 6px;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 p{margin:0}
-a{color:var(--s1)}
+a{color:var(--link)}
+code{font:12.5px ui-monospace,Consolas,monospace;background:var(--hover);padding:0 4px;border-radius:4px}
 .licznik{display:inline-flex;min-width:26px;height:26px;padding:0 8px;align-items:center;justify-content:center;
   border-radius:999px;background:var(--ink);color:var(--page);font-size:14px;font-variant-numeric:tabular-nums}
 .licznik.zero{background:var(--grid);color:var(--ink2)}
@@ -83,7 +88,7 @@ button{font:inherit;color:inherit}
 figure.wykres{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:0}
 .wn{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
 .podpis{color:var(--muted);font-size:13px;margin-top:2px}
-.przelacz{flex:none;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:transparent;font-size:13px;color:var(--ink2);cursor:pointer}
+.przelacz{flex:none;min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:transparent;font-size:13px;color:var(--ink2);cursor:pointer}
 .przelacz:hover{background:var(--hover)}
 .legenda{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink2)}
 .legenda li{display:inline-flex;align-items:center;gap:6px}
@@ -105,7 +110,7 @@ thead th{color:var(--ink2);font-weight:600}
 tbody th{font-weight:500}
 /* poziome */
 .poziome{display:grid;gap:8px}
-.pw{display:grid;grid-template-columns:minmax(70px,26%) 1fr auto;gap:10px;align-items:center;font-size:13px;padding:2px 4px;border-radius:6px}
+.pw{display:grid;grid-template-columns:minmax(110px,26%) 1fr auto;gap:10px;align-items:center;font-size:13px;padding:2px 4px;border-radius:6px}
 .pw.aktywny{background:var(--hover)}
 .pw .et{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pw .wart{font-variant-numeric:tabular-nums;color:var(--ink2);min-width:56px;text-align:right}
@@ -153,8 +158,11 @@ details[open]>summary .strzalka{transform:rotate(225deg);margin-bottom:-4px}
 .kol-zad h5{margin:2px 4px 8px}
 .odlozone{margin-top:12px}
 .odlozone>summary{cursor:pointer;font-weight:600;font-size:14px;padding:6px 0}
-.zadanie>summary{cursor:grab;user-select:none;-webkit-user-select:none}
-.zadanie .uchwyt{flex:none;color:var(--muted);touch-action:none;padding:0 2px;cursor:grab}
+.zadanie>summary{cursor:pointer;user-select:none;-webkit-user-select:none}
+.zadanie[data-nr]>summary{cursor:grab}
+.zadanie .uchwyt{flex:none;color:var(--muted);touch-action:none;display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:-12px -6px -12px -10px;cursor:grab}
+.przenies{display:none;margin-top:10px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font:inherit;font-size:14px;color:var(--ink)}
+@media (pointer:coarse),(max-width:719px){.przenies{display:block}}
 .zadanie.ciagniety{opacity:.35}
 .zadanie.duch{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:rotate(1.5deg)}
 .zadanie .opis{font-size:14px;color:var(--ink2);padding:8px 0 12px;line-height:1.45}
@@ -202,6 +210,7 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
   #skok::-webkit-scrollbar{display:none}
   #skok button{width:auto;flex:none;border-radius:999px;min-height:40px;padding:6px 14px;border-left-width:1px;white-space:nowrap}
   #skok button.aktywny{border-left-color:var(--pk)}
+  #skok.wiecej-prawo{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
 }
 .prac{display:grid;gap:8px}
 .pr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--pk,var(--border))}
@@ -212,7 +221,7 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .pr.koniec{opacity:.6}
 .stan-pr{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--hover);margin-left:6px}
 .stan-pr.pracuje{color:var(--ok-text)}
-.wiecej{margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;min-height:32px}
+.wiecej{margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;min-height:44px}
 /* oś czasu pracowników */
 .zakres{color:var(--ink2);font-size:13px;margin:0 0 8px;font-variant-numeric:tabular-nums}
 .os-plot{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
@@ -227,6 +236,18 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 .etykieta.przerwa{font-size:11px;fill:var(--ink2)}
 .etykieta.data{font-weight:600;fill:var(--ink2)}
 .etykieta.szary{opacity:.45}
+/* zwijane bloki */
+.sekcja-zw>summary,.prac-zw>summary{cursor:pointer;list-style:none;display:flex;align-items:center;min-height:44px}
+.sekcja-zw>summary::-webkit-details-marker,.prac-zw>summary::-webkit-details-marker{display:none}
+.sekcja-zw>summary{min-height:32px}
+.sekcja-zw[open]>summary{margin-bottom:8px}
+.prac-zw>summary h2{margin:0}
+.prac-zw[open]>summary{margin-bottom:8px}
+.sekcja-zw>summary h4,.prac-zw>summary h2{display:flex;align-items:center;gap:8px;margin:0}
+.sekcja-zw>summary h4::before,.prac-zw>summary h2::before{content:"›";display:inline-block;width:12px;color:var(--muted);transition:transform .15s}
+.sekcja-zw[open]>summary h4::before,.prac-zw[open]>summary h2::before{transform:rotate(90deg)}
+.przenies-lista{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.przenies-lista button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:var(--hover);font:inherit;font-size:14px;color:var(--ink)}
 /* klocki projektów */
 .klocki{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .klocek{--pk:var(--s1);display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:12px;cursor:pointer;font-size:15px;color:var(--ink);
@@ -239,7 +260,8 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
 main section{scroll-margin-top:16px}
 @media (max-width:719px){main section{scroll-margin-top:76px}}
 .scal{stroke:var(--surface);stroke-width:2}
-.stan-pr.czeka{color:var(--s4)}
+.stan-pr.czeka{color:var(--ink)}
+.stan-pr.czeka::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--s4);margin-right:5px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
@@ -284,6 +306,22 @@ function s(tag,attrs){
   return e;
 }
 function sTekst(attrs,t){const e=s("text",attrs);e.textContent=t;return e;}
+const MD_RE=/(\*\*[^*\n]+\*\*|`[^`\n]+`|https?:\/\/[^\s<>)\]]+)/g;
+/* Tekst z Stan.md/Zadania.md → węzły DOM: **pogrubienie**, `kod`, adresy http(s); bez innerHTML. */
+function bogaty(t){
+  t=tekst(t);const w=[];let ost=0,m;MD_RE.lastIndex=0;
+  while((m=MD_RE.exec(t))){
+    if(m.index>ost)w.push(t.slice(ost,m.index));
+    const x=m[0];
+    if(x.startsWith("**"))w.push(el("strong",{},x.slice(2,-2)));
+    else if(x[0]==="`")w.push(el("code",{},x.slice(1,-1)));
+    else{let url=x,kon="";const k=url.match(/[.,;:!?]+$/);if(k){kon=k[0];url=url.slice(0,-kon.length);}
+      w.push(el("a",{href:url,target:"_blank",rel:"noopener noreferrer"},url));if(kon)w.push(kon);}
+    ost=m.index+x.length;
+  }
+  if(ost<t.length)w.push(t.slice(ost));
+  return w;
+}
 function kropka(kolor){const e=el("span",{class:"kropka"});e.style.background=kolor;return e;}
 const tab=x=>Array.isArray(x)?x:[];
 const tekst=x=>typeof x==="string"?x:(x==null?"":String(x));
@@ -295,6 +333,8 @@ const fDzien=new Intl.DateTimeFormat("pl-PL",{day:"numeric",month:"short"});
 const fDzienPelny=new Intl.DateTimeFormat("pl-PL",{weekday:"short",day:"numeric",month:"long"});
 const fGodz=new Intl.DateTimeFormat("pl-PL",{hour:"2-digit",minute:"2-digit"});
 const fPelna=new Intl.DateTimeFormat("pl-PL",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"});
+const fDzienRok=new Intl.DateTimeFormat("pl-PL",{day:"numeric",month:"short",year:"numeric"});
+const fData=d=>d.getFullYear()===new Date().getFullYear()?fDzien.format(d):fDzienRok.format(d);
 const fCzas=new Intl.DateTimeFormat("pl-PL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
 const DZIEN_RE=/^\d{4}-\d{2}-\d{2}$/;
 function data(t){
@@ -313,7 +353,8 @@ function temu(d){
   if(min<1)return"przed chwilą";
   if(min<60)return min+" min temu";
   const h=Math.floor(min/60);if(h<24)return h+" h temu";
-  const dni=Math.floor(h/24);return dni===1?"wczoraj":dni+" dni temu";
+  const a=new Date(d.getFullYear(),d.getMonth(),d.getDate()),b=new Date();b.setHours(0,0,0,0);
+  const dni=Math.round((b-a)/864e5);return dni<=1?"wczoraj":dni+" dni temu";
 }
 function ticki(max,calk){
   if(!(max>0))return{gora:1,wartosci:[0,1]};
@@ -336,7 +377,7 @@ function norm(id,d){
   const dl=x=>tab(x).map(z=>{z=obj(z);return{data:tekst(z.data),tresc:tekst(z.tresc)};}).filter(z=>z.tresc);
   const ls=x=>tab(x).map(tekst).filter(Boolean);
   return{
-    klucz:id,nazwa:tekst(d.nazwa)||id,opis:tekst(d.opis),repo:tekst(d.repo),
+    klucz:id,nazwa:tekst(d.nazwa)||id,kolorId:tekst(d.kolor),opis:tekst(d.opis),repo:tekst(d.repo),
     wygenerowano:data(d.wygenerowano),puls:data(d.puls),tempo:tekst(d.tempo),
     podroz:p?{numer:tekst(p.numer),temat:tekst(p.temat),start:data(p.start),tryb:tekst(p.tryb),
       kryteria:tab(p.kryteria).map(z=>{z=obj(z);return{tekst:tekst(z.tekst),zrobione:z.zrobione===true};}).filter(z=>z.tekst),
@@ -358,9 +399,15 @@ function norm(id,d){
     commity:tab(d.commity).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),liczba:liczba(z.liczba)};}).filter(z=>DZIEN_RE.test(z.dzien))
   };
 }
-const ROLE=[{nazwa:"Archi",kolor:"var(--s1)"},{nazwa:"wyko",kolor:"var(--s2)"},{nazwa:"agenci",kolor:"var(--s3)"},{nazwa:"pomo",kolor:"var(--s4)"},{nazwa:"Fable",kolor:"var(--s7)"}];
+const ROLE=[{nazwa:"Archi",kolor:"var(--r1)"},{nazwa:"wyko",kolor:"var(--r2)"},{nazwa:"agenci",kolor:"var(--r3)"},{nazwa:"pomo",kolor:"var(--r4)"},{nazwa:"Fable",kolor:"var(--r5)"}];
 const rolaKolor=r=>{const x=ROLE.find(z=>z.nazwa===r);return x?x.kolor:"var(--muted)";};
-function kolorProjektu(i,n){if(n>8&&i>=7)return"var(--muted)";return`var(--s${i+1})`;}
+/* Kolor projektu jest stały (pole `kolor` z projekty.yaml: s1..s8; bez niego z nazwy), nie zależy od kolejności. */
+function kolorProjektu(p,i,n){
+  if(n>8&&i>=7)return"var(--muted)";
+  let id=p.kolorId;
+  if(!/^s[1-8]$/.test(id)){let h=0;for(const c of p.nazwa)h=(h*31+c.charCodeAt(0))>>>0;id="s"+(h%8+1);}
+  return`var(--${id})`;
+}
 function mapaDni(lista,pole){const m={};for(const z of lista)m[z.dzien]=(m[z.dzien]||0)+liczba(z[pole]);return m;}
 function serieProjektow(P,fn){
   const serie=P.map((p,i)=>({nazwa:p.nazwa,kolor:p.kolor,wartosci:fn(p)}));
@@ -395,6 +442,33 @@ document.addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;co
 document.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse")return;const c=e.target.closest&&e.target.closest("[data-tip]");if(c)pokazDymek(c,e.clientX,e.clientY);else ukryjDymek();});
 addEventListener("scroll",()=>{if(aktywny)ukryjDymek();},{passive:true});
 
+/* ---------- pamięć rozwinięć (details) i przełącznika Tabela ---------- */
+let UIOPEN={},PRAC_RECZNIE=null,KONTEKST="";
+const TABELE=new Set();
+try{const t=localStorage.getItem("dziennik.otwarte");if(t){const o=JSON.parse(t);if(o&&typeof o==="object"&&!Array.isArray(o))UIOPEN=o;}}catch(e){}
+function kluczDetails(d){
+  const ctx=(d.closest("section[id]")||{}).id||"";
+  const sm=d.querySelector(":scope>summary");
+  const co=d.dataset.nr?"z:"+d.dataset.nr:(sm?sm.textContent.replace(/\s*\(\d+\)/g,"").trim():"");
+  return ctx+"|"+co;
+}
+function zapamietajOtwarcie(d,otw){
+  if(d.hasAttribute("data-prac")){PRAC_RECZNIE=otw;return;}
+  UIOPEN[kluczDetails(d)]=otw;
+  const k=Object.keys(UIOPEN);if(k.length>300)for(const x of k.slice(0,k.length-300))delete UIOPEN[x];
+  try{localStorage.setItem("dziennik.otwarte",JSON.stringify(UIOPEN));}catch(e){}
+}
+document.addEventListener("click",e=>{
+  const sm=e.target.closest&&e.target.closest("summary");if(!sm)return;
+  const d=sm.parentElement;if(d&&d.tagName==="DETAILS")zapamietajOtwarcie(d,!d.open);
+});
+function przywrocOtwarcia(){
+  document.querySelectorAll("main details").forEach(d=>{
+    if(d.hasAttribute("data-prac"))return;
+    const k=kluczDetails(d);if(k in UIOPEN)d.open=UIOPEN[k]===true;
+  });
+}
+
 /* ---------- ramka wykresu ---------- */
 const rysunki=new Set();
 function rysujWszystko(){
@@ -410,11 +484,17 @@ function ramka(tytul,podpis,legenda,tresc,tabela,klasa){
   const plot=el("div",{class:"plot"});
   const tabDiv=el("div",{class:"tabela",hidden:true},tabela);
   const przycisk=el("button",{class:"przelacz",type:"button","aria-pressed":"false"},"Tabela");
+  const kluczT=KONTEKST+"|"+tytul;
+  const ustawTabele=pokaz=>{
+    tabDiv.hidden=!pokaz;plot.hidden=pokaz;
+    przycisk.textContent=pokaz?"Wykres":"Tabela";przycisk.setAttribute("aria-pressed",String(pokaz));
+  };
   przycisk.addEventListener("click",()=>{
-    const pokazTabele=tabDiv.hidden;tabDiv.hidden=!pokazTabele;plot.hidden=pokazTabele;
-    przycisk.textContent=pokazTabele?"Wykres":"Tabela";przycisk.setAttribute("aria-pressed",String(pokazTabele));
+    const pokazTabele=tabDiv.hidden;ustawTabele(pokazTabele);
+    if(pokazTabele)TABELE.add(kluczT);else TABELE.delete(kluczT);
     if(!pokazTabele)poRenderze();
   });
+  if(tabela&&TABELE.has(kluczT))ustawTabele(true);
   if(typeof tresc==="function")rysunki.add({plot,rysuj:tresc});else if(tresc)plot.append(tresc);
   return el("figure",{class:"wykres"+(klasa?" "+klasa:"")},
     el("div",{class:"wn"},el("div",{},el("h4",{},tytul),podpis?el("p",{class:"podpis"},podpis):null),tabela?przycisk:null),
@@ -629,23 +709,27 @@ function osCzasu(p){
       g.append(s("line",{x1:x0,x2:x0,y1:mt-4,y2:dol,class:"siatka"}));
       g.append(s("line",{x1:x0+q.sz,x2:x0+q.sz,y1:mt-4,y2:dol,class:"siatka"}));
       const op=opisPrzerwy(q.a,q.b),dost=dol-mt-6;
-      const t=sTekst({x:0,y:0,"text-anchor":"middle",class:"etykieta przerwa",transform:`translate(${x0+q.sz/2+4},${(mt-4+dol)/2}) rotate(-90)`},dost>=op.dlugi.length*6.2?op.dlugi:op.krotki);
+      const t=sTekst({x:0,y:0,"text-anchor":"middle",class:"etykieta przerwa",transform:`translate(${x0+q.sz/2+4},${(mt-4+dol)/2}) rotate(-90)`},dost>=op.dlugi.length*7?op.dlugi:(dost>=op.krotki.length*7?op.krotki:""));
       t.style.pointerEvents="none";g.append(t);
     }
     const krok=[1,2,3,6,12,24].find(k=>k*pxh>=34)||24;
+    const minKrok=msPracy<GODZINA?([5,10,15,30].find(k=>k*pxh/60>=34)||30):0;
+    let ostEtX=-1e9;
+    const etData=(xx,t)=>{if(xx-ostEtX<56)return;ostEtX=xx;g.append(sTekst({x:xx,y:H-6,class:"etykieta data"},t));};
     let ostatniDzien=null;
     for(const q of praca){
       const xa=xc(q.c0);
       if(xa>ml+iw||xa+q.sz<ml)continue;
-      if(new Date(q.a).toDateString()!==ostatniDzien)g.append(sTekst({x:xa+2,y:H-6,class:"etykieta data"},fDzien.format(new Date(q.a))));
-      const d=new Date(q.a);d.setMinutes(0,0,0);
-      while(d.getTime()<q.a||d.getHours()%krok)d.setHours(d.getHours()+1);
+      if(new Date(q.a).toDateString()!==ostatniDzien)etData(xa+2,fDzien.format(new Date(q.a)));
+      const d=new Date(q.a);
+      if(minKrok){d.setSeconds(0,0);while(d.getTime()<q.a||d.getMinutes()%minKrok)d.setMinutes(d.getMinutes()+1);}
+      else{d.setMinutes(0,0,0);while(d.getTime()<q.a||d.getHours()%krok)d.setHours(d.getHours()+1);}
       for(let n=0;n<200&&d.getTime()<=q.b;n++){
         const xx=x(d.getTime());
         g.append(s("line",{x1:xx,x2:xx,y1:mt-4,y2:dol,class:"siatka"}));
         g.append(sTekst({x:xx,y:H-22,"text-anchor":"middle",class:"etykieta"},fGodz.format(d)));
-        if(d.getHours()===0&&d.getTime()>q.a+6e4)g.append(sTekst({x:xx+2,y:H-6,class:"etykieta data"},fDzien.format(d)));
-        d.setHours(d.getHours()+krok);
+        if(d.getHours()===0&&d.getMinutes()===0&&d.getTime()>q.a+6e4)etData(xx+2,fDzien.format(d));
+        if(minKrok)d.setMinutes(d.getMinutes()+minKrok);else d.setHours(d.getHours()+krok);
       }
       ostatniDzien=new Date(q.b).toDateString();
     }
@@ -749,13 +833,18 @@ function ostatnioTekst(x){return"ostatnio: "+(x.krok||"commit")+(x.commity?" · 
 function klasaStanu(st){
   st=st.toLowerCase();
   if(/^w toku/.test(st))return"toku";
-  if(/^(scalon|gotow)/.test(st))return"scalone";
+  if(/^(scalon|gotow|zrobion|zakończ)/.test(st))return"scalone";
   if(/^czek/.test(st))return"czeka";
   return"";
 }
 function pigulaStanu(st){
-  const t=tekst(st).split(/[;(]/)[0].trim()||"nie wiadomo";
-  return el("span",{class:"stan "+klasaStanu(st)},t);
+  const pelny=tekst(st).trim()||"nie wiadomo";
+  const slowo=/^w toku/i.test(pelny)?"w toku":(pelny.split(/[\s;(,]/)[0]||"nie wiadomo");
+  return el("span",{class:"stan "+klasaStanu(pelny),title:pelny},slowo);
+}
+function ktoKrotko(kto){
+  const pelny=tekst(kto).trim()||"nie wiadomo",t=pelny.split(/[;(]/)[0].trim()||pelny;
+  return el("span",{class:"kto-watku",title:t!==pelny?pelny:null}," · ",bogaty(t));
 }
 function wierszeWatkow(p){
   const pd=p.podroz;if(!pd||!pd.watki.length)return null;
@@ -765,10 +854,10 @@ function wierszeWatkow(p){
     const x=postepWatku(p,w);
     const baza=x?x.czas:w.start;
     const cisza=wToku(w)&&POSTEP.length>0&&baza&&teraz-baza.getTime()>GODZ;
-    const pil=el("span",{class:"stan cisza","data-cisza":baza?String(baza.getTime()):"",hidden:!cisza},"cisza");
+    const pil=el("span",{class:"stan cisza","data-cisza":baza?String(baza.getTime()):"",hidden:!cisza,title:"Wątek w toku, bez zapisów od ponad godziny"},"bez ruchu od 1 h");
     const pr=PRACOWNICY?PRACOWNICY.lista.find(y=>(!y.projekt||y.projekt===p.klucz||y.projekt===p.nazwa)&&tenSamWatek(y.watek,w.nazwa)):null;
     const wiersz=el("div",{class:"wl"},
-      el("span",{class:"nazwa"},w.nazwa,el("span",{class:"kto-watku"}," · "+(w.kto||"nie wiadomo"))),
+      el("span",{class:"nazwa"},w.nazwa,ktoKrotko(w.kto)),
       el("span",{class:"stany"},pr?el("span",{class:"stan-pr "+(pr.stan==="pracuje"?"pracuje":pr.stan==="czeka"?"czeka":""),title:"Stan pracownika"},pr.stan):null,
         pigulaStanu(w.stan),wToku(w)?pil:null));
     if(x)wiersz.append(el("span",{class:"ost"},ostatnioTekst(x)+" · ",el("span",{class:"temu","data-czas":x.czas.toISOString()},temu(x.czas))));
@@ -808,11 +897,11 @@ function renderCzeka(P){
   for(const{p,c,nowa}of wszystkie){
     const karta=el("article",{class:"pytanie"+(nowa?" nowe":"")},
       el("div",{class:"glowa"},chipProjektu(p),c.id?el("strong",{},c.id):null,nowa?el("span",{class:"znacznik-nowe"},"nowe"):null),
-      el("p",{class:"tresc"},c.tresc));
+      el("p",{class:"tresc"},bogaty(c.tresc)));
     if(c.opcje.length){
       const opcje=el("div",{class:"opcje"});
       for(const o of c.opcje)opcje.append(el("div",{class:"opcja"+(o.rekomendowana?" rek":"")},el("span",{class:"litera"},o.litera),
-        el("span",{},o.tekst,o.rekomendowana?el("span",{class:"tag"},"polecane"):null)));
+        el("span",{},bogaty(o.tekst),o.rekomendowana?el("span",{class:"tag"},"polecane"):null)));
       karta.append(opcje);
     }
     cialo.append(karta);
@@ -829,12 +918,12 @@ function planujWidziane(){
 document.addEventListener("visibilitychange",()=>{if(czekaOtwarta)planujWidziane();});
 function ostatnieDoc(P){return P.filter(p=>p.wygenerowano).sort((a,b)=>b.wygenerowano-a.wygenerowano)[0]||null;}
 const TEMPO={zolw:{znaczek:"🐢",opis:"żółw"},krolik:{znaczek:"🐇",opis:"królik"}};
-function znaczekTempa(t){const x=TEMPO[t];return x?el("span",{class:"tempo",title:"Tempo: "+x.opis,"aria-label":"Tempo: "+x.opis},x.znaczek):null;}
+function znaczekTempa(t){const x=TEMPO[t];return x?el("span",{class:"tempo",role:"img",title:"Tempo: "+x.opis,"aria-label":"Tempo: "+x.opis},x.znaczek):null;}
 function budujOkno(P){
   const z=ostatnieDoc(P),o=z?z.koszty.okno5h:null,box=el("div",{class:"okno"});
-  const lewa=el("div",{},el("div",{class:"et"},"Okno 5 h (tokeny ważone)"));
+  const lewa=el("div",{},el("div",{class:"et"},"Okno 5 h (zużycie, tokeny)"));
   const prawa=el("div",{});
-  const teraz=Date.now();
+  const teraz=Date.now(),li=z?z.koszty.limit:null,limitZnany=!!(li&&li.reset&&li.reset.getTime()>teraz);
   if(!o||!o.od){
     lewa.append(el("div",{class:"wart"},"0"));
     prawa.append(el("div",{class:"pod"},"Brak aktywności w ostatnich 5 h."));
@@ -845,13 +934,18 @@ function budujOkno(P){
     lewa.append(el("div",{class:"wart"},fKompakt.format(o.wazone)));
     const reset=o.reset||new Date(o.od.getTime()+5*36e5);
     const zostalo=Math.max(0,reset.getTime()-teraz),h=Math.floor(zostalo/36e5),m=Math.floor(zostalo%36e5/6e4);
-    const proc=Math.min(100,Math.max(0,(teraz-o.od.getTime())/(reset.getTime()-o.od.getTime())*100));
-    const i=el("i",{});i.style.width=proc+"%";
-    prawa.append(el("div",{class:"pod",style:"color:var(--ink2);margin-bottom:6px"},"Reset o "+fGodz.format(reset)+" · za "+(h?h+" h ":"")+m+" min"),
-      el("div",{class:"pasek",role:"img","aria-label":"Minęło "+Math.round(proc)+"% okna"},i));
+    prawa.append(el("div",{class:"pod",style:"color:var(--ink2);margin-bottom:6px"},"Reset o "+fGodz.format(reset)+" · za "+(h?h+" h ":"")+m+" min"));
+    if(limitZnany){
+      const u=Math.min(100,Math.max(0,Number(li.used)||0)),i=el("i",{});i.style.width=u+"%";
+      prawa.append(el("div",{class:"pasek",role:"img","aria-label":"Zużyto "+Math.round(u)+"% limitu"},i));
+    }else{
+      const proc=Math.min(100,Math.max(0,(teraz-o.od.getTime())/(reset.getTime()-o.od.getTime())*100));
+      const i=el("i",{});i.style.width=proc+"%";
+      prawa.append(el("div",{class:"pasek",role:"img","aria-label":"Minęło "+Math.round(proc)+"% czasu okna"},i),
+        el("div",{class:"pod",style:"margin-top:4px"},"czas okna"));
+    }
   }
-  const li=z?z.koszty.limit:null;
-  if(li&&li.reset&&li.reset.getTime()>teraz){
+  if(limitZnany){
     const stare=li.czas&&teraz-li.czas.getTime()>15*6e4;
     prawa.append(el("div",{class:"pod",style:"margin-top:6px;color:var(--ink2)"},"Limit 5 h: zużyto "+Math.round(li.used)+"%"+(stare?" · dane sprzed "+Math.round((teraz-li.czas.getTime())/6e4)+" min":"")));
   }else prawa.append(el("div",{class:"pod",style:"margin-top:6px"},"Szacunek, limit nieznany"+(z?" · stan na "+fGodz.format(z.wygenerowano):"")));
@@ -864,6 +958,7 @@ function kafel(et,wart,pod,kolor,panel){
   return k;
 }
 function renderPrzeglad(P){
+  KONTEKST="przeglad";
   const sek=$("przeglad");const dni7=ostatnieDni(7),dni14=ostatnieDni(14),z7=new Set(dni7);
   const czeka=P.reduce((a,p)=>a+p.czeka.length,0),wPodrozy=P.filter(p=>p.podroz).length;
   const tok7=P.reduce((a,p)=>a+p.koszty.dni.filter(d=>z7.has(d.dzien)).reduce((b,d)=>b+d.wazone,0),0);
@@ -872,28 +967,39 @@ function renderPrzeglad(P){
   sek.replaceChildren(el("h2",{},"Przegląd"),
     el("div",{class:"kafle"},
       kafel("Czeka na Ciebie",String(czeka),czeka?odm(czeka,"sprawa","sprawy","spraw"):"wszystko załatwione","var(--s2)","czeka"),
-      kafel("Projekty",String(P.length),"w podróży: "+wPodrozy+(P.length?" · otwórz "+P[0].nazwa:""),"var(--s1)",P.length?"p:"+P[0].klucz:null),
-      kafel("Tokeny, 7 dni",fKompakt.format(tok7),"ważone","var(--s7)"),
+      kafel("Projekty",String(P.length),"w podróży: "+wPodrozy+(P.length?" · zobacz projekty":""),"var(--s1)",P.length?"projekty-sekcja":null),
+      kafel("Zużycie, 7 dni",fKompakt.format(tok7),"tokeny","var(--s7)"),
       kafel("Commity, 7 dni",fLiczba.format(com7),odm(com7,"commit","commity","commitów"),"var(--s3)"),
       okno));
   const wyk=el("div",{class:"wykresy dwa"});
   wyk.append(
-    wykresDni("Tokeny dzień po dniu","Ostatnie 14 dni, tokeny ważone (odczyt z pamięci podręcznej liczy się taniej)",dni14,serieProjektow(P,p=>mapaDni(p.koszty.dni,"wazone")),fTok,false,"caly"),
+    wykresDni("Zużycie dzień po dniu","Ostatnie 14 dni, w tokenach (odczyt z pamięci podręcznej liczy się taniej)",dni14,serieProjektow(P,p=>mapaDni(p.koszty.dni,"wazone")),fTok,false,"caly"),
     wykresDni("Commity dzień po dniu","Ostatnie 14 dni",dni14,serieProjektow(P,p=>mapaDni(p.commity,"liczba")),fCom,true),
-    wykresRole("Kto zużywa","Tokeny ważone według roli, cały okres",Object.assign(P.flatMap(p=>{const v={},przed={};for(const r of p.koszty.role){const c=r.podroz==="przed"?przed:v;c[r.rola||"inne"]=(c[r.rola||"inne"]||0)+r.wazone;}const w=[{etykieta:p.nazwa,wartosci:v}];if(Object.keys(przed).length)w.push({etykieta:p.nazwa+" przed cyberiadą",wartosci:przed});return w;}),{etykietaKolumny:"Projekt"})));
+    wykresRole("Kto zużywa","Zużycie (tokeny) według roli, cały okres. „Przed systemem pracy” to praca sprzed pierwszej podróży.",Object.assign(P.flatMap(p=>{const v={},przed={};for(const r of p.koszty.role){const c=r.podroz==="przed"?przed:v;c[r.rola||"inne"]=(c[r.rola||"inne"]||0)+r.wazone;}const w=[{etykieta:p.nazwa,wartosci:v}];if(Object.keys(przed).length)w.push({etykieta:p.nazwa+" (przed systemem pracy)",wartosci:przed});return w;}),{etykietaKolumny:"Projekt"})));
   sek.append(wyk);
 }
 function tytulZadania(opis){
-  let t=opis.replace(/`/g,"").split(/[:;(—]|\. /)[0].trim();
+  let t=opis.replace(/`|\*\*/g,"").split(/[:;(—]|\. /)[0].trim();
   if(t.length>48){t=t.slice(0,48);const s=t.lastIndexOf(" ");t=(s>20?t.slice(0,s):t)+"…";}
   return t||opis.slice(0,48);
 }
-function zadanie(t){
+function zadanie(t,proj,kol){
   const m=t.match(/^(Z\d+)\s*·\s*(.*)$/s);
   const nr=m?m[1]:"",opis=m?m[2]:t;
   return el("details",nr?{class:"zadanie","data-nr":nr}:{class:"zadanie"},
     el("summary",{},nr?el("span",{class:"uchwyt","aria-hidden":"true"},"⠿"):null,nr?el("span",{class:"nr"},nr):null,el("span",{class:"tyt"},tytulZadania(opis))),
-    el("div",{class:"opis"},opis));
+    el("div",{class:"opis"},opis,nr&&proj?przeniesPrzycisk(proj,nr,kol):null));
+}
+function przeniesPrzycisk(proj,nr,kol){
+  const b=el("button",{class:"przenies",type:"button","aria-expanded":"false"},"Przenieś do…");
+  b.addEventListener("click",()=>{
+    const jest=b.nextElementSibling&&b.nextElementSibling.classList.contains("przenies-lista");
+    if(jest){b.nextElementSibling.remove();b.setAttribute("aria-expanded","false");return;}
+    const lista=el("div",{class:"przenies-lista"},KOLUMNY.filter(([x])=>x!==kol).map(([x,nazwa])=>
+      el("button",{type:"button",onclick:()=>przesunZadanie(proj,nr,x)},nazwa)));
+    b.after(lista);b.setAttribute("aria-expanded","true");
+  });
+  return b;
 }
 const KOLUMNY=[["w_toku","W toku"],["nastepnie","Następnie"],["zaplanowane","Zaplanowane"],["zrobione","Zrobione w tej podróży"],["odlozone","Odłożone"]];
 let UKLAD={},DB=null,ciagnie=false;
@@ -909,7 +1015,7 @@ function kolumnaZadan(p,klucz,tytul,lista){
   const przycisk=lista.length>NA_START+1?el("button",{class:"wiecej",type:"button",onclick:()=>{ROZWINIETE.has(id)?ROZWINIETE.delete(id):ROZWINIETE.add(id);render(ostatnieP);}},
     caly?"Zwiń":"Pokaż jeszcze "+(lista.length-NA_START)):null;
   return el("div",{class:"kol-zad","data-kol":klucz,"data-proj":p.klucz},tytul?el("h5",{},tytul+" ("+lista.length+")"):null,
-    lista.length?el("div",{class:"zadania"},widoczne.map(zadanie)):el("p",{class:"pusto"},"Upuść tu zadanie"),przycisk);
+    lista.length?el("div",{class:"zadania"},widoczne.map(t=>zadanie(t,p.klucz,klucz))):el("p",{class:"pusto"},"Upuść tu zadanie"),przycisk);
 }
 function tablicaZadan(p){
   const k=ukladZadan(p);
@@ -952,12 +1058,15 @@ document.addEventListener("pointerdown",e=>{
 });
 function decyzje(tytul,lista){
   const pos=lista.slice().sort((a,b)=>b.data.localeCompare(a.data));
-  const wiersz=d=>el("div",{class:"decyzja"},el("span",{class:"kiedy"},data(d.data)?fDzien.format(data(d.data)):(d.data||"—")),el("span",{},d.tresc));
+  const wiersz=d=>el("div",{class:"decyzja"},el("span",{class:"kiedy"},data(d.data)?fData(data(d.data)):(d.data||"—")),el("span",{},bogaty(d.tresc)));
   const box=el("div",{},el("h5",{},tytul+" ("+lista.length+")"));
   if(!pos.length){box.append(el("p",{class:"pusto"},"—"));return box;}
   box.append(...pos.slice(0,5).map(wiersz));
   if(pos.length>5)box.append(el("details",{class:"starsze"},el("summary",{},"Starsze ("+(pos.length-5)+")"),...pos.slice(5).map(wiersz)));
   return box;
+}
+function zwijany(tytul,...dzieci){
+  return el("details",{class:"blok sekcja-zw"},el("summary",{},el("h4",{},tytul)),...dzieci);
 }
 function renderProjekty(P){
   const sek=$("projekty");sek.replaceChildren();
@@ -967,15 +1076,16 @@ function renderProjekty(P){
     b.style.setProperty("--pk",p.kolor);return b;}));
   const dni14=ostatnieDni(14);
   for(const p of P){
+    KONTEKST=p.klucz;
     const pd=p.podroz;
     const chipy=el("div",{class:"chipy"},
       el("span",{class:"chip"},pd?"Podróż "+pd.numer+": "+pd.temat:"Bez podróży"),
       p.czeka.length?el("span",{class:"chip"},"Czeka: "+p.czeka.length):null,
-      el("span",{class:"chip"},"Archi żył ",el("span",{class:"temu","data-czas":p.puls?p.puls.toISOString():""},temu(p.puls))));
+      el("span",{class:"chip"},p.puls?["Archi żył ",el("span",{class:"temu","data-czas":p.puls.toISOString()},temu(p.puls))]:"Archi żył: brak danych"));
     const pa=postepArchiego(p);
     if(pa)chipy.append(el("span",{class:"chip postep-archi"},"Archi, "+ostatnioTekst(pa)+" · ",el("span",{class:"temu","data-czas":pa.czas.toISOString()},temu(pa.czas))));
     const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa,znaczekTempa(p.tempo)),
-      p.opis?el("span",{class:"opis"},p.opis):null,chipy);
+      p.opis?el("span",{class:"opis"},bogaty(p.opis)):null,chipy);
     const cialo=el("div",{class:"cialo"});
     if(pd){
       const zrob=pd.kryteria.filter(k=>k.zrobione).length;
@@ -985,24 +1095,24 @@ function renderProjekty(P){
         el("p",{class:"meta"},[pd.start?"od "+fDzien.format(pd.start):null,pd.tryb?"tryb "+pd.tryb:null].filter(Boolean).join(" · ")),
         el("p",{class:"meta"},zrob+" z "+pd.kryteria.length+" "+odm(pd.kryteria.length,"kryterium","kryteriów","kryteriów")+" spełnione"),
         pd.kryteria.length?miernik:null,
-        el("ul",{class:"lista"},pd.kryteria.map(k=>el("li",{},el("span",{class:"zn "+(k.zrobione?"ok":"nie"),"aria-label":k.zrobione?"zrobione":"do zrobienia"},k.zrobione?"✓":"○"),el("span",{},k.tekst))))),
+        el("ul",{class:"lista"},pd.kryteria.map(k=>el("li",{},el("span",{class:"zn "+(k.zrobione?"ok":"nie"),"aria-label":k.zrobione?"zrobione":"do zrobienia"},k.zrobione?"✓":"○"),el("span",{},bogaty(k.tekst)))))),
         osCzasu(p),wierszeWatkow(p));
     }else cialo.append(el("div",{class:"blok"},el("p",{class:"pusto"},"Brak podróży w toku.")),osCzasu(p));
     const jedna=[{nazwa:p.nazwa,kolor:p.kolor}];
-    const tokTab=tabelka(["Dzień","Ważone","Wejście","Wyjście","Cache odczyt","Cache zapis"],p.koszty.dni.slice().sort((a,b)=>b.dzien.localeCompare(a.dzien)).map(d=>[fDzien.format(data(d.dzien)),fTok(d.wazone),fTok(d.wejscie),fTok(d.wyjscie),fTok(d.cache_odczyt),fTok(d.cache_zapis)]));
-    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz==="przed"?"Przed cyberiadą":(r.podroz&&r.podroz!=="poza")?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"inne"]=(rolePodroz[k][r.rola||"inne"]||0)+r.wazone;}
+    const tokTab=tabelka(["Dzień","Zużycie","Wejście","Wyjście","Pamięć podręczna: odczyt","Pamięć podręczna: zapis"],p.koszty.dni.slice().sort((a,b)=>b.dzien.localeCompare(a.dzien)).map(d=>[fDzien.format(data(d.dzien)),fTok(d.wazone),fTok(d.wejscie),fTok(d.wyjscie),fTok(d.cache_odczyt),fTok(d.cache_zapis)]));
+    const rolePodroz={};for(const r of p.koszty.role){const k=r.podroz==="przed"?"Przed systemem pracy":(r.podroz&&r.podroz!=="poza")?"Podróż "+r.podroz:"Poza podróżą";(rolePodroz[k]=rolePodroz[k]||{})[r.rola||"inne"]=(rolePodroz[k][r.rola||"inne"]||0)+r.wazone;}
     const wieRole=Object.keys(rolePodroz).sort((a,b)=>b.localeCompare(a,"pl")).map(k=>({etykieta:k,wartosci:rolePodroz[k]}));
     wieRole.etykietaKolumny="Podróż";
     cialo.append(el("div",{class:"wykresy dwa"},
-      ramka("Tokeny dzień po dniu","Ostatnie 14 dni, tokeny ważone",jedna,slupki(dni14,[{nazwa:p.nazwa,kolor:p.kolor,wartosci:mapaDni(p.koszty.dni,"wazone")}],fTok,false,"Tokeny "+p.nazwa),tokTab,"caly"),
+      ramka("Zużycie dzień po dniu","Ostatnie 14 dni, w tokenach",jedna,slupki(dni14,[{nazwa:p.nazwa,kolor:p.kolor,wartosci:mapaDni(p.koszty.dni,"wazone")}],fTok,false,"Tokeny "+p.nazwa),tokTab,"caly"),
       wykresDni("Commity dzień po dniu","Ostatnie 14 dni",dni14,[{nazwa:p.nazwa,kolor:p.kolor,wartosci:mapaDni(p.commity,"liczba")}],fCom,true),
-      wykresRole("Kto zużywa","Tokeny ważone według roli, na podróż",wieRole)));
-    cialo.append(el("div",{class:"blok"},el("h4",{},"Decyzje"),el("div",{class:"kolumny"},decyzje("Szefa",p.decyzje.szefa),decyzje("Archiego",p.decyzje.archiego))));
-    cialo.append(el("div",{class:"blok"},el("h4",{},"Zadania"),tablicaZadan(p)));
+      wykresRole("Kto zużywa","Zużycie (tokeny) według roli, na podróż. „Przed systemem pracy” to praca sprzed pierwszej podróży.",wieRole)));
+    cialo.append(zwijany("Decyzje",el("div",{class:"kolumny"},decyzje("Szefa",p.decyzje.szefa),decyzje("Archiego",p.decyzje.archiego))));
+    cialo.append(zwijany("Zadania",tablicaZadan(p)));
     const hist=p.historia.slice().sort((a,b)=>b.numer.localeCompare(a.numer));
-    cialo.append(el("div",{class:"blok"},el("h4",{},"Historia podróży"),hist.length?el("ul",{class:"historia"},hist.map(h=>el("li",{},
+    cialo.append(zwijany("Historia podróży",hist.length?el("ul",{class:"historia"},hist.map(h=>el("li",{},
       el("div",{},el("strong",{},h.numer+" "+h.temat)," ",el("span",{class:"kiedy"},(h.start?fDzien.format(h.start):"nie wiadomo")+" – "+(h.koniec?fDzien.format(h.koniec):"w toku"))),
-      h.podsumowanie?el("div",{class:"meta",style:"margin:2px 0 0"},h.podsumowanie):null))):el("p",{class:"pusto"},"Brak podróży.")));
+      h.podsumowanie?el("div",{class:"meta",style:"margin:2px 0 0"},bogaty(h.podsumowanie)):null))):el("p",{class:"pusto"},"Brak podróży.")));
     if(/^[\w.-]+\/[\w.-]+$/.test(p.repo))cialo.append(el("p",{class:"meta"},"Repozytorium: ",el("a",{href:"https://github.com/"+p.repo,target:"_blank",rel:"noopener noreferrer"},p.repo)));
     const karta=el("section",{class:"karta panel",id:"p-"+p.klucz,hidden:true},glowa,cialo);karta.style.setProperty("--pk",p.kolor);
     sek.append(karta);
@@ -1036,13 +1146,16 @@ function renderPracownicy(P){
   const sek=$("pracownicy");
   if(!PRACOWNICY){sek.hidden=true;return;}
   const akt=PRACOWNICY.lista.filter(x=>x.stan!=="zakończony"),kon=PRACOWNICY.lista.filter(x=>x.stan==="zakończony");
-  sek.replaceChildren(el("h2",{},"Pracownicy ",el("span",{class:"chip"},String(akt.length))),
+  const otwarte=PRAC_RECZNIE!==null?PRAC_RECZNIE:akt.length>0;
+  sek.replaceChildren(el("details",{class:"prac-zw","data-prac":"1",open:otwarte},
+    el("summary",{},el("h2",{},"Pracownicy ",el("span",{class:"chip"},String(akt.length)))),
     akt.length?el("div",{class:"prac"},akt.map(x=>wierszPrac(x,P))):el("p",{class:"pusto"},"Nikt teraz nie pracuje."),
     kon.length?el("details",{class:"odlozone"},el("summary",{},"Zakończeni dziś ("+kon.length+")"),el("div",{class:"prac"},kon.map(x=>wierszPrac(x,P)))):el("span"),
-    PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):el("span"));
+    PRACOWNICY.wygenerowano?el("p",{class:"meta"},"Stan na "+fGodz.format(PRACOWNICY.wygenerowano)+" (odświeża się po każdym commicie)"):el("span")));
   sek.hidden=false;
 }
-let PROJ=null;
+let PROJ=null,PSIG="",OSTSIG=null;
+function zmienilo(){const sig=PSIG+"§"+JSON.stringify([PRACOWNICY,UKLAD,POSTEP]);if(sig===OSTSIG)return false;OSTSIG=sig;return true;}
 function wczytajProjekt(){try{return localStorage.getItem("dziennik.projekt")||"";}catch(e){return"";}}
 function zapiszProjekt(){try{localStorage.setItem("dziennik.projekt",PROJ);}catch(e){}}
 const SEKCJE=[["czeka","czeka"],["pracownicy","pracownicy"],["przeglad","przeglad"],["projekty-sekcja","projekty"]];
@@ -1089,17 +1202,23 @@ function renderSkok(P){
     przycisk("przeglad","Przegląd"),
     ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor,znaczekTempa(p.tempo)))].filter(Boolean));
 }
+function gradientPaska(){
+  const n=$("skok");if(!n)return;
+  n.classList.toggle("wiecej-prawo",n.scrollWidth-n.scrollLeft-n.clientWidth>4);
+}
+addEventListener("resize",gradientPaska);
+$("skok").addEventListener("scroll",gradientPaska,{passive:true});
 function render(P){
   if(ciagnie){ostatnieP=P;return;}
   ukryjDymek();rysunki.clear();
   P.sort((a,b)=>a.nazwa.localeCompare(b.nazwa,"pl"));
-  P.forEach((p,i)=>{p.kolor=kolorProjektu(i,P.length);});
+  P.forEach((p,i)=>{p.kolor=kolorProjektu(p,i,P.length);});
   ostatnieP=P;
   const sekcje=["czeka","pracownicy","przeglad","projekty-sekcja"].map($);$("skok").hidden=!P.length;
   if(!P.length){sekcje.forEach(x=>{x.hidden=true;x.replaceChildren();});naglowek(P);komunikat("Na razie brak danych. Archi zapisze tu swój projekt przy następnym odświeżeniu dziennika.");return;}
   komunikat("");naglowek(P);
   renderCzeka(P);renderPracownicy(P);renderPrzeglad(P);renderProjekty(P);renderSkok(P);
-  zastosujWidok();
+  przywrocOtwarcia();zastosujWidok();gradientPaska();
 }
 function odswiezCzasy(){
   if(!ostatnieP.length)return;
@@ -1119,14 +1238,14 @@ async function start(){
     db.collection("pracownicy").onSnapshot(snap=>{
       const d=tab(snap&&snap.docs).find(x=>x.id==="lista");
       try{PRACOWNICY=d?normPrac(d.data()):null;}catch(e){PRACOWNICY=null;}
-      if(ostatnieP.length)render(ostatnieP);
+      if(ostatnieP.length&&zmienilo())render(ostatnieP);
     },()=>{});
   }catch(e){}
   try{
     db.collection("uklad").onSnapshot(snap=>{
       const u={};
       tab(snap&&snap.docs).forEach(d=>{try{const r=obj(obj(d.data()).ruchy),c={};for(const[n,k]of Object.entries(r))if(/^Z\d+$/.test(n)&&KOLUMNY.some(([y])=>y===k))c[n]=k;u[tekst(d.id)]=c;}catch(e){}});
-      UKLAD=u;if(ostatnieP.length)render(ostatnieP);
+      UKLAD=u;if(ostatnieP.length&&zmienilo())render(ostatnieP);
     },()=>{});
   }catch(e){}
   let dostal=false;
@@ -1134,14 +1253,15 @@ async function start(){
   try{
     db.collection("postep").onSnapshot(snap=>{
       POSTEP=tab(snap&&snap.docs).map(d=>{try{return normPostep(d.id,d.data());}catch(e){return null;}}).filter(Boolean);
-      if(ostatnieP.length)render(ostatnieP);
+      if(ostatnieP.length&&zmienilo())render(ostatnieP);
     },()=>{POSTEP=[];});
   }catch(e){POSTEP=[];}
   try{
     db.collection("projekty").onSnapshot(snap=>{
       dostal=true;clearTimeout(zegar);
       const P=tab(snap&&snap.docs).map(d=>{try{return norm(tekst(d.id),d.data());}catch(e){return null;}}).filter(Boolean);
-      render(P);
+      PSIG=JSON.stringify(P);
+      if(zmienilo()||!ostatnieP.length)render(P);
     },err=>{dostal=true;clearTimeout(zegar);komunikat("Brak dostępu do danych ("+tekst((err&&err.code)||"błąd")+").");});
   }catch(e){clearTimeout(zegar);komunikat("Brak dostępu do danych ("+tekst(e&&e.code||"błąd")+").");}
 }
