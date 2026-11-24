@@ -50,6 +50,8 @@
 - 2026-11-23 · Oś czasu: przerwy ponad 1 h bez pracy zwężone do wąskiego paska z podpisem; na start cała bieżąca podróż na ekranie (bez podróży: ostatnia), przełącznik „Wszystko (7 dni)”; do podróży należy wszystko od jej startu (po czasie).
 - 2026-11-23 · Dziennik (po obejrzeniu): wszystko widać przewijając w dół w dawnej kolejności, pasek boczny przewija; projekty jako klocki obok siebie, klik otwiera projekt pod nimi; oś czasu: okno 6 h przesuwane tylko myszą/palcem, rzędów tyle, ilu pracowało naraz (Archi osobno na górze), podpis = sesja przy lewej krawędzi okna.
 - 2026-11-23 · Dziennik: zamiast wykresu „Wątki” oś czasu pracowników (domyślnie ostatnie 24 h, przesuwanie w lewo, podpisy wg widocznego okresu, Archi zawsze na górze, przerwy w linii, gdy nie pracował); szybki pasek po lewej; projekty jako panele przełączane przyciskami zamiast rozwijanych kart.
+- 2026-11-24 · Tempa pracy: żółw (najwięcej pracy z limitu; ideał 100% limitu po 5 h ciągłej pracy, nigdy nie czeka ani nie obija się, tempo reguluje oszczędnością), królik (szybko teraz, ale dobrze), zwykły (bez słowa: `/hejo`, `/papa`). Archi w żółwiu: `opusplan` + oszczędne zachowanie. Zgoda na statusline w ustawieniach Claude Code.
+- 2026-11-24 · Eksperymenty o efektywności (Z10) odłożone do wolnych tokenów; testowane na lukrum i cyberiadzie, jakość = testy + ocena recenzenta. Recenzja dziennika: drobne poprawki Archi, reszta pytanie.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
