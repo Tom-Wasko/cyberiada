@@ -76,6 +76,14 @@
     pierwszym wpisie zaokrąglonym w dół do pełnej godziny, trwa 5 h; wpis po końcu okna otwiera nowe okno
     (znów od pełnej godziny). Wynik dla okna zawierającego teraz: `{od, reset, wazone}` (ISO lokalne);
     gdy teraz nie leży w żadnym oknie → `{od: null, reset: null, wazone: 0}`.
+  - **koszty.limit** (podróż 06-tempo; dane wspólne jak `okno5h`): prawdziwy limit 5 h z pliku
+    `~/.claude/cyberiada-limit.json`, który zapisuje `statusline.py`: `{used, reset, czas}` (`used` = % limitu 0–100,
+    `reset` = koniec okna ISO lokalne, `czas` = kiedy statusline zapisał plik) albo `null` (brak pliku lub pola).
+    Strona pokazuje go w oknie 5 h, gdy `reset` jeszcze nie minął; przy `czas` starszym niż 15 min dopisuje wiek danych.
+    `zbuduj(..., plik_limitu=)` podmienia plik (testy); z `katalog_sesji` bez `plik_limitu` limit = `null`.
+  - **tempo** (podróż 06-tempo): linia `Tempo: żółw|zwykły|królik` we wstępie `Stan.md` (jak `Archi żył`) →
+    `"zolw" | "zwykly" | "krolik"` (bez ogonków), brak lub nieznane → `null`. Strona: 🐢 (zolw) i 🐇 (krolik)
+    przy nazwie projektu (nawigacja, klocek, nagłówek panelu); zwykły bez znaczka.
   - **commity:** ostatnie 30 dni, `git log --all --format=%cI` w folderze projektu, liczba na dzień lokalny,
     `[{dzien, liczba}]` z zerami dla dni bez commitów.
   - Git wywołuj przez `subprocess.run([...], cwd=projekt, capture_output=True, text=True, encoding="utf-8")`;
@@ -92,7 +100,7 @@
   ```json
   {
     "nazwa": "cyberiada", "opis": "System pracy z Claude Code", "repo": "Tom-Wasko/cyberiada",
-    "wygenerowano": "2026-11-21T22:10:00+01:00", "puls": "2026-11-21 21:30",
+    "wygenerowano": "2026-11-21T22:10:00+01:00", "puls": "2026-11-21 21:30", "tempo": null,
     "podroz": {"numer": "01", "temat": "dziennik", "start": "2026-11-21", "tryb": "hejo",
                "kryteria": [{"tekst": "…", "zrobione": false}],
                "watki": [{"nazwa": "generator", "kto": "wyko", "stan": "w toku",
@@ -105,7 +113,8 @@
     "koszty": {"dni": [{"dzien": "2026-11-21", "wazone": 0, "wejscie": 0, "wyjscie": 0,
                         "cache_odczyt": 0, "cache_zapis": 0}],
                "role": [{"podroz": "01", "rola": "Archi", "wazone": 0}],
-               "okno5h": {"od": null, "reset": null, "wazone": 0}},
+               "okno5h": {"od": null, "reset": null, "wazone": 0},
+               "limit": {"used": 41.0, "reset": "2026-11-24T19:48:00+01:00", "czas": "2026-11-24T16:48:00+01:00"}},
     "commity": [{"dzien": "2026-11-21", "liczba": 0}]
   }
   ```

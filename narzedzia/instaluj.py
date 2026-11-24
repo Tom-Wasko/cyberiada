@@ -2,11 +2,12 @@
 
   python -X utf8 narzedzia/instaluj.py              instaluje / naprawia
   python -X utf8 narzedzia/instaluj.py --sprawdz    tylko lista kontrolna, nic nie zmienia
+  python -X utf8 narzedzia/instaluj.py --statusline         tylko statusLine (tempo: limit 5 h)
   python -X utf8 narzedzia/instaluj.py --zaufaj [folder]   tylko zaufanie folderowi (domyślnie bieżący)
   python -X utf8 narzedzia/instaluj.py --bez-pamieci        dodatkowo wyłącza auto-pamięć
 
 Robi: dowiązania ~/.claude/{rules,agents,skills/<skill>} do repo, scalenie ~/.claude/settings.json
-(kopia zapasowa), zaufanie folderom projektów w ~/.claude.json (kopia zapasowa), polecenie `archi` w PATH.
+(kopia zapasowa; też statusLine → narzedzia/statusline.py, gdy nie ma innego), zaufanie folderom projektów w ~/.claude.json (kopia zapasowa), polecenie `archi` w PATH.
 """
 from __future__ import annotations
 
@@ -159,6 +160,27 @@ def ustawienia(sprawdz: bool, bez_pamieci: bool) -> None:
             ok(z)
 
 
+def statusline(sprawdz: bool) -> None:
+    print("Statusline (limit 5 h dla tempo.py):")
+    korzen = CYBERIADA
+    if korzen.parent.name == "worktrees" and korzen.parent.parent.name == ".claude":
+        korzen = korzen.parent.parent.parent  # uruchomione z worktree: polecenie ma wskazywać repo główne
+    chce = f"python -X utf8 {(korzen / 'narzedzia' / 'statusline.py').as_posix()}"
+    d = json.loads(USTAWIENIA.read_text(encoding="utf-8")) if USTAWIENIA.exists() else {}
+    jest = d.get("statusLine")
+    if isinstance(jest, dict) and jest.get("command") == chce:
+        ok("statusLine → statusline.py cyberiady")
+    elif jest:
+        print(f"  ! inny statusLine już jest, nie ruszam: {jest.get('command', jest)}")
+        print(f"    (żeby tempo.py miało limit, wywołaj w nim: {chce})")
+    elif sprawdz:
+        zle("brak statusLine (instalator doda statusline.py)")
+    else:
+        d["statusLine"] = {"type": "command", "command": chce}
+        zapisz_json(USTAWIENIA, d)
+        ok("statusLine dodany (działa od nowej sesji)")
+
+
 def zaufaj(foldery: list[Path], sprawdz: bool) -> None:
     print("Zaufanie folderom (~/.claude.json):")
     d = json.loads(STAN_CLAUDE.read_text(encoding="utf-8"))
@@ -213,14 +235,19 @@ def main() -> int:
     p.add_argument("--sprawdz", action="store_true")
     p.add_argument("--zaufaj", nargs="?", const=".", metavar="FOLDER")
     p.add_argument("--bez-pamieci", action="store_true")
+    p.add_argument("--statusline", action="store_true", help="tylko statusLine w settings.json")
     a = p.parse_args()
     if a.zaufaj:
         zaufaj([Path(a.zaufaj)], False)
         return 0
+    if a.statusline:
+        statusline(a.sprawdz)
+        return 1 if problemy else 0
     print(f"cyberiada: {CYBERIADA}  ({'sprawdzanie' if a.sprawdz else 'instalacja'})")
     lista_kontrolna()
     dowiazania(a.sprawdz)
     ustawienia(a.sprawdz, a.bez_pamieci)
+    statusline(a.sprawdz)
     zaufaj(list(dict.fromkeys([CYBERIADA, *projekty().values()])), a.sprawdz)
     sciezka_path(a.sprawdz)
     print("Gotowe." if not problemy else f"Do poprawy: {len(problemy)}")

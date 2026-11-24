@@ -233,6 +233,8 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
   background:color-mix(in srgb,var(--pk) 16%,var(--surface));border:2px solid color-mix(in srgb,var(--pk) 45%,var(--border));max-width:100%}
 .klocek:hover{background:color-mix(in srgb,var(--pk) 26%,var(--surface))}
 .klocek.aktywny{background:color-mix(in srgb,var(--pk) 38%,var(--surface));border-color:var(--pk);font-weight:700}
+.tempo{margin-left:6px;font-size:1.1em;line-height:1}
+.klocek .tempo{margin-left:0}
 .klocek .nazwa{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 main section{scroll-margin-top:16px}
 @media (max-width:719px){main section{scroll-margin-top:76px}}
@@ -330,12 +332,12 @@ const zaokr=(x,y,w,h,r)=>`M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x
 function norm(id,d){
   d=obj(d);
   const p=(d.podroz&&typeof d.podroz==="object"&&!Array.isArray(d.podroz))?d.podroz:null;
-  const dec=obj(d.decyzje),zad=obj(d.zadania),k=obj(d.koszty),o=obj(k.okno5h);
+  const dec=obj(d.decyzje),zad=obj(d.zadania),k=obj(d.koszty),o=obj(k.okno5h),lim=obj(k.limit);
   const dl=x=>tab(x).map(z=>{z=obj(z);return{data:tekst(z.data),tresc:tekst(z.tresc)};}).filter(z=>z.tresc);
   const ls=x=>tab(x).map(tekst).filter(Boolean);
   return{
     klucz:id,nazwa:tekst(d.nazwa)||id,opis:tekst(d.opis),repo:tekst(d.repo),
-    wygenerowano:data(d.wygenerowano),puls:data(d.puls),
+    wygenerowano:data(d.wygenerowano),puls:data(d.puls),tempo:tekst(d.tempo),
     podroz:p?{numer:tekst(p.numer),temat:tekst(p.temat),start:data(p.start),tryb:tekst(p.tryb),
       kryteria:tab(p.kryteria).map(z=>{z=obj(z);return{tekst:tekst(z.tekst),zrobione:z.zrobione===true};}).filter(z=>z.tekst),
       watki:tab(p.watki).map(w=>{w=obj(w);return{nazwa:tekst(w.nazwa)||"bez nazwy",kto:tekst(w.kto)||"nie wiadomo",stan:tekst(w.stan)||"nie wiadomo",galaz:tekst(w.galaz),start:data(w.start),scalono:data(w.scalono)};})}:null,
@@ -350,7 +352,8 @@ function norm(id,d){
     koszty:{
       dni:tab(k.dni).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),wazone:liczba(z.wazone),wejscie:liczba(z.wejscie),wyjscie:liczba(z.wyjscie),cache_odczyt:liczba(z.cache_odczyt),cache_zapis:liczba(z.cache_zapis)};}).filter(z=>DZIEN_RE.test(z.dzien)),
       role:tab(k.role).map(z=>{z=obj(z);return{podroz:tekst(z.podroz),rola:tekst(z.rola),wazone:liczba(z.wazone)};}),
-      okno5h:{od:data(o.od),reset:data(o.reset),wazone:liczba(o.wazone)}
+      okno5h:{od:data(o.od),reset:data(o.reset),wazone:liczba(o.wazone)},
+      limit:k.limit&&typeof lim.used==="number"?{used:liczba(lim.used),reset:data(lim.reset),czas:data(lim.czas)}:null
     },
     commity:tab(d.commity).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),liczba:liczba(z.liczba)};}).filter(z=>DZIEN_RE.test(z.dzien))
   };
@@ -825,6 +828,8 @@ function planujWidziane(){
 }
 document.addEventListener("visibilitychange",()=>{if(czekaOtwarta)planujWidziane();});
 function ostatnieDoc(P){return P.filter(p=>p.wygenerowano).sort((a,b)=>b.wygenerowano-a.wygenerowano)[0]||null;}
+const TEMPO={zolw:{znaczek:"🐢",opis:"żółw"},krolik:{znaczek:"🐇",opis:"królik"}};
+function znaczekTempa(t){const x=TEMPO[t];return x?el("span",{class:"tempo",title:"Tempo: "+x.opis,"aria-label":"Tempo: "+x.opis},x.znaczek):null;}
 function budujOkno(P){
   const z=ostatnieDoc(P),o=z?z.koszty.okno5h:null,box=el("div",{class:"okno"});
   const lewa=el("div",{},el("div",{class:"et"},"Okno 5 h (tokeny ważone)"));
@@ -845,7 +850,11 @@ function budujOkno(P){
     prawa.append(el("div",{class:"pod",style:"color:var(--ink2);margin-bottom:6px"},"Reset o "+fGodz.format(reset)+" · za "+(h?h+" h ":"")+m+" min"),
       el("div",{class:"pasek",role:"img","aria-label":"Minęło "+Math.round(proc)+"% okna"},i));
   }
-  prawa.append(el("div",{class:"pod",style:"margin-top:6px"},"Szacunek, limit nieznany"+(z?" · stan na "+fGodz.format(z.wygenerowano):"")));
+  const li=z?z.koszty.limit:null;
+  if(li&&li.reset&&li.reset.getTime()>teraz){
+    const stare=li.czas&&teraz-li.czas.getTime()>15*6e4;
+    prawa.append(el("div",{class:"pod",style:"margin-top:6px;color:var(--ink2)"},"Limit 5 h: zużyto "+Math.round(li.used)+"%"+(stare?" · dane sprzed "+Math.round((teraz-li.czas.getTime())/6e4)+" min":"")));
+  }else prawa.append(el("div",{class:"pod",style:"margin-top:6px"},"Szacunek, limit nieznany"+(z?" · stan na "+fGodz.format(z.wygenerowano):"")));
   box.append(lewa,prawa);return box;
 }
 function kafel(et,wart,pod,kolor,panel){
@@ -954,7 +963,7 @@ function renderProjekty(P){
   const sek=$("projekty");sek.replaceChildren();
   $("klocki").replaceChildren(...P.map(p=>{
     const b=el("button",{type:"button",class:"klocek","data-proj":p.klucz,"aria-pressed":"false",onclick:()=>wybierzProjekt(p.klucz)},
-      el("span",{class:"nazwa"},p.nazwa),p.czeka.length?el("span",{class:"licznik"},String(p.czeka.length)):null);
+      el("span",{class:"nazwa"},p.nazwa),znaczekTempa(p.tempo),p.czeka.length?el("span",{class:"licznik"},String(p.czeka.length)):null);
     b.style.setProperty("--pk",p.kolor);return b;}));
   const dni14=ostatnieDni(14);
   for(const p of P){
@@ -965,7 +974,7 @@ function renderProjekty(P){
       el("span",{class:"chip"},"Archi żył ",el("span",{class:"temu","data-czas":p.puls?p.puls.toISOString():""},temu(p.puls))));
     const pa=postepArchiego(p);
     if(pa)chipy.append(el("span",{class:"chip postep-archi"},"Archi, "+ostatnioTekst(pa)+" · ",el("span",{class:"temu","data-czas":pa.czas.toISOString()},temu(pa.czas))));
-    const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa),
+    const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa,znaczekTempa(p.tempo)),
       p.opis?el("span",{class:"opis"},p.opis):null,chipy);
     const cialo=el("div",{class:"cialo"});
     if(pd){
@@ -1078,7 +1087,7 @@ function renderSkok(P){
     przycisk("czeka","Czeka",null,[el("span",{class:"licznik"+(czeka?"":" zero")},String(czeka)),nowe?el("span",{class:"znacznik-nowe"},"nowe"):null]),
     PRACOWNICY?przycisk("pracownicy","Pracownicy"):null,
     przycisk("przeglad","Przegląd"),
-    ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor))].filter(Boolean));
+    ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor,znaczekTempa(p.tempo)))].filter(Boolean));
 }
 function render(P){
   if(ciagnie){ostatnieP=P;return;}
