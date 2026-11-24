@@ -11,8 +11,12 @@ Tempo: zwykły
 |---|---|---|---|
 | 06/tempo | wyko | scalony | `main` |
 | 06/zasady | Archi | zrobiony | `main` |
-| 06/recenzja | Archi | w toku | `main` |
+| 06/recenzja | wyko | w toku | `worktree-podroz-06-recenzja` |
 
 ## Czeka na szefa
+- P1: Recenzja dziennika, zmiany wyglądu (grupa C). Które wdrożyć?
+  - A: wszystkie pięć: stałe kolory projektów (inne niż role), pasek „Okno 5 h” = zużycie limitu, Decyzje/Zadania/Historia domyślnie zwinięte, gradient przy przewijanym pasku na telefonie, „Przenieś do…” zamiast przeciągania na telefonie (rekomendowane)
+  - B: tylko kolory, pasek limitu i zwinięte sekcje
+  - C: żadne, zostaje jak jest
 
 ## Od Pomocnika
