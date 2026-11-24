@@ -80,8 +80,8 @@ def nowy(plik: Path, model: str | None, effort: str | None, tempo: str | None, p
     print(f"Tempo: {tempo} (model {model or ust['model']}, effort {effort or ust['effort']}, "
           f"autocompact {ust['autocompact']})")
     nazwa = f"wyko-{projekt}-{nn}-{watek}"
-    if any(a.get("name") == nazwa and a.get("status") not in ("stopped", "done")
-           for a in agenci_w_tle()):
+    if not pokaz and any(a.get("name") == nazwa and a.get("status") not in ("stopped", "done")
+                         for a in agenci_w_tle()):
         raise SystemExit(f"Sesja {nazwa} już działa (claude agents).")
     m_archi = re.search(r"\*\*Archi:\*\*\s*`?(archi-[a-z0-9-]+)", tresc)
     archi = m_archi.group(1) if m_archi else f"archi-{projekt}"
