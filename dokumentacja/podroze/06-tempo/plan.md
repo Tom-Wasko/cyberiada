@@ -1,6 +1,6 @@
 # Podróż 06: tempo pracy
 Start: 2026-11-24 · tryb: nadzorowany · gałąź: `main`
-Zadania: Z8, Z9 (Z10 odłożone do „Zaplanowane”)
+Zadania: Z8, Z9, Z10 (eksperymenty: pewnie piątek wieczorem)
 
 ## Cel
 Trzy tempa pracy: żółw (najwięcej pracy z limitu 5h, bez przestojów), zwykły (jak dziś), królik (szybko teraz).
@@ -22,6 +22,7 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 - [x] tempo widać w dzienniku
 - [x] badanie z logów w `tokeny.md`, tryby ustawione z liczb
 - [x] eksperymenty zapisane jako Z10
+- [ ] eksperymenty Z10 zrobione, tryby poprawione
 - [ ] recenzja dziennika zrobiona, strona opublikowana
 
 ## Wątki
