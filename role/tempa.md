@@ -15,7 +15,9 @@ tempo regulujesz oszczędnością, nie przerwami.
 - Mało tur: nie odpisuj na rzeczy bez działania, krótkie odpowiedzi, czytaj fragmenty, łącz wywołania.
 - Po scaleniu wątku poproś szefa o `/compact` (w trybie autonomicznym działa samo przy 150k).
 - Wyko: Sonnet, effort medium (low przy `Rodzaj: mechaniczny`), autocompact 120k; wątki duże (2 h i więcej),
-  bo każdy start kosztuje; drobne mechaniczne rzeczy: agent na Haiku albo sam.
+  bo start to ok. 1/5 kosztu wyko; brief z gotowymi ścieżkami i faktami skraca start. Kontynuacja = SendMessage do
+  tego samego wyko. Drobne mechaniczne rzeczy i szukanie: agent na Haiku (ok. 1/17 tury Sonneta) albo sam.
+- Pracuj seriami: tura po przerwie > 5 min kosztuje kilka razy więcej (ponowny zapis cache).
 - `tempo.py` mówi „za szybko” → następne wątki oszczędniej (low, bez kolejnego wyko równolegle);
   „za wolno” → dodaj wyko (autonomicznie najwyżej 3) albo bierz kolejne zadania z listy.
 - Gdy wyko pracują, rób małe zadania z `Zadania.md`; gdy pracy brak, przygotuj następny wątek.

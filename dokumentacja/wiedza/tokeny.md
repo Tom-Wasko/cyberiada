@@ -48,3 +48,26 @@ Częściowo.
 - Odczyt cache 0,1: **tak** dla starszych modeli; dla Opus 5.5 i Sonnet 5.5 jest 0,05, dla Fable 0,025. Zawyża ok. 2×.
 - Haiku 5.5 powyżej 100 tys. tokenów promptu kosztuje 5× więcej (mnożnik 0,25): w wadze go nie ma.
 Źródło wszystkich liczb: https://platform.claude.com/docs/en/about-claude/pricing
+
+## Tempa pracy: research (24.11, podróż 06)
+- **Effort:** Opus/Sonnet/Haiku 5.5 domyślnie medium; ustawienie `--effort`, `/effort`, `CLAUDE_CODE_EFFORT_LEVEL`, `effortLevel`.
+  Myślenie liczy się jak wyjście, a wyłączyć go w modelach 5.5 się nie da. Źródło: https://code.claude.com/docs/en/model-config
+- **`opusplan`:** Opus w plan mode, Sonnet przy wykonaniu. Źródło: to samo.
+- **Autocompact:** `--autocompact <rozmiar>`, `/autocompact`, `autoCompactWindow`; minimum 100k. Kompaktowanie dużego kontekstu
+  to samo w sobie duże zapytanie. Źródła: https://code.claude.com/docs/en/model-config , https://code.claude.com/docs/en/costs
+- **Limit 5h w skrypcie:** statusline dostaje `rate_limits.five_hour.used_percentage` i `resets_at`. Źródło: https://code.claude.com/docs/en/statusline
+- **Testy innych (małe, nieoficjalne):** high→medium ok. −45% wyjścia przy podobnej jakości
+  (https://www.xda-developers.com/changed-one-setting-in-claude-code-token-burn-dropped/); max 11–15× drożej niż medium
+  (https://medium.com/@syanzen/claude-code-effort-levels-8d6ee975d14f); wznowienie po wygaśnięciu cache ok. 5× drożej
+  (https://www.mindstudio.ai/blog/claude-code-usage-limits-tips).
+- **Nasze dane (lukrum 23.11, `zuzycie.py`):** 47,6M ważonych; archi-lukrum 22M (46%, Opus). U Archiego ok. 47% to odczyt
+  kontekstu przy każdej turze, ok. 37% zapis cache, 16% wyjście. Wniosek: największa dźwignia to tury i wielkość kontekstu Archiego.
+- **Badanie z logów (`narzedzia/analiza.py --od 2026-11-01`, 18,9 tys. wywołań, wszystkie projekty):**
+  - udział: zwykłe czaty (pomo, głównie Opus high) 54,9%, agenci 26,5%, Archi 10,1%, wyko 8,6%;
+  - koszt tury: Opus high ok. 35,7 tys., Sonnet medium ok. 13,7 tys., Haiku low ok. 0,8 tys., Fable ok. 92 tys. ważonych;
+  - wyko: start (mediana 15 tur do pierwszej zmiany pliku) = 22,6% kosztu sesji; sesja średnio 1,11M, 254 tys. na commit;
+    koszt tury stały, więc koszt rośnie z liczbą tur, nie z czasem;
+  - przerwy: tury po > 5 min = 7,0% całości (średnio 95 tys. zamiast 12,8 tys.), po > 1 h = 4,8% (377 tys.);
+  - `/compact`: 160k → 22k kontekstu, pierwsza tura po nim ok. 158 tys.
+  - Wnioski dla temp: mniej i większe wątki (start = 1/5 kosztu), praca seriami bez pauz, drobiazgi na Haiku,
+    Opus high tylko gdy trzeba (2,6× Sonnet medium na turę).
