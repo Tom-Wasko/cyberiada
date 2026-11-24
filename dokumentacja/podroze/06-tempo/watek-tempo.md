@@ -46,3 +46,33 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
+
+### Wynik: wątek zrobiony (wyko, 24.11)
+**Dowody**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 63 tests in 8.754s` / `OK` (w tym nowy `test_tempo.py`, 21 testów).
+- `analiza.py --od 2026-11-01` → raport 45 linii w `_robocze/06-tempo/analiza.md` (prawdziwe logi, 14 s).
+- `echo '{...limit 40%...}' | statusline.py` → `Sonnet · limit 5h 40% · do resetu 2:59`, plik `~/.claude/cyberiada-limit.json` zapisany; `tempo.py --tempo zolw` → `minęło 40% czasu ... zużyto 40% limitu ... Rada (żółw): tempo dobre.`
+- `wyko.py <plik wątku> --tempo zolw --pokaz` → `Tempo: zolw (model sonnet, effort medium, autocompact 120k)`, w poleceniu `--effort medium --autocompact 120k`.
+- `instaluj.py --sprawdz` → `✓ statusLine → statusline.py cyberiady`.
+- Zrzuty (komputer, fałszywa baza): `_robocze/06-tempo/zrzut-projekt.png` (🐢 w nawigacji, klocku i nagłówku), `zrzut-przeglad.png` (okno 5 h z „Limit 5 h: zużyto 41%”). Konsola czysta.
+
+**Najważniejsze liczby z logów (od 1.11, ważone; 18,9 tys. wpisów)**
+- Udział: agenci 26,5%, Archi 10,1%, wyko 8,6%, inne sesje 54,9% (nazwy sesji spoza archi-/wyko-; sesje zwykłych rozmów z Opusem high dominują).
+- Przerwy: 410 tur po przerwie >5 min zjadło 7,0% całości na ponowny zapis cache (średnio 95 tys. na turę wobec 12,8 tys. zwykłego zapisu); 70 tur po >1 h: 4,8% całości (średnio 377 tys.).
+- /compact: 283, kontekst 160k → 22k; pierwsza tura po nim średnio 158 tys. (zapis cache).
+- Wyko (43 sesje): start (do 1. zmiany pliku, mediana 15 tur) = 22,6% kosztu sesji; sesja średnio 1,11 mln, 4,6 commita, 254 tys. na commit. Koszt na turę praktycznie stały (13,4–13,9 tys.), więc koszt rośnie z liczbą tur, nie z długością czasu.
+- Archi: koszt tury 54 tys. (50–100k kontekstu), 32 tys. (100–200k), 37 tys. (>200k), brak prostej zależności (tury o małym kontekście częściej płacą za zapis cache).
+- Model/effort na turę: Opus high ~35,7 tys., Sonnet medium ~13,7 tys., Haiku low ~0,8 tys., Fable ~92 tys.
+
+**Zmiany:** nowe `narzedzia/{analiza,statusline,tempo}.py`, `narzedzia/dziennik/testy/test_tempo.py`; zmienione `wyko.py` (`--tempo`, `--effort`), `instaluj.py` (`statusLine`, nowa flaga `--statusline`), `dziennik/generuj.py` (`tempo`, `koszty.limit`), `strona.html`, `watek-generator.md`, `test_generuj.py` (schemat o 2 klucze).
+
+**Uwagi / odstępstwa**
+- Instalację uruchomiłem tylko krokiem `instaluj.py --statusline`, nie pełną: z worktree pełna zmieniłaby dowiązania `~/.claude/rules|agents|skills` na worktree. Polecenie w settings wskazuje repo główne (`C:/Users/PC/cyberiada/narzedzia/statusline.py`), więc zadziała dopiero po scaleniu (do tego czasu statusline w nowych sesjach pokaże błąd Pythona/pustą linię). Kopia settings.json: `settings.json.kopia-*`.
+- Limit w dzienniku to osobny klucz `koszty.limit` (obok `okno5h`), nie nowa sekcja; `tempo` zapisuję bez ogonków (`zolw|zwykly|krolik`).
+- Plik `~/.claude/cyberiada-limit.json` zawiera teraz liczby testowe (40%); nadpisze go pierwszy prawdziwy statusline. Nie mogłem go usunąć (`rm` zablokowane).
+- Sprzątanie `_robocze/06-tempo/` (podkatalogi `tmp`, `fake`, plik `zrzut.png`, `podglad.html`, `budujpodglad.py`) zablokowane: `rm` odmówiony; folder jest poza gitem.
+- Okno >5 h `analiza.py`: „tura” = wywołanie modelu; koszt /compact = pierwsza tura po granicy (sam wpis podsumowania nie ma własnego usage w logu).
+
+**Propozycje (nie wdrażałem)**
+- Po scaleniu: `Tempo: żółw` do `Stan.md` cyberiady i krótkie sprawdzenie `tempo.py` z prawdziwym limitem.
+- Duży wniosek z liczb: przerwy >5 min kosztują ~7% zużycia, więc w żółwiu warto kończyć serie tur bez pauz zamiast „odpoczywać”.
