@@ -86,7 +86,7 @@ def tekst(w: dict) -> str:
     L = [f"Tempo: {w['tempo'] or 'nieustalone'}"] if w.get("tempo") else []
     if "limit_proc" in w:
         L.append(f"Okno 5 h: minęło {w['czas_proc']:.0f}% czasu (start {w['start_okna']}, reset {w['reset']}), "
-                 f"zużyto {w['limit_proc']:.0f}% limitu, różnica {round(w["roznica_pp"]):+d} pp.")
+                 f"zużyto {w['limit_proc']:.0f}% limitu, różnica {round(w['roznica_pp']):+d} pp.")
         if "prognoza_100" in w:
             L.append(f"Prognoza: 100% limitu około {w['prognoza_100']}"
                      + (" (przed resetem)." if w["przed_resetem"] else " (po resecie: limit starczy)."))
