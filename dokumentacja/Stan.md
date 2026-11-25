@@ -11,7 +11,7 @@ Tempo: zwykły
 |---|---|---|---|
 | 06/tempo | wyko | scalony | `main` |
 | 06/zasady | Archi | zrobiony | `main` |
-| 06/recenzja | wyko | scalony do `podroz-06` (73bcefb); publikacja strony przy /hejo | — |
+| 06/recenzja | wyko | scalony na `main`, strona opublikowana (wersja 9) | — |
 
 ## Czeka na szefa
 

@@ -23,14 +23,14 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 - [x] badanie z logów w `tokeny.md`, tryby ustawione z liczb
 - [x] eksperymenty zapisane jako Z10
 - [ ] eksperymenty Z10 zrobione, tryby poprawione
-- [ ] recenzja dziennika zrobiona, strona opublikowana
+- [x] recenzja dziennika zrobiona, strona opublikowana
 
 ## Wątki
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
 | tempo | wyko | `watek-tempo.md` | scalony |
 | zasady | Archi | — | zrobiony |
-| recenzja | recenzent + wyko | `watek-recenzja.md` | scalony do `podroz-06`, strona do publikacji |
+| recenzja | recenzent + wyko | `watek-recenzja.md` | scalony, strona opublikowana (wersja 9) |
 
 ## Podsumowanie
 <!-- Na końcu: co zrobione, co odłożone (→ Zadania.md), koszt (narzedzia/zuzycie.py). -->
