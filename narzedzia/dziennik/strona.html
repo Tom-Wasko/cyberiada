@@ -5,7 +5,6 @@
 :root{
   --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;
   --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#6a6862;--grid:#e1e0d9;--axis:#c3c2b7;--link:#1f66bd;
-  --r1:#17375e;--r2:#8c4a1f;--r3:#5b6770;--r4:#6b6b00;--r5:#7b2d6e;
   --border:rgba(11,11,11,.10);--ok-text:#006300;--hover:rgba(11,11,11,.05);
   --good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;
   --r:14px;color-scheme:light;
@@ -13,13 +12,11 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
   --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
-  --r1:#9db8d9;--r2:#c78d62;--r3:#9aa5ad;--r4:#b3b35a;--r5:#c58ab8;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
   --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
-  --r1:#9db8d9;--r2:#c78d62;--r3:#9aa5ad;--r4:#b3b35a;--r5:#c58ab8;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -399,7 +396,8 @@ function norm(id,d){
     commity:tab(d.commity).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),liczba:liczba(z.liczba)};}).filter(z=>DZIEN_RE.test(z.dzien))
   };
 }
-const ROLE=[{nazwa:"Archi",kolor:"var(--r1)"},{nazwa:"wyko",kolor:"var(--r2)"},{nazwa:"agenci",kolor:"var(--r3)"},{nazwa:"pomo",kolor:"var(--r4)"},{nazwa:"Fable",kolor:"var(--r5)"}];
+/* Role: nasycone kolory, których nie mają projekty (projekty.yaml: cyberiada s1, lukrum s2). */
+const ROLE=[{nazwa:"Archi",kolor:"var(--s7)"},{nazwa:"wyko",kolor:"var(--s3)"},{nazwa:"agenci",kolor:"var(--s5)"},{nazwa:"pomo",kolor:"var(--s4)"},{nazwa:"Fable",kolor:"var(--s8)"}];
 const rolaKolor=r=>{const x=ROLE.find(z=>z.nazwa===r);return x?x.kolor:"var(--muted)";};
 /* Kolor projektu jest stały (pole `kolor` z projekty.yaml: s1..s8; bez niego z nazwy), nie zależy od kolejności. */
 function kolorProjektu(p,i,n){
