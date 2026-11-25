@@ -53,6 +53,7 @@
 - 2026-11-24 · Tempa pracy: żółw (najwięcej pracy z limitu; ideał 100% limitu po 5 h ciągłej pracy, nigdy nie czeka ani nie obija się, tempo reguluje oszczędnością), królik (szybko teraz, ale dobrze), zwykły (bez słowa: `/hejo`, `/papa`). Archi w żółwiu: `opusplan` + oszczędne zachowanie. Zgoda na statusline w ustawieniach Claude Code.
 - 2026-11-24 · Eksperymenty o efektywności (Z10) odłożone do wolnych tokenów; testowane na lukrum i cyberiadzie, jakość = testy + ocena recenzenta. Recenzja dziennika: drobne poprawki Archi, reszta pytanie.
 - 2026-11-24 · Dziennik po recenzji: wdrożyć wszystkie zmiany wyglądu (stałe kolory projektów inne niż role, pasek okna 5 h = zużycie limitu, Decyzje/Zadania/Historia zwinięte, gradient paska na telefonie, „Przenieś do…” na dotyku).
+- 2026-11-25 · Żółw bez osobnej zasady dla pomo (Sonnet do drobnych): pomo jest używany rzadko.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury
