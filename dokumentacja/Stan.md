@@ -1,7 +1,7 @@
 # Stan
 <!-- Jedyne „teraz” projektu. Pisze Archi; Pomocnik tylko w sekcji „Od Pomocnika”. -->
-Archi żył: 2026-11-24 17:20
-Tryb: autonomiczny 16:57–17:20 (24.11), zakończony: praca skończona. Czeka na /hejo: przegląd `podroz-06`, scalenie do `main`, push, publikacja strony dziennika. Podróży 06 nie zamykać (Z10 eksperymenty, pewnie piątek).
+Archi żył: 2026-11-25 06:53
+Tryb: nadzorowany od 06:53 (25.11). Podróży 06 nie zamykać (Z10 eksperymenty, pewnie piątek).
 Tempo: zwykły
 
 ## Podróż
