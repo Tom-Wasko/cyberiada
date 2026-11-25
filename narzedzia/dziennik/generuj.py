@@ -520,11 +520,12 @@ def limit5h(plik: Path | None) -> dict | None:
 
 
 KOLORY_PROJEKTOW = tuple(f"s{i}" for i in range(1, 9))
+KOLORY_DODATKOWE = ("szmaragd", "kosmos")  # własne kolory projektów spoza palety s1..s8
 
 
 def kolor_projektu(nazwa: str, kolor: str | None = None) -> str:
-    """Stały kolor projektu: `kolor` z projekty.yaml (s1..s8), inaczej z listy według nazwy (nie kolejności)."""
-    if kolor in KOLORY_PROJEKTOW:
+    """Stały kolor projektu: `kolor` z projekty.yaml (s1..s8, szmaragd, kosmos), inaczej z listy według nazwy (nie kolejności)."""
+    if kolor in KOLORY_PROJEKTOW + KOLORY_DODATKOWE:
         return kolor
     return KOLORY_PROJEKTOW[zlib.crc32(nazwa.encode("utf-8")) % len(KOLORY_PROJEKTOW)]
 

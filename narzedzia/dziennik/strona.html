@@ -3,19 +3,19 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root{
-  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;--szmaragd:#059669;--kosmos:#7c3aed;
   --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#6a6862;--grid:#e1e0d9;--axis:#c3c2b7;--link:#1f66bd;
   --border:rgba(11,11,11,.10);--ok-text:#006300;--hover:rgba(11,11,11,.05);
   --good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;
   --r:14px;color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;--szmaragd:#10b981;--kosmos:#a78bfa;
   --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#0ca30c;--s7:#9085e9;--s8:#e66767;--szmaragd:#10b981;--kosmos:#a78bfa;
   --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--link:#3987e5;
   --border:rgba(255,255,255,.10);--ok-text:#0ca30c;--hover:rgba(240,239,236,.07);color-scheme:dark;
 }
@@ -396,14 +396,13 @@ function norm(id,d){
     commity:tab(d.commity).map(z=>{z=obj(z);return{dzien:tekst(z.dzien),liczba:liczba(z.liczba)};}).filter(z=>DZIEN_RE.test(z.dzien))
   };
 }
-/* Role: nasycone kolory, których nie mają projekty (projekty.yaml: cyberiada s1, lukrum s2). */
-const ROLE=[{nazwa:"Archi",kolor:"var(--s7)"},{nazwa:"wyko",kolor:"var(--s3)"},{nazwa:"agenci",kolor:"var(--s5)"},{nazwa:"pomo",kolor:"var(--s4)"},{nazwa:"Fable",kolor:"var(--s8)"}];
+const ROLE=[{nazwa:"Archi",kolor:"var(--s1)"},{nazwa:"wyko",kolor:"var(--s2)"},{nazwa:"agenci",kolor:"var(--s3)"},{nazwa:"pomo",kolor:"var(--s4)"},{nazwa:"Fable",kolor:"var(--s7)"}];
 const rolaKolor=r=>{const x=ROLE.find(z=>z.nazwa===r);return x?x.kolor:"var(--muted)";};
-/* Kolor projektu jest stały (pole `kolor` z projekty.yaml: s1..s8; bez niego z nazwy), nie zależy od kolejności. */
+/* Kolor projektu jest stały (pole `kolor` z projekty.yaml: s1..s8, szmaragd, kosmos; bez niego z nazwy), nie zależy od kolejności. */
 function kolorProjektu(p,i,n){
   if(n>8&&i>=7)return"var(--muted)";
   let id=p.kolorId;
-  if(!/^s[1-8]$/.test(id)){let h=0;for(const c of p.nazwa)h=(h*31+c.charCodeAt(0))>>>0;id="s"+(h%8+1);}
+  if(!/^(s[1-8]|szmaragd|kosmos)$/.test(id)){let h=0;for(const c of p.nazwa)h=(h*31+c.charCodeAt(0))>>>0;id="s"+(h%8+1);}
   return`var(--${id})`;
 }
 function mapaDni(lista,pole){const m={};for(const z of lista)m[z.dzien]=(m[z.dzien]||0)+liczba(z[pole]);return m;}

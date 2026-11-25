@@ -560,6 +560,7 @@ class TestLogiCzytaneRaz(Pomoc):
 class TestKolorProjektu(unittest.TestCase):
     def test_kolor_z_rejestru_albo_staly_po_nazwie(self):
         self.assertEqual(generuj.kolor_projektu("x", "s3"), "s3")
+        self.assertEqual(generuj.kolor_projektu("x", "szmaragd"), "szmaragd")
         a = generuj.kolor_projektu("projekt-a")
         self.assertEqual(a, generuj.kolor_projektu("projekt-a"))
         self.assertIn(a, generuj.KOLORY_PROJEKTOW)
