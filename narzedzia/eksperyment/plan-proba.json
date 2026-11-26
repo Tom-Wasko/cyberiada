@@ -1,0 +1,7 @@
+{
+  "_opis": "Próba całej ścieżki: najmniejsze zadanie, Haiku, effort low (ten sam przebieg co w planie 3a: po próbie jest zaliczony).",
+  "grupy": [
+    {"opis": "Próba: debet, Haiku low", "zadania": ["debet"], "modele": ["haiku"], "effort": ["low"],
+     "autocompact": ["200k"], "powtorzenie": 1}
+  ]
+}

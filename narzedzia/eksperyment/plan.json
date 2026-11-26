@@ -1,0 +1,21 @@
+{
+  "_opis": "Przebiegi w kolejności ważności; narzędzie robi je po kolei aż do stopu. zadania: id, male, duze albo wszystkie. powtorzenie = numer powtórzenia (p1, p2).",
+  "grupy": [
+    {"opis": "1. Sonnet low/medium/high, 4 zadania, autocompact 200k",
+     "zadania": ["wszystkie"], "modele": ["sonnet"], "effort": ["low", "medium", "high"], "autocompact": ["200k"], "powtorzenie": 1},
+    {"opis": "2. Autocompact 120k na dużych (Sonnet medium)",
+     "zadania": ["duze"], "modele": ["sonnet"], "effort": ["medium"], "autocompact": ["120k"], "powtorzenie": 1},
+    {"opis": "3a. Haiku low/medium na małych",
+     "zadania": ["male"], "modele": ["haiku"], "effort": ["low", "medium"], "autocompact": ["200k"], "powtorzenie": 1},
+    {"opis": "3b. Opus medium na dużych",
+     "zadania": ["duze"], "modele": ["opus"], "effort": ["medium"], "autocompact": ["200k"], "powtorzenie": 1},
+    {"opis": "4a. Drugie powtórzenia punktu 1",
+     "zadania": ["wszystkie"], "modele": ["sonnet"], "effort": ["low", "medium", "high"], "autocompact": ["200k"], "powtorzenie": 2},
+    {"opis": "4b. Drugie powtórzenia punktu 2",
+     "zadania": ["duze"], "modele": ["sonnet"], "effort": ["medium"], "autocompact": ["120k"], "powtorzenie": 2},
+    {"opis": "4c. Drugie powtórzenia punktu 3",
+     "zadania": ["male"], "modele": ["haiku"], "effort": ["low", "medium"], "autocompact": ["200k"], "powtorzenie": 2},
+    {"opis": "4d. Drugie powtórzenia punktu 3 (Opus)",
+     "zadania": ["duze"], "modele": ["opus"], "effort": ["medium"], "autocompact": ["200k"], "powtorzenie": 2}
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "_opis": "Cztery prawdziwe zadania z historii (powtórka scalonych wątków wyko). start = commit startowy (rodzic wątku), wzorzec = scalenie, z którego bierzemy diff wzorcowy i brief (sekcja Brief pliku wątku). oryginal = sesja wyko z logów (czas i tokeny ważone). Uwaga: żaden oryginał nie trwał 1 h ani 2 h (9-17 min); wielkość to rozmiar diffu i liczba plików, nie czas.",
+  "zadania": [
+    {
+      "id": "debet",
+      "wielkosc": "male",
+      "projekt": "lukrum",
+      "repo": "C:/Users/PC/Pulpit/lukrum",
+      "start": "f9b872642e73ca5fb62c8192f4374eea08b16d07",
+      "wzorzec": "913ec704729c2c2e581405bafbcde4ad6abe7362",
+      "plik_watku": "dokumentacja/podroze/04-wyglad-i-dzwiek/watek-test-debetu.md",
+      "python": "C:/Users/PC/Pulpit/lukrum/gra/.venv/Scripts/python.exe",
+      "testy_cwd": "gra",
+      "testy": ["{python}", "-X", "utf8", "-m", "pytest", "-q", "-p", "no:cacheprovider", "testy"],
+      "oryginal": {"czas_min": 11, "wazone_mln": 0.36, "pliki": 2, "linie": 29},
+      "uzasadnienie": "Najmniejsze: błąd w silniku (test jest, pada), 2 pliki, 29 linii. Szukanie przyczyny, nie pisanie od zera. Test z briefu pada tylko w pełnym przebiegu (sprawdzone na commicie startowym: 1 failed, 1026 passed, ok. 6,5 min; sam folder testy/pieniadze przechodzi), dlatego polecenie testów to cały folder testy."
+    },
+    {
+      "id": "generator",
+      "wielkosc": "male",
+      "projekt": "cyberiada",
+      "repo": "C:/Users/PC/cyberiada",
+      "start": "8ae20ab1b87a99af7735ca06423e842254c12e88",
+      "wzorzec": "0aa9d5c474443f9fdd6a3b0751a6a89ec5563398",
+      "plik_watku": "dokumentacja/podroze/01-dziennik/watek-generator.md",
+      "python": "python",
+      "testy_cwd": ".",
+      "testy": ["{python}", "-X", "utf8", "-m", "unittest", "discover", "-s", "narzedzia/dziennik/testy"],
+      "oryginal": {"czas_min": 9, "wazone_mln": 0.72, "pliki": 3, "linie": 700},
+      "uzasadnienie": "Mały wątek cyberiady z pełnym, samodzielnym briefem (schemat, CLI, testy unittest). Nowy plik od zera, bez zależności od plików spoza repo. Testy pisze sam wykonawca, więc o jakości mówi też ocena diffu."
+    },
+    {
+      "id": "zestawy",
+      "wielkosc": "duze",
+      "projekt": "lukrum",
+      "repo": "C:/Users/PC/Pulpit/lukrum",
+      "start": "ed8e9d14d76b59bb5227cfa48586160c3d333128",
+      "wzorzec": "da2de476fb91e6d56b9dbf509a80a3615b69ec53",
+      "plik_watku": "dokumentacja/podroze/03-okienka-i-rundy/watek-zestawy.md",
+      "python": "C:/Users/PC/Pulpit/lukrum/gra/.venv/Scripts/python.exe",
+      "testy_cwd": "gra",
+      "testy": ["{python}", "-X", "utf8", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+                "testy/rdzen/test_zmiana_zestawu.py", "testy/aplikacja/test_funkcje_api.py"],
+      "oryginal": {"czas_min": 17, "wazone_mln": 1.04, "pliki": 14, "linie": 294},
+      "uzasadnienie": "Największe z lukrum z samodzielnym briefem i testami: funkcja w silniku, API, panel MG (JS/CSS), 14 plików, 294 linii. Dotyka kilku warstw, więc kontekst rośnie (sprawdza autocompact). Brief każe robić zrzuty ekranu: w powtórce wykonawca ma je pominąć (dopisek w poleceniu)."
+    },
+    {
+      "id": "tempo",
+      "wielkosc": "duze",
+      "projekt": "cyberiada",
+      "repo": "C:/Users/PC/cyberiada",
+      "start": "d4dd6fad96f0bd5f52667590a3b5ce836a36b3c5",
+      "wzorzec": "ac4e1760dfa82b62eef9fb103e9be5045777459b",
+      "plik_watku": "dokumentacja/podroze/06-tempo/watek-tempo.md",
+      "python": "python",
+      "testy_cwd": ".",
+      "testy": ["{python}", "-X", "utf8", "-m", "unittest", "discover", "-s", "narzedzia/dziennik/testy"],
+      "oryginal": {"czas_min": 11, "wazone_mln": 0.99, "pliki": 9, "linie": 794},
+      "uzasadnienie": "Największe z cyberiady: 5 nowych narzędzi i zmiany w 4 istniejących, 794 linie, 8 commitów, własne testy. Samodzielny brief (decyzje szefa i wzory w treści)."
+    }
+  ]
+}
