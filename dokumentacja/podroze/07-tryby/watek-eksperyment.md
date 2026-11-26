@@ -43,4 +43,21 @@
 - **Archi:** archi-cyberiada
 
 ## Raport
-<!-- Pisze wyko na końcu. -->
+**Zrobione:** narzedzie `narzedzia/eksperyment/` (`uruchom.py`, `raport.py`, `zadania.json`, `plan.json` z 40 przebiegami, `plan-proba.json`, `README.md`) i testy `narzedzia/dziennik/testy/test_eksperyment.py`. Stopy: budzet 45M, limit tygodniowy >= 95, termin 29.11 16:00, limit 5 h (czeka do resetu), `--naraz 3`, `--wznow`. Nie ruszone: pliki spoza briefu.
+
+**Zadania (uzasadnienie w `zadania.json`):** male: `debet` (lukrum, blad w silniku, 2 pliki/29 linii), `generator` (cyberiada, nowe narzedzie, 700 linii); duze: `zestawy` (lukrum, 14 plikow, 4 warstwy), `tempo` (cyberiada, 9 plikow, 794 linie).
+
+**Dowody:**
+- `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` -> `Ran 96 tests in 9.568s` / `OK`
+- `uruchom.py --pokaz` -> `Szacowany koszt niezrobionych: ~48M waznych`, stopy: budzet 45M, termin 2026-11-29 16:00, limit seven_day >= 95, naraz 3.
+- Proba (Haiku, low, 200k, `debet`): `koniec debet-haiku-low-200k-p1: testy OK ocena 5 wazone 14937`. Wpis: czas 1129 s (z testami ok. 6,5 min), 24 tury, 1,16M tokenow surowych, 14937 waznych, koszt 0,030 USD; ocena Sonneta 5 (diff 90 linii), jej koszt 27488 waznych / 0,055 USD. Lacznie ok. 0,085 USD. Wpis i `raport.md` zostaly w `_robocze/eksperyment/` tego worktree (poza gitem).
+
+**Uwagi / problemy znalezione przez probe i naprawione:**
+- Pierwsza proba dala diff 0 i testy OK: test z briefu pada tylko w pelnym przebiegu (na starcie: 1 failed, 1026 passed), nie w `testy/pieniadze`. Polecenie testow `debet` to teraz caly folder `testy` (ok. 6,5 min na przebieg; wpisalem to w szacunek).
+- Diff wzorcowy byl pusty (zla skladnia pathspec) i obejmowal cudze prace ze scalenia: teraz `:(exclude)` i diff konczy sie na drugim rodzicu scalenia (test z prawdziwym gitem).
+- Zaden oryginal nie trwal 1 h ani 2 h+ (9-17 min): wielkosc = rozmiar diffu. Brak `--max-turns` w tej wersji: tylko limit czasu 90 min.
+- Dokumentacji nie pobieralem (brak sieci): pola `--output-format json` sprawdzone probami, zrodla w README. Szacunek 48M jest zgrubny (popraw po pierwszych wynikach). Zadania lukrum uzywaja `.venv` z glownego lukrum.
+- Kopie prob `C:/Users/PC/eksperyment/_proba` i `_ocena` leza poza worktree (moj zakres usuwania konczy sie na worktree): do skasowania recznie, nastepne przebiegi same usuwaja swoje kopie.
+
+## Propozycje
+- Przed pelnym planem puscic `--naraz 1` na 2-3 przebiegach i poprawic szacunek, bo `debet` jest wolny (testy 6,5 min).
