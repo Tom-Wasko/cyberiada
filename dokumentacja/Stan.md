@@ -1,6 +1,6 @@
 # Stan
 <!-- Jedyne „teraz” projektu. Pisze Archi; Pomocnik tylko w sekcji „Od Pomocnika”. -->
-Archi żył: 2026-11-25 06:53
+Archi żył: 2026-11-26 17:21
 Tryb: komp od 16:10 (26.11)
 
 ## Podróż
@@ -9,7 +9,7 @@ Tryb: komp od 16:10 (26.11)
 | Wątek | Kto | Stan | Gałąź |
 |---|---|---|---|
 | 07/tryby | wyko | scalony na `main`, zainstalowany | — |
-| 07/eksperyment | wyko | w toku | `worktree-podroz-07-eksperyment` |
+| 07/eksperyment | wyko | scalony; próba Haiku: testy OK, ocena 5, 15k ważonych | — |
 | 07/zasady | Archi | zrobiony (skille podlinkowane) | `main` |
 | 07/testy | Archi + narzędzie | 27.11–29.11 16:00 | — |
 

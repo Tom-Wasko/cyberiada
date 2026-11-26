@@ -51,7 +51,7 @@ Linia w `Stan.md`: `Tryb: sen od 23:10` albo `Tryb: szkoła do 16:00 (jestem)` (
 - [ ] po scaleniu Archi sam bierze następne zadanie
 - [x] stare tryby w archiwum
 - [x] tryb widać w dzienniku
-- [ ] narzędzie eksperymentów gotowe
+- [x] narzędzie eksperymentów gotowe
 - [ ] testy Z10 zrobione do 29.11 16:00
 - [ ] tryby poprawione z wyników
 
@@ -59,7 +59,7 @@ Linia w `Stan.md`: `Tryb: sen od 23:10` albo `Tryb: szkoła do 16:00 (jestem)` (
 | Wątek | Kto | Plik | Stan |
 |---|---|---|---|
 | tryby | wyko | `watek-tryby.md` | scalony, strona opublikowana |
-| eksperyment | wyko | `watek-eksperyment.md` | w toku |
+| eksperyment | wyko | `watek-eksperyment.md` | scalony |
 | zasady | Archi | — | zrobiony |
 | testy | Archi + narzędzie | — | plan (27.11–29.11 16:00) |
 
