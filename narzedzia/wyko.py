@@ -1,7 +1,7 @@
 """Uruchamia wyko: sesję Claude Code w tle na jeden wątek podróży.
 
 Użycie (Archi, z folderu projektu albo z dowolnego miejsca):
-  python -X utf8 C:/Users/PC/cyberiada/narzedzia/wyko.py <plik wątku> [--tempo zolw|zwykly|krolik] [--model sonnet] [--effort medium] [--pokaz]
+  python -X utf8 C:/Users/PC/cyberiada/narzedzia/wyko.py <plik wątku> [--tryb komp|sen|szkola] [--model sonnet] [--effort medium] [--pokaz]
   python -X utf8 C:/Users/PC/cyberiada/narzedzia/wyko.py --wznow <id albo nazwa sesji> [--pokaz]
 
 Plik wątku: <projekt>/dokumentacja/podroze/NN-temat/watek-<nazwa>.md, zatwierdzony commitem.
@@ -17,21 +17,20 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from tempo import tempo_nazwa, tempo_ze_stanu  # noqa: E402
+from tryb import tryb_nazwa, tryb_ze_stanu  # noqa: E402
 from wspolne import CYBERIADA, agenci_w_tle, claude_exe, projekt_dla  # noqa: E402
 
 ROLA = CYBERIADA / "role" / "wyko.md"
 USTAWIENIA = CYBERIADA / "narzedzia" / "wyko" / "ustawienia.json"
 
 
-def ustawienia_tempa(tempo: str, tresc: str) -> dict:
-    """Model, effort i autocompact dla tempa (żółw/zwykły/królik) i briefu (`Rodzaj: mechaniczny|trudny`)."""
-    rodzaj = re.search(r"^\s*(?:[-*]\s*)?\**Rodzaj:\**\s*(mechaniczny|trudny)\b", tresc, re.IGNORECASE | re.MULTILINE)
+def ustawienia_trybu(tryb: str, tresc: str) -> dict:
+    """Model, effort i autocompact dla trybu (komp/sen/szkola) i briefu (`Rodzaj: mechaniczny|trudny`)."""
+    rodzaj = re.search(r"^\s*(?:[-*]\s*)?\**Rodzaj:\**\s*(mechaniczny|trudny)", tresc, re.IGNORECASE | re.MULTILINE)
     rodzaj = rodzaj.group(1).lower() if rodzaj else ""
-    if tempo == "zolw":
-        return {"model": "sonnet", "effort": "low" if rodzaj == "mechaniczny" else "medium", "autocompact": "120k"}
-    return {"model": "sonnet", "effort": "high" if tempo == "krolik" and rodzaj == "trudny" else "medium",
-            "autocompact": "200k"}
+    if tryb == "komp":
+        return {"model": "sonnet", "effort": "high" if rodzaj == "trudny" else "medium", "autocompact": "200k"}
+    return {"model": "sonnet", "effort": "low" if rodzaj == "mechaniczny" else "medium", "autocompact": "120k"}
 
 
 def wspolne_flagi(model: str, effort: str = "medium", autocompact: str = "200k") -> list[str]:
@@ -55,7 +54,7 @@ def uruchom(polecenie: list[str], cwd: Path, pokaz: bool) -> int:
     return wynik.returncode
 
 
-def nowy(plik: Path, model: str | None, effort: str | None, tempo: str | None, pokaz: bool) -> int:
+def nowy(plik: Path, model: str | None, effort: str | None, tryb: str | None, pokaz: bool) -> int:
     plik = plik.resolve()
     if not plik.is_file():
         raise SystemExit(f"Brak pliku wątku: {plik}")
@@ -74,10 +73,10 @@ def nowy(plik: Path, model: str | None, effort: str | None, tempo: str | None, p
     if not pokaz and git("rev-parse", "--abbrev-ref", "@{u}", cwd=korzen) and \
             git("rev-list", "--count", "@{u}..HEAD", cwd=korzen) not in ("", "0"):
         print("Wypycham commity, żeby worktree miał plik wątku:", git("push", "-q", cwd=korzen) or "ok")
-    tempo = tempo or tempo_ze_stanu(korzen) or "zwykly"
+    tryb = tryb or tryb_ze_stanu(korzen)["tryb"]
     tresc = plik.read_text(encoding="utf-8")
-    ust = ustawienia_tempa(tempo, tresc)
-    print(f"Tempo: {tempo} (model {model or ust['model']}, effort {effort or ust['effort']}, "
+    ust = ustawienia_trybu(tryb, tresc)
+    print(f"Tryb: {tryb} (model {model or ust['model']}, effort {effort or ust['effort']}, "
           f"autocompact {ust['autocompact']})")
     nazwa = f"wyko-{projekt}-{nn}-{watek}"
     if not pokaz and any(a.get("name") == nazwa and a.get("status") not in ("stopped", "done")
@@ -108,10 +107,10 @@ def wznow(cel: str, pokaz: bool) -> int:
     return uruchom(polecenie, Path(s.get("cwd") or "."), pokaz)
 
 
-def tempo_nazwa_arg(tekst: str) -> str:
-    t = tempo_nazwa(tekst)
+def tryb_nazwa_arg(tekst: str) -> str:
+    t = tryb_nazwa(tekst)
     if not t:
-        raise argparse.ArgumentTypeError("zolw, zwykly albo krolik")
+        raise argparse.ArgumentTypeError("komp, sen albo szkola")
     return t
 
 
@@ -119,17 +118,17 @@ def main() -> int:
     p = argparse.ArgumentParser(description="Uruchamia wyko (sesję w tle) dla wątku podróży.")
     p.add_argument("plik", nargs="?", type=Path, help="plik wątku")
     p.add_argument("--wznow", metavar="SESJA", help="wznów zatrzymaną sesję wyko (id albo nazwa)")
-    p.add_argument("--model", help="wygrywa z tempem (domyślnie sonnet)")
-    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"], help="wygrywa z tempem")
-    p.add_argument("--tempo", type=tempo_nazwa_arg, help="zolw|zwykly|krolik (domyślnie linia Tempo: w Stan.md projektu, "
-                   "potem zwykly)")
+    p.add_argument("--model", help="wygrywa z trybem (domyślnie sonnet)")
+    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"], help="wygrywa z trybem")
+    p.add_argument("--tryb", type=tryb_nazwa_arg, help="komp|sen|szkola (domyślnie linia Tryb: w Stan.md projektu, "
+                   "potem komp)")
     p.add_argument("--pokaz", action="store_true", help="tylko wypisz polecenie")
     a = p.parse_args()
     if a.wznow:
         return wznow(a.wznow, a.pokaz)
     if not a.plik:
         p.error("podaj plik wątku albo --wznow")
-    return nowy(a.plik, a.model, a.effort, a.tempo, a.pokaz)
+    return nowy(a.plik, a.model, a.effort, a.tryb, a.pokaz)
 
 
 if __name__ == "__main__":
