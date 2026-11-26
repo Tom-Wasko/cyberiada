@@ -42,3 +42,18 @@
 
 ## Raport
 <!-- Pisze wyko na końcu. -->
+
+### Raport wyko (26.11)
+Zrobione kroki 1–7. Gałąź `worktree-podroz-07-tryby`.
+- **tryb.py** (z tempo.py): `tryb_ze_stanu`, `tryb_z_tekstu`, `tryb_nazwa`, `licz`; flagi `--tryb --do --json --plik --bez-hamulca --teraz`. Poza briefem: `tryb_z_tekstu` zwraca `null` bez linii (dla generuj), `tryb_ze_stanu` daje komp.
+- **wyko.py** `--tryb` (`ustawienia_trybu`), **archi.py** (`start`, `--pokaz`, nowe TRYBY), **hook_commit.py** (`nastepne_zadanie` + ciągłość), **generuj.py/strona.html** (klucz `tryb`, 💻🌙🎒; CRLF zachowane), **instaluj.py** (`stare_skille`, `usun_dowiazanie`, „stare” w `--sprawdz`; CRLF zachowane), schemat w `watek-generator.md`.
+- Dowody:
+  - `python -X utf8 -m unittest discover -s narzedzia/dziennik/testy` → `Ran 80 tests ... OK`
+  - sen, za szybko (okno 50% czasu, 75% limitu): `Rada: oszczędniej: effort low, bez nowego wyko. Wyko: -1.`
+  - sen, za wolno (25%): `Rada: dodaj wyko albo wyższy effort. Wyko: +1.`
+  - sen, tydzień przed linią (tydzień 50% czasu, 60% limitu, okno wolno): `Rada: tydzień przed linią o 10 pp: oszczędniej, bez nowego wyko. Wyko: -1.`
+  - szkoła `--do 13:00` (teraz 12:00, okno 9:30–14:30): `minęło 71% czasu do celu (... cel 100% o 13:00), zużyto 25% ... Wyko: +1.`
+  - `wyko.py ... --tryb sen --pokaz` → `Tryb: sen (model sonnet, effort medium, autocompact 120k)`
+  - `archi.py cyberiada --pokaz` → polecenie kończy się `...role\archi.md start`
+- Uwagi: `instaluj.py` na prawdziwym `~/.claude` nie uruchamiany (tylko `--sprawdz` i test na junctionach w folderze tymczasowym). Test instalatora używa `mklink /J` (Windows). Strona nie publikowana. Stare `tempo` w `Stan.md` (np. lukrum) jest ignorowane → `tryb: null`.
+- Propozycje: brak.

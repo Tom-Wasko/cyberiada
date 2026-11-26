@@ -29,7 +29,7 @@ from pathlib import Path
 
 NARZEDZIA = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(NARZEDZIA))
-from tempo import PLIK_LIMITU, tempo_nazwa  # noqa: E402
+from tryb import PLIK_LIMITU, tryb_z_tekstu  # noqa: E402
 from wspolne import CYBERIADA, projekty, rejestr  # noqa: E402
 from wspolne import SESJE_DIR, tytul_sesji  # noqa: E402
 import zuzycie  # noqa: E402
@@ -146,8 +146,6 @@ def czytaj_stan(projekt: Path) -> dict:
     wstep, sek = sekcje(czytaj(projekt / "dokumentacja" / "Stan.md"))
     m = re.search(r"Archi żył:[ \t]*(.*)", "\n".join(wstep))
     puls = m.group(1).strip() if m else ""
-    mt = re.search(r"^\s*(?:[-*]\s*)?\**Tempo:\**[ \t]*([^\s,;.]+)", "\n".join(wstep),
-                   re.MULTILINE | re.IGNORECASE)
     podroz = None
     for w in sekcja(sek, "Podróż"):
         if w.strip():
@@ -162,7 +160,7 @@ def czytaj_stan(projekt: Path) -> dict:
                 watki[w["wątek"]] = {"stan": bez_kresek(w.get("stan")), "galaz": w.get("gałąź"),
                                      "kto": bez_kresek(w.get("kto")), "sesja": bez_kresek(w.get("sesja"))}
     return {"puls": None if puls in ("", "—", "–", "-") else puls,
-            "tempo": tempo_nazwa(mt.group(1)) if mt else None,
+            "tryb": tryb_z_tekstu("\n".join(wstep)),
             "podroz": podroz, "watki": watki,
             "czeka": [pytanie(p) for p in punkty(sekcja(sek, "Czeka na szefa"))]}
 
@@ -553,7 +551,7 @@ def zbuduj(projekt: Path, nazwa: str, opis: str | None = None, repo: str | None 
                          "od": od, "do": do, "podsumowanie": p["podsumowanie"]})
     return {"nazwa": nazwa, "opis": opis, "repo": repo, "kolor": kolor_projektu(nazwa, kolor),
             "wygenerowano": teraz.isoformat(timespec="seconds"), "puls": stan["puls"],
-            "tempo": stan["tempo"],
+            "tryb": stan["tryb"],
             "podroz": zbuduj_podroz(stan, projekt, plan_biezacy, {x["nazwa"] for x in logi}, nazwa), "czeka": stan["czeka"],
             "decyzje": czytaj_decyzje(projekt), "zadania": czytaj_zadania(projekt),
             "historia": historia, "ostatnia_podroz": ostatnia_podroz(historia, (stan["podroz"] or (None,))[0]),

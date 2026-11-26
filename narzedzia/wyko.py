@@ -26,7 +26,7 @@ USTAWIENIA = CYBERIADA / "narzedzia" / "wyko" / "ustawienia.json"
 
 def ustawienia_trybu(tryb: str, tresc: str) -> dict:
     """Model, effort i autocompact dla trybu (komp/sen/szkola) i briefu (`Rodzaj: mechaniczny|trudny`)."""
-    rodzaj = re.search(r"^\s*(?:[-*]\s*)?\**Rodzaj:\**\s*(mechaniczny|trudny)", tresc, re.IGNORECASE | re.MULTILINE)
+    rodzaj = re.search(r"^\s*(?:[-*]\s*)?\**Rodzaj:\**\s*(mechaniczny|trudny)\b", tresc, re.IGNORECASE | re.MULTILINE)
     rodzaj = rodzaj.group(1).lower() if rodzaj else ""
     if tryb == "komp":
         return {"model": "sonnet", "effort": "high" if rodzaj == "trudny" else "medium", "autocompact": "200k"}

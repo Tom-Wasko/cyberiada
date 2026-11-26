@@ -81,9 +81,11 @@
     `reset` = koniec okna ISO lokalne, `czas` = kiedy statusline zapisał plik) albo `null` (brak pliku lub pola).
     Strona pokazuje go w oknie 5 h, gdy `reset` jeszcze nie minął; przy `czas` starszym niż 15 min dopisuje wiek danych.
     `zbuduj(..., plik_limitu=)` podmienia plik (testy); z `katalog_sesji` bez `plik_limitu` limit = `null`.
-  - **tempo** (podróż 06-tempo): linia `Tempo: żółw|zwykły|królik` we wstępie `Stan.md` (jak `Archi żył`) →
-    `"zolw" | "zwykly" | "krolik"` (bez ogonków), brak lub nieznane → `null`. Strona: 🐢 (zolw) i 🐇 (krolik)
-    przy nazwie projektu (nawigacja, klocek, nagłówek panelu); zwykły bez znaczka.
+  - **tryb** (podróż 07-tryby): linia `Tryb: komp od 16:10` / `sen od 23:10` / `szkoła do 16:00 (znikam|jestem)` we
+    wstępie `Stan.md` → `{"tryb": "komp"|"sen"|"szkola", "od": "GG:MM"|null, "do": "GG:MM"|null,
+    "stan": "jestem"|"znikam"|null}`; stare `nadzorowany` → komp, `autonomiczny` → sen; brak linii albo nieznany
+    tryb → `null`. Zastępuje klucz `tempo`. Strona: znaczek przy nazwie projektu (klocek, nagłówek panelu):
+    💻 komp, 🌙 sen, 🎒 szkoła z „do 16:00” i stanem.
   - **commity:** ostatnie 30 dni, `git log --all --format=%cI` w folderze projektu, liczba na dzień lokalny,
     `[{dzien, liczba}]` z zerami dla dni bez commitów.
   - Git wywołuj przez `subprocess.run([...], cwd=projekt, capture_output=True, text=True, encoding="utf-8")`;
@@ -100,7 +102,7 @@
   ```json
   {
     "nazwa": "cyberiada", "opis": "System pracy z Claude Code", "repo": "Tom-Wasko/cyberiada",
-    "wygenerowano": "2026-11-21T22:10:00+01:00", "puls": "2026-11-21 21:30", "tempo": null,
+    "wygenerowano": "2026-11-21T22:10:00+01:00", "puls": "2026-11-21 21:30", "tryb": null,
     "podroz": {"numer": "01", "temat": "dziennik", "start": "2026-11-21", "tryb": "hejo",
                "kryteria": [{"tekst": "…", "zrobione": false}],
                "watki": [{"nazwa": "generator", "kto": "wyko", "stan": "w toku",

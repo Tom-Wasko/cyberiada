@@ -134,7 +134,7 @@ class TestDokumenty(Pomoc):
         self.dane = generuj.zbuduj(self.projekt, "probny", "Opis", "u/probny", TERAZ, self.sesje)
 
     def test_schemat_i_json(self):
-        self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "kolor", "wygenerowano", "puls", "tempo", "podroz", "czeka",
+        self.assertEqual(set(self.dane), {"nazwa", "opis", "repo", "kolor", "wygenerowano", "puls", "tryb", "podroz", "czeka",
                                           "decyzje", "zadania", "historia", "ostatnia_podroz", "koszty", "commity", "aktywnosc"})
         self.assertEqual(set(self.dane["koszty"]), {"dni", "role", "okno5h", "limit"})
         json.dumps(self.dane, ensure_ascii=False)  # serializuje się bez błędu
