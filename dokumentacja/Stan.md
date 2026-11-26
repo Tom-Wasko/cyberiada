@@ -8,7 +8,7 @@ Tryb: komp od 16:10 (26.11)
 
 | Wątek | Kto | Stan | Gałąź |
 |---|---|---|---|
-| 07/tryby | wyko | w toku | `worktree-podroz-07-tryby` |
+| 07/tryby | wyko | scalony na `main`, zainstalowany | — |
 | 07/eksperyment | wyko | w toku | `worktree-podroz-07-eksperyment` |
 | 07/zasady | Archi | zrobiony (skille podlinkowane) | `main` |
 | 07/testy | Archi + narzędzie | 27.11–29.11 16:00 | — |
