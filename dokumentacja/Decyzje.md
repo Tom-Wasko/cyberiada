@@ -54,6 +54,7 @@
 - 2026-11-24 · Eksperymenty o efektywności (Z10) odłożone do wolnych tokenów; testowane na lukrum i cyberiadzie, jakość = testy + ocena recenzenta. Recenzja dziennika: drobne poprawki Archi, reszta pytanie.
 - 2026-11-24 · Dziennik po recenzji: wdrożyć wszystkie zmiany wyglądu (stałe kolory projektów inne niż role, pasek okna 5 h = zużycie limitu, Decyzje/Zadania/Historia zwinięte, gradient paska na telefonie, „Przenieś do…” na dotyku).
 - 2026-11-25 · Żółw bez osobnej zasady dla pomo (Sonnet do drobnych): pomo jest używany rzadko.
+- 2026-11-26 · Podróż 06 zamknięta; podróż 07 obejmuje eksperymenty Z10 (szef puszcza je od 27.11 do niedzieli 29.11 16:00, ok. 40% limitu tygodniowego). Tempa żółw / królik / zwykły idą do archiwum jako kontekst; nowe tryby: **nadzorowany** (szef przy komputerze, szybko jak królik), **sen** (noc, całkiem autonomicznie, plan sprzed snu, potem sam bierze zadania bez potrzeby decyzji szefa; podejście żółwia: limit 5 h w 5 h), **szkoła** (rama czasowa, np. do 16:00, tempo dopasowane do ramy; szef ma telefon; pytania zapisywane, by nie przerywały pracy; dwa stany: `/hejo` = może odpowiadać, `/papa` = autonomicznie). Uwagi szefa: Archi ma otwierać nowych wyko po zamknięciu starych i brać zadania zaplanowane po skończeniu tych w toku; Archi na Sonnecie słabo pyta i planuje.
 
 ## Archiego
 - 2026-11-21 · `wiedza/` przeniesiona do `dokumentacja/wiedza/`, tak jak w szablonie projektu; reszta struktury

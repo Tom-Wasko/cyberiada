@@ -22,7 +22,7 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 - [x] tempo widać w dzienniku
 - [x] badanie z logów w `tokeny.md`, tryby ustawione z liczb
 - [x] eksperymenty zapisane jako Z10
-- [ ] eksperymenty Z10 zrobione, tryby poprawione
+- [ ] eksperymenty Z10 zrobione, tryby poprawione (przeniesione do podróży 07)
 - [x] recenzja dziennika zrobiona, strona opublikowana
 
 ## Wątki
@@ -33,4 +33,4 @@ Parametry trybów z badania logów. Na końcu auto recenzja dziennika.
 | recenzja | recenzent + wyko | `watek-recenzja.md` | scalony, strona opublikowana (wersja 9) |
 
 ## Podsumowanie
-<!-- Na końcu: co zrobione, co odłożone (→ Zadania.md), koszt (narzedzia/zuzycie.py). -->
+Zamknięta 2026-11-26 przez szefa. Zrobione: **Z8** (tempa żółw / zwykły / królik: badanie z logów w `tokeny.md`, `statusline.py`, `tempo.py`, `wyko.py --tempo`, skille), **Z9** (recenzja dziennika: 20 poprawek A/B/C, strona opublikowana; potem kolory: role jak przed recenzją, cyberiada kosmiczny fiolet, lukrum szmaragd). Przeniesione: **Z10** (eksperymenty) do podróży 07 (szef 26.11). Koszt od 24.11: 7,3M tokenów ważonych (Archi 4,8M, wyko 06/recenzja 1,0M, wyko 06/tempo 1,0M, agenci 0,4M). Wniosek: tempa trafiają do archiwum, szef 26.11 zastępuje je trybami nadzorowany / sen / szkoła (podróż 07).

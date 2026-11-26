@@ -12,7 +12,4 @@ Następny numer: Z11
 ## Zaplanowane
 
 ## Zrobione w tej podróży
-- Z9 · Auto recenzja dziennika na końcu podróży 06 (A, B, C scalone, strona opublikowana 25.11)
-- Z8 · Tryby tempa żółw / zwykły / królik (badanie z logów, statusline, tempo.py, wyko.py --tempo, skille) · podróż 06
-
 ## Odłożone
