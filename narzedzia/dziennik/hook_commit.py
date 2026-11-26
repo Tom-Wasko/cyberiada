@@ -19,6 +19,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wspolne import CYBERIADA, projekt_dla, rejestr, tytul_sesji  # noqa: E402
 
 DOMYSLNY_URL = "https://claude.ai/artifact/5c5LeHX3ohn5qRanw6XyoT"
+CIAGLOSC = "Ciągłość: jeśli nie czeka na decyzję szefa, w tej samej turze napisz wątek i uruchom wyko (albo zrób sam, gdy małe)."
+LISTA_PUSTA = ("Lista pusta: w trybie komp zaproponuj szefowi nowy plan okienkiem; w śnie i szkole zapisz to w "
+               "Stan.md i weź coś z Odłożone bez decyzji szefa albo zakończ.")
+
+
+def nastepne_zadanie(cwd: Path) -> str | None:
+    """Pierwsza linia `- Z<n> · …` z „Następnie”, a gdy pusta z „Zaplanowane” (do ok. 120 znaków);
+    gdy obie puste: tekst o pustej liście; brak pliku Zadania.md: None."""
+    for f in [cwd.resolve(), *cwd.resolve().parents]:
+        plik = f / "dokumentacja" / "Zadania.md"
+        if plik.is_file():
+            sekcja = None
+            znalezione: dict[str, str] = {}
+            for w in plik.read_text(encoding="utf-8").splitlines():
+                if w.startswith("## "):
+                    sekcja = w[3:].strip().lower()
+                elif sekcja in ("następnie", "zaplanowane") and sekcja not in znalezione \
+                        and re.match(r"\s*-\s*Z\d+\b", w):
+                    znalezione[sekcja] = w.strip()[2:]
+            z = znalezione.get("następnie") or znalezione.get("zaplanowane")
+            if not z:
+                return LISTA_PUSTA
+            return "Następne zadanie: " + (z if len(z) <= 120 else z[:117] + "...") + ". " + CIAGLOSC
+    return None
 
 
 def git(cwd: Path, *a: str) -> str:
@@ -59,7 +83,8 @@ def instrukcja(wejscie: dict) -> str | None:
     if rola == "Archi" and (len(rodzice) > 2 or krok.lower().startswith("scalenie")):
         tekst = ("Po scaleniu (zasada podróży, zrób w tej samej turze): odhacz w `plan.md` bieżącej podróży kryteria, "
                  "które mają już dowód, przenieś zadania tego wątku w `Zadania.md` do „Zrobione w tej podróży” i "
-                 "zaktualizuj stan wątku w `Stan.md`; jeśli scalony wątek rozszerzył podróż, dopisz kryteria. ") + tekst
+                 "zaktualizuj stan wątku w `Stan.md`; jeśli scalony wątek rozszerzył podróż, dopisz kryteria. "
+                 + (nastepne_zadanie(cwd) or "") + " ") + tekst
     if rola == "Archi":
         tekst += (f" Potem ruchy zadań z dziennika: ArtifactData get, collection uklad, doc_id {projekt}; jeśli jest i ma "
                   f"`ruchy` ({{\"Z9\": \"nastepnie\", ...}}), uruchom `python -X utf8 {CYBERIADA.as_posix()}/narzedzia/dziennik/"

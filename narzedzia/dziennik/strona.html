@@ -251,8 +251,9 @@ details.starsze>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:
   background:color-mix(in srgb,var(--pk) 16%,var(--surface));border:2px solid color-mix(in srgb,var(--pk) 45%,var(--border));max-width:100%}
 .klocek:hover{background:color-mix(in srgb,var(--pk) 26%,var(--surface))}
 .klocek.aktywny{background:color-mix(in srgb,var(--pk) 38%,var(--surface));border-color:var(--pk);font-weight:700}
-.tempo{margin-left:6px;font-size:1.1em;line-height:1}
-.klocek .tempo{margin-left:0}
+.tryb{margin-left:6px;font-size:1.1em;line-height:1;white-space:nowrap}
+.tryb small{font-size:.7em;margin-left:3px;color:var(--muted,inherit)}
+.klocek .tryb{margin-left:0}
 .klocek .nazwa{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 main section{scroll-margin-top:16px}
 @media (max-width:719px){main section{scroll-margin-top:76px}}
@@ -375,7 +376,7 @@ function norm(id,d){
   const ls=x=>tab(x).map(tekst).filter(Boolean);
   return{
     klucz:id,nazwa:tekst(d.nazwa)||id,kolorId:tekst(d.kolor),opis:tekst(d.opis),repo:tekst(d.repo),
-    wygenerowano:data(d.wygenerowano),puls:data(d.puls),tempo:tekst(d.tempo),
+    wygenerowano:data(d.wygenerowano),puls:data(d.puls),tryb:(t=>t.tryb?{tryb:tekst(t.tryb),od:tekst(t.od),do:tekst(t.do),stan:tekst(t.stan)}:null)(obj(d.tryb)),
     podroz:p?{numer:tekst(p.numer),temat:tekst(p.temat),start:data(p.start),tryb:tekst(p.tryb),
       kryteria:tab(p.kryteria).map(z=>{z=obj(z);return{tekst:tekst(z.tekst),zrobione:z.zrobione===true};}).filter(z=>z.tekst),
       watki:tab(p.watki).map(w=>{w=obj(w);return{nazwa:tekst(w.nazwa)||"bez nazwy",kto:tekst(w.kto)||"nie wiadomo",stan:tekst(w.stan)||"nie wiadomo",galaz:tekst(w.galaz),start:data(w.start),scalono:data(w.scalono)};})}:null,
@@ -914,8 +915,11 @@ function planujWidziane(){
 }
 document.addEventListener("visibilitychange",()=>{if(czekaOtwarta)planujWidziane();});
 function ostatnieDoc(P){return P.filter(p=>p.wygenerowano).sort((a,b)=>b.wygenerowano-a.wygenerowano)[0]||null;}
-const TEMPO={zolw:{znaczek:"🐢",opis:"żółw"},krolik:{znaczek:"🐇",opis:"królik"}};
-function znaczekTempa(t){const x=TEMPO[t];return x?el("span",{class:"tempo",role:"img",title:"Tempo: "+x.opis,"aria-label":"Tempo: "+x.opis},x.znaczek):null;}
+const TRYBY={komp:{znaczek:"💻",opis:"komp"},sen:{znaczek:"🌙",opis:"sen"},szkola:{znaczek:"🎒",opis:"szkoła"}};
+function znaczekTrybu(t){const x=t&&TRYBY[t.tryb];if(!x)return null;
+  const opis=x.opis+(t.od?" od "+t.od:"")+(t.do?" do "+t.do:"")+(t.stan?" ("+t.stan+")":"");
+  const dod=t.tryb==="szkola"?[t.do?"do "+t.do:"",t.stan||""].filter(Boolean).join(" "):"";
+  return el("span",{class:"tryb",role:"img",title:"Tryb: "+opis,"aria-label":"Tryb: "+opis},x.znaczek,dod?el("small",{},dod):null);}
 function budujOkno(P){
   const z=ostatnieDoc(P),o=z?z.koszty.okno5h:null,box=el("div",{class:"okno"});
   const lewa=el("div",{},el("div",{class:"et"},"Okno 5 h (zużycie, tokeny)"));
@@ -1069,7 +1073,7 @@ function renderProjekty(P){
   const sek=$("projekty");sek.replaceChildren();
   $("klocki").replaceChildren(...P.map(p=>{
     const b=el("button",{type:"button",class:"klocek","data-proj":p.klucz,"aria-pressed":"false",onclick:()=>wybierzProjekt(p.klucz)},
-      el("span",{class:"nazwa"},p.nazwa),znaczekTempa(p.tempo),p.czeka.length?el("span",{class:"licznik"},String(p.czeka.length)):null);
+      el("span",{class:"nazwa"},p.nazwa),znaczekTrybu(p.tryb),p.czeka.length?el("span",{class:"licznik"},String(p.czeka.length)):null);
     b.style.setProperty("--pk",p.kolor);return b;}));
   const dni14=ostatnieDni(14);
   for(const p of P){
@@ -1081,7 +1085,7 @@ function renderProjekty(P){
       el("span",{class:"chip"},p.puls?["Archi żył ",el("span",{class:"temu","data-czas":p.puls.toISOString()},temu(p.puls))]:"Archi żył: brak danych"));
     const pa=postepArchiego(p);
     if(pa)chipy.append(el("span",{class:"chip postep-archi"},"Archi, "+ostatnioTekst(pa)+" · ",el("span",{class:"temu","data-czas":pa.czas.toISOString()},temu(pa.czas))));
-    const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa,znaczekTempa(p.tempo)),
+    const glowa=el("div",{class:"glowa"},kropka(p.kolor),el("h3",{},p.nazwa,znaczekTrybu(p.tryb)),
       p.opis?el("span",{class:"opis"},bogaty(p.opis)):null,chipy);
     const cialo=el("div",{class:"cialo"});
     if(pd){
@@ -1197,7 +1201,7 @@ function renderSkok(P){
     przycisk("czeka","Czeka",null,[el("span",{class:"licznik"+(czeka?"":" zero")},String(czeka)),nowe?el("span",{class:"znacznik-nowe"},"nowe"):null]),
     PRACOWNICY?przycisk("pracownicy","Pracownicy"):null,
     przycisk("przeglad","Przegląd"),
-    ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor,znaczekTempa(p.tempo)))].filter(Boolean));
+    ...P.map(p=>przycisk("p:"+p.klucz,p.nazwa,p.kolor,znaczekTrybu(p.tryb)))].filter(Boolean));
 }
 function gradientPaska(){
   const n=$("skok");if(!n)return;

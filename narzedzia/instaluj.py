@@ -105,12 +105,38 @@ def dowiazanie(link: Path, cel: Path, sprawdz: bool) -> None:
     ok(f"{link} → {cel} (utworzone)")
 
 
+def usun_dowiazanie(link: Path) -> None:
+    try:
+        os.unlink(link)
+    except OSError:  # złącze (junction) w Windows: tylko rmdir, nie rusza celu
+        os.rmdir(link)
+
+
+def stare_skille() -> list[Path]:
+    """Dowiązania w ~/.claude/skills do cyberiada/skille/<nazwa>, których folder już nie istnieje."""
+    katalog = CLAUDE_DIR / "skills"
+    skille = Path(os.path.realpath(CYBERIADA / "skille"))
+    stare = []
+    for link in sorted(katalog.iterdir()) if katalog.is_dir() else []:
+        if jest_dowiazaniem(link):
+            cel = Path(os.path.realpath(link))
+            if cel.parent == skille and not cel.exists():
+                stare.append(link)
+    return stare
+
+
 def dowiazania(sprawdz: bool) -> None:
     print("Dowiązania:")
     dowiazanie(CLAUDE_DIR / "rules", CYBERIADA / "zasady", sprawdz)
     dowiazanie(CLAUDE_DIR / "agents", CYBERIADA / "agenci", sprawdz)
     for skill in sorted(p for p in (CYBERIADA / "skille").iterdir() if p.is_dir()):
         dowiazanie(CLAUDE_DIR / "skills" / skill.name, skill, sprawdz)
+    for link in stare_skille():
+        if sprawdz:
+            zle(f"{link} stare (folder skilla już nie istnieje; instalator usunie)")
+        else:
+            usun_dowiazanie(link)
+            ok(f"{link} usunięte (stare)")
 
 
 def zapisz_json(plik: Path, dane: dict) -> None:
