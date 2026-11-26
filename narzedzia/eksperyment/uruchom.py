@@ -217,15 +217,23 @@ def brief_z_tekstu(tekst: str) -> str:
     return (m.group(1) if m else tekst).strip()
 
 
+POMIN = (":(exclude)dokumentacja/podroze", ":(exclude)_robocze")
+
+
+def koniec_watku(repo: str, wzorzec: str) -> str:
+    """Wzorzec to scalenie: zmiany wątku kończą się na jego drugim rodzicu (pierwszy niesie cudze prace)."""
+    rodzice = git(repo, "rev-list", "--parents", "-n1", wzorzec).stdout.split()
+    return rodzice[2] if len(rodzice) > 2 else wzorzec
+
+
 def diff_wzorcowy(zadanie: dict) -> str:
-    w = git(zadanie["repo"], "diff", zadanie["start"], zadanie["wzorzec"], "--", ".",
-            ":!dokumentacja/podroze", ":!_robocze")
-    return w.stdout
+    koniec = koniec_watku(zadanie["repo"], zadanie["wzorzec"])
+    return git(zadanie["repo"], "diff", zadanie["start"], koniec, "--", ".", *POMIN).stdout
 
 
 def diff_przebiegu(folder: Path, start: str) -> str:
     git(folder, "add", "-A")
-    return git(folder, "diff", "--cached", start, "--", ".", ":!dokumentacja/podroze", ":!_robocze").stdout
+    return git(folder, "diff", "--cached", start, "--", ".", *POMIN).stdout
 
 
 def polecenie_testow(zadanie: dict) -> list[str]:

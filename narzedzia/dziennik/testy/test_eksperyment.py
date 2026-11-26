@@ -155,6 +155,49 @@ class TestPomocnicze(unittest.TestCase):
         self.assertEqual(uruchom.polecenie_testow(z), ["C:/venv/python.exe", "-m", "unittest"])
 
 
+class TestDiffy(unittest.TestCase):
+    """Prawdziwy git w katalogu tymczasowym: diff wzorcowy kończy się na gałęzi wątku, pomija dokumentację podróży."""
+
+    def g(self, *a: str) -> str:
+        w = uruchom.subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", "-C", str(self.repo), *a],
+                                   capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(w.returncode, 0, w.stderr)
+        return w.stdout.strip()
+
+    def zapisz(self, nazwa: str, tekst: str) -> None:
+        p = self.repo / nazwa
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(tekst, encoding="utf-8")
+
+    def test_diff_wzorcowy_i_przebiegu(self) -> None:
+        self.repo = Path(tempfile.mkdtemp())
+        self.g("init", "-q", "-b", "main")
+        self.zapisz("a.py", "1\n")
+        self.g("add", "-A")
+        self.g("commit", "-qm", "start")
+        start = self.g("rev-parse", "HEAD")
+        self.g("switch", "-qc", "watek")
+        self.zapisz("a.py", "2\n")
+        self.zapisz("dokumentacja/podroze/01/watek-x.md", "raport\n")
+        self.g("add", "-A")
+        self.g("commit", "-qm", "watek")
+        self.g("switch", "-q", "main")
+        self.zapisz("cudze.py", "x\n")  # cudza praca na main po starcie
+        self.g("add", "-A")
+        self.g("commit", "-qm", "cudze")
+        self.g("merge", "-q", "--no-ff", "-m", "scalenie", "watek")
+        z = {"repo": str(self.repo), "start": start, "wzorzec": self.g("rev-parse", "HEAD")}
+        d = uruchom.diff_wzorcowy(z)
+        self.assertIn("+2", d)
+        self.assertNotIn("cudze.py", d)
+        self.assertNotIn("watek-x.md", d)
+        self.zapisz("a.py", "3\n")
+        self.zapisz("_robocze/s.txt", "x\n")
+        dp = uruchom.diff_przebiegu(self.repo, start)
+        self.assertIn("+3", dp)
+        self.assertNotIn("_robocze", dp)
+
+
 class TestTokeny(unittest.TestCase):
     def test_liczy_z_logu_razem_z_podagentami(self) -> None:
         tmp = Path(tempfile.mkdtemp())

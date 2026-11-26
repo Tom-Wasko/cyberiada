@@ -11,9 +11,9 @@
       "plik_watku": "dokumentacja/podroze/04-wyglad-i-dzwiek/watek-test-debetu.md",
       "python": "C:/Users/PC/Pulpit/lukrum/gra/.venv/Scripts/python.exe",
       "testy_cwd": "gra",
-      "testy": ["{python}", "-X", "utf8", "-m", "pytest", "-q", "-p", "no:cacheprovider", "testy/pieniadze"],
+      "testy": ["{python}", "-X", "utf8", "-m", "pytest", "-q", "-p", "no:cacheprovider", "testy"],
       "oryginal": {"czas_min": 11, "wazone_mln": 0.36, "pliki": 2, "linie": 29},
-      "uzasadnienie": "Najmniejsze: błąd w silniku (test jest, pada), 2 pliki, 29 linii. Szukanie przyczyny, nie pisanie od zera. Test z briefu już istnieje, więc wynik testów jest uczciwym sprawdzianem."
+      "uzasadnienie": "Najmniejsze: błąd w silniku (test jest, pada), 2 pliki, 29 linii. Szukanie przyczyny, nie pisanie od zera. Test z briefu pada tylko w pełnym przebiegu (sprawdzone na commicie startowym: 1 failed, 1026 passed, ok. 6,5 min; sam folder testy/pieniadze przechodzi), dlatego polecenie testów to cały folder testy."
     },
     {
       "id": "generator",
