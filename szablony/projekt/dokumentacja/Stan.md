@@ -1,7 +1,7 @@
 # Stan
 <!-- Jedyne „teraz” projektu. Pisze Archi; Pomocnik tylko w sekcji „Od Pomocnika”. -->
 Archi żył: —
-Tempo: zwykły
+Tryb: komp
 
 ## Podróż
 Brak podróży w toku.

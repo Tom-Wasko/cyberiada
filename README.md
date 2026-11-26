@@ -11,27 +11,24 @@ Nazwy z Lema: **Archi** (kierownik projektu), **wyko** (wykonawca w tle), **Pomo
 | Polecenie | Co robi |
 |---|---|
 | `archi` | lista projektów tego komputera (w folderze projektu: otwiera jego Archiego) |
-| `archi <projekt>` | otwiera czat Archiego projektu, a jeśli już był, wznawia go (Opus, Remote Control) |
-| `archi <projekt> hejo` | to samo i od razu tryb nadzorowany (`/hejo`) |
-| `archi <projekt> papa 4h` | to samo i od razu tryb autonomiczny (`/papa`) z budżetem |
+| `archi <projekt>` | otwiera czat Archiego projektu, a jeśli już był, wznawia go (Opus, Remote Control); Archi sam wznawia przerwaną pracę i pyta okienkiem o podróż |
+| `archi <projekt> komp` / `sen` / `szkola 16:00` | to samo i od razu dany tryb |
 | `claude` | zwykły czat: Pomocnik (Sonnet), do drobnych spraw w dowolnym folderze |
 | `claude agents` | lista sesji w tle (wyko); `claude attach <id>` podgląd i rozmowa z wyko |
+| `python -X utf8 C:/Users/PC/cyberiada/narzedzia/tryb.py` | limit 5 h i tygodnia względem linii idealnej, rada dla trybu (ile wyko) |
 | `python -X utf8 C:/Users/PC/cyberiada/narzedzia/zuzycie.py [--projekt <nazwa albo folder>] [--od RRRR-MM-DD]` | zużycie tokenów według sesji |
 | `python -X utf8 C:/Users/PC/cyberiada/narzedzia/dziennik/generuj.py --projekt <nazwa>` | dane projektu do dziennika (Archi zapisuje je na stronę: `narzedzia/dziennik/README.md`) |
 | `.\zainstaluj.ps1 [-Sprawdz]` | instalacja albo sprawdzenie cyberiady na tym komputerze |
 
-**W czacie Archiego** (z komputera albo z telefonu; każde działa też zwykłym tekstem, np. „papa 4h”):
+**W czacie Archiego** (z komputera albo z telefonu; każde działa też zwykłym tekstem, np. „szkola 15:30”).
+Podróże (nowa, zamknięcie, porzucenie) wybierasz w okienku, o które Archi pyta na starcie czatu. Opis trybów: `role/tryby.md`.
 
 | Polecenie | Co robi |
 |---|---|
-| `/podroz [temat]` | nowa podróż: cel, kryteria sukcesu, wątki (w trybie nadzorowanym przez plan do zatwierdzenia) |
-| `/podroz koniec` | domknięcie: scalenie, dokumentacja, porządek, gotowe `/compact` dla szefa |
-| `/podroz porzuc` | porzucenie podróży (gałęzie zostają, wątki trafiają do zadań) |
-| `/hejo` | „jestem”, włącza **tryb nadzorowany**: podsumowanie pracy pod nieobecność, czekające pytania okienkiem, scalenie do `main` |
-| `/papa <budżet>` | „wychodzę”, włącza **tryb autonomiczny**: praca bez szefa; budżet `4h`, `do 18:00`, `2M` (tokeny) albo `do skończenia X` |
-| `/hejo zolw`, `/papa zolw 4h` | tempo **żółw**: najwięcej pracy z limitu 5h (oszczędnie, bez przestojów; Archi poda `/model opusplan`, `/autocompact 150k`) |
-| `/hejo krolik`, `/papa krolik 2h` | tempo **królik**: szybko teraz, więcej wyko naraz, mniej oszczędnie (bez słowa: tempo zwykłe) |
-| `/wznow` | po restarcie komputera albo po limicie: odtworzenie stanu z plików, wznowienie wyko |
+| `/komp` | „siedzę przy komputerze”, **tryb komp** (nadzorowany): szybko, pytania okienkiem, plan mode, scalanie do `main`; po nieobecności podsumowanie i czekające pytania |
+| `/sen` | „idę spać”, **tryb sen**: krótki plan nocy, potem Archi sam; cały limit 5 h w 5 h, hamulec tygodniowy, scalanie do `podroz-NN` |
+| `/szkola 16:00` | „wychodzę do 16:00”, **tryb szkoła**: tempo rozłożone do końca ramy, pytania zbierane bez przerywania pracy |
+| `/hej` | w szkole: „jestem” (Archi zadaje zebrane pytania okienkiem) albo „znikam” (Archi znów sam); przełącza |
 
 **W dowolnym czacie:** `/nowy-projekt <nazwa>` zakłada projekt (szablon, git, rejestr, zaufanie, GitHub).
 
@@ -47,9 +44,9 @@ Zwykłe polecenia Claude Code przydatne codziennie: `/compact <co zachować>`, `
   Brief i raport w jednym pliku wątku. Rola: `role/wyko.md`, uprawnienia: `narzedzia/wyko/ustawienia.json`.
 - **agenci**: tylko `zwiadowca` (Haiku, zwiad) i `recenzent` (Sonnet, świeże oko). Wbudowane Explore, Plan
   i general-purpose są zablokowane (drogie).
-- **Tryby:** nadzorowany (polecenie `/hejo`: szef odpowiada od razu, okienka, scalanie do `main`) i autonomiczny
-  (polecenie `/papa`: szef z telefonu przez
-  Remote Control, pytania tekstem + push, scalanie do gałęzi `podroz-NN`, nic nieodwracalnego).
+- **Tryby:** komp (szef przy komputerze: okienka, plan mode, scalanie do `main`), sen (noc: Archi sam, limit 5 h w 5 h,
+  hamulec tygodniowy) i szkoła (rama do godziny, `/hej` przełącza jestem / znikam). W śnie i szkole scalanie idzie do
+  gałęzi `podroz-NN`, nic nieodwracalnego. Opis: `role/tryby.md`, dawne tempa: `dokumentacja/wiedza/archiwum-tempa.md`.
 - **Numery** (te same w każdym projekcie): zadanie `Z7`, podróż `01`, wątek `01/generator`.
 - **Stan** zawsze w plikach projektu: `dokumentacja/Stan.md` (teraz), `Zadania.md`, `Decyzje.md`,
   `podroze/NN-temat/` (plan i wątki).
@@ -57,8 +54,8 @@ Zwykłe polecenia Claude Code przydatne codziennie: `/compact <co zachować>`, `
 ## Mapa repozytorium
 ```
 zasady/        baza.md, preferencje.md – wczytywane zawsze (~/.claude/rules → tu)
-role/          archi.md, wyko.md – dopisywane do promptu systemowego przy starcie
-skille/        podroz, hejo, papa, wznow, nowy-projekt (~/.claude/skills/<nazwa> → tu)
+role/          archi.md, wyko.md – dopisywane do promptu systemowego przy starcie; tryby.md – opis trybów
+skille/        komp, sen, szkola, hej, podroz (tylko dla Archiego), nowy-projekt (~/.claude/skills/<nazwa> → tu)
 agenci/        zwiadowca, recenzent (~/.claude/agents → tu)
 szablony/      projekt/ (nowy projekt), watek.md, plan-podrozy.md
 narzedzia/     archi.py + bin/archi.cmd, wyko.py, zuzycie.py, instaluj.py, cdp.py i zrzuty.py (zrzuty ekranu), dziennik/ (panel stanu)

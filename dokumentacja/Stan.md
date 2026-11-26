@@ -1,8 +1,7 @@
 # Stan
 <!-- Jedyne „teraz” projektu. Pisze Archi; Pomocnik tylko w sekcji „Od Pomocnika”. -->
 Archi żył: 2026-11-25 06:53
-Tryb: nadzorowany od 16:10 (26.11).
-Tempo: zwykły
+Tryb: komp od 16:10 (26.11)
 
 ## Podróż
 07-tryby (start 2026-11-26, nadzorowany, `main`), plan: `dokumentacja/podroze/07-tryby/plan.md`.

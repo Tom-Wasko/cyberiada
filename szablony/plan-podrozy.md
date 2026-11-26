@@ -1,5 +1,5 @@
 # Podróż NN: <temat>
-Start: RRRR-MM-DD · tryb: nadzorowany | autonomiczny · gałąź: `main` (nadzorowany) albo `podroz-NN` (autonomiczny)
+Start: RRRR-MM-DD · tryb: komp | sen | szkoła · gałąź: `main` (komp) albo `podroz-NN` (sen, szkoła)
 Zadania: Z…, Z…
 
 ## Cel

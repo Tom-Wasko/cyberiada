@@ -73,3 +73,4 @@
 - 2026-11-22 · Hook zapisu postępu tylko w sesjach wyko i Archi (`--settings` w `wyko.py`/`archi.py`), bez zmian w globalnym `settings.json`.
 - 2026-11-22 · Przesunięcia zadań w dzienniku idą do bazy (`uklad/<projekt>`, zapis tylko właściciel); strona pokazuje je od razu, Archi przenosi je do `Zadania.md` (`przenies.py`, wskazówka z hooka) i kasuje dokument.
 - 2026-11-22 · Lista pracowników: `dziennik/pracownicy.py` (claude agents + logi + git) liczy ją hook po commicie, sesja tylko wysyła plik do `pracownicy/lista`.
+- 2026-11-26 · Skill `podroz` zostaje, ale tylko dla Archiego (`user-invocable: false`, effort high; źródło: https://code.claude.com/docs/en/skills): planowanie dalej idzie na high, a szef nie wpisuje `/podroz`. `/wznow` wchodzi do startu czatu w `role/archi.md`. Dawne tempa i polecenia są w `dokumentacja/wiedza/archiwum-tempa.md`.

@@ -4,7 +4,7 @@ Sprawdzone: 2026-11-22 (dokumentacja; wersja na tym komputerze: 2.1.330, `testy.
 
 | Funkcja | Co robi | Odnośnik | Gdzie w cyberiadzie |
 |---|---|---|---|
-| Sesje w tle: `--bg`, `claude agents`, `attach`, `stop`, `rm` | Uruchamia sesję bez terminala, lista i podgląd sesji, zatrzymanie i usunięcie. Funkcja w fazie „research preview”. | https://code.claude.com/docs/en/agent-view | `narzedzia/wyko.py`, `skille/wznow`, `narzedzia/wspolne.py` (T1, T16) |
+| Sesje w tle: `--bg`, `claude agents`, `attach`, `stop`, `rm` | Uruchamia sesję bez terminala, lista i podgląd sesji, zatrzymanie i usunięcie. Funkcja w fazie „research preview”. | https://code.claude.com/docs/en/agent-view | `narzedzia/wyko.py`, `role/archi.md` (start czatu), `narzedzia/wspolne.py` (T1, T16) |
 | Worktree: `-w` / `--worktree` | Osobna kopia repo w `.claude/worktrees/<nazwa>` na gałęzi `worktree-<nazwa>`. | https://code.claude.com/docs/en/worktrees | `narzedzia/wyko.py`, `role/wyko.md` (T16) |
 | Hooki, PostToolUse | Polecenie uruchamiane po użyciu narzędzia; może dołożyć tekst do kontekstu sesji (`additionalContext`, do 10 000 znaków). | https://code.claude.com/docs/en/hooks | `narzedzia/dziennik/hook_commit.py`, `narzedzia/wyko/ustawienia.json` (T18) |
 | `--settings` | Dokłada plik ustawień (hooki, uprawnienia, `attribution`) tylko dla tej sesji; limit 2 MiB. Pole `attribution` nie sprawdzone w dokumentacji (strona bardzo długa), opieramy się na T14. | https://code.claude.com/docs/en/cli-reference , https://code.claude.com/docs/en/settings-reference | `narzedzia/wyko.py`, `narzedzia/archi.py` |
