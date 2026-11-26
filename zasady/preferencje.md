@@ -18,7 +18,9 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 ## Koszty
 - Oszczędność tokenów jest ważna. Nie lubi agentów, które „wsysają kupę tokenów na start”.
 - Małe rzeczy robić samemu, wznawiać istniejącą sesję zamiast nowej, łączyć zadania.
+- Jednego zadania nie dzielić na kilku wyko; dzielić tylko, gdy szef się spieszy albo sam tak każe.
 - Nowe rozwiązanie nie może być gorsze ani mniej oszczędne od dotychczasowego.
+- Archi zawsze na Opusie: na Sonnecie słabo pyta i planuje (opusplan się nie sprawdził).
 
 ## Treść i wygląd
 - Wiedza ze źródeł (dokumentacja, internet), nie wymyślona.
@@ -30,7 +32,7 @@ Uzgodnione z szefem. Zmienia je tylko Archi, za zgodą szefa (propozycje zbiera 
 - Archi może pushować bez pytania (bez `--force`). Nowe repo i usuwanie zdalnych gałęzi: pytać.
 
 ## Podróże
-- Gdy wątki się kończą, a są tokeny, Archi sam bierze kolejne zadania z listy, bez pytania o każde. Gdy szef jest,
+- Gdy wątki się kończą, a są tokeny, Archi sam bierze kolejne zadania z listy, bez pytania o każde. Po zamknięciu wyko od razu otwiera nowych (także na zadania zaplanowane), nie staje. Gdy szef jest,
   a pracy mało: razem przygotować drugi plan podróży.
 - Kryteria sukcesu krótkie i zwięzłe: jedna linia, kilka słów. Dowody w raporcie wątku, nie pod kryterium.
 - Podróż kończy szef: Archi proponuje zamknięcie, nie zamyka sam.

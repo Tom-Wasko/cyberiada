@@ -49,7 +49,7 @@ Linia w `Stan.md`: `Tryb: sen od 23:10` albo `Tryb: szkoła do 16:00 (jestem)` (
 - [ ] `tryb.py`: linia 5 h, rama szkoły, hamulec tygodnia
 - [ ] `wyko.py --tryb` ustawia model i effort
 - [ ] po scaleniu Archi sam bierze następne zadanie
-- [ ] stare tryby w archiwum
+- [x] stare tryby w archiwum
 - [ ] tryb widać w dzienniku
 - [ ] narzędzie eksperymentów gotowe
 - [ ] testy Z10 zrobione do 29.11 16:00
@@ -60,7 +60,7 @@ Linia w `Stan.md`: `Tryb: sen od 23:10` albo `Tryb: szkoła do 16:00 (jestem)` (
 |---|---|---|---|
 | tryby | wyko | `watek-tryby.md` | w toku |
 | eksperyment | wyko | `watek-eksperyment.md` | w toku |
-| zasady | Archi | — | w toku |
+| zasady | Archi | — | zrobiony |
 | testy | Archi + narzędzie | — | plan (27.11–29.11 16:00) |
 
 ## Podsumowanie
