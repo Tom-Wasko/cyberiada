@@ -6,7 +6,7 @@ Następny numer: Z12
 
 ## W toku
 - Z11 · Nowe tryby (szef 26.11): /komp (nadzorowany), /sen, /szkola + /hej; start czatu sam pyta o podróż (bez /podroz, /wznow); Archi zawsze Opus; po scaleniu sam bierze następne zadanie; stare tryby do archiwum. Podróż 07, wątki tryby + zasady
-- Z10 · Eksperymenty o efektywności tokenów: te same zadania na kopii lukrum i cyberiady, siatka model × effort × autocompact × wielkość wątku, 2 powtórzenia; jakość = testy + ocena recenzenta 1–5; optimum żółwia = najmniej tokenów przy ocenie ≥ 4, królika = najkrótszy czas przy ocenie ≥ 4. Budżet: cały pozostały limit tygodnia (stop przy 95%), 27.11–29.11 16:00 (szef 26.11). Podróż 07, wątki eksperyment + testy
+- Z10 · Eksperymenty o efektywności tokenów (połączenie, szef 26.11): (a) powtórka 4 zadań na kopiach, Sonnet low/medium/high, 12 przebiegów, `uruchom.py --budzet 15M`, rozgrzewka 3 po jednym; (b) reszta limitu na prawdziwe zadania lukrum bez decyzji szefa (Z54, Z55, część Z53) przez archi-lukrum w trybach sen/szkoła, effort zmieniany między wątkami (`wyko.py --effort`), ustawienia w pliku wątku, koszt z `zuzycie.py`; jakość = testy + ocena recenzenta 1–5; optimum żółwia = najmniej tokenów przy ocenie ≥ 4, królika = najkrótszy czas przy ocenie ≥ 4. Budżet: cały pozostały limit tygodnia (stop przy 95%), 27.11–29.11 16:00 (szef 26.11). Podróż 07, wątki eksperyment + testy
 
 ## Następnie
 
